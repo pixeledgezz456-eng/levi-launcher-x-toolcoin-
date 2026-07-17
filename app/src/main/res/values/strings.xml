@@ -289,6 +289,17 @@
     <string name="storage_migration_partial_message">Failed to copy %1$d out of %2$d files. Migration must complete before LeviLauncher can continue.</string>
     <string name="storage_migration_failed_title">Migration Failed</string>
     <string name="storage_migration_failed_message">Migration could not continue: %1$s</string>
+    <string name="retry">Retry</string>
+    <string name="repair_finalizing">Finalizing repair…</string>
+    <string name="repair_libs_dialog_subtitle">Preparing game library files</string>
+    <string name="reset">Reset</string>
+    <string name="settings_tab_migration">Migration</string>
+    <string name="shared_storage_layout_title">Shared Content Directory</string>
+    <string name="shared_storage_layout_desc">Use the new _shared directory for internal and external shared content. Turn this off to use original internal and external game data directories. This action does not move files.</string>
+    <string name="shared_storage_layout_mode_new">New _shared directory</string>
+    <string name="shared_storage_layout_mode_legacy">Original internal/external directories</string>
+    <string name="shared_storage_layout_status">Current mode: %1$s\nInternal: %2$s\nExternal: %3$s</string>
+    <string name="shared_storage_layout_changed">Storage directory selection updated. Restart Minecraft and reopen content management for the change to fully apply.</string>
     <string name="delete_resource_pack">Delete Resource Pack</string>
     <string name="delete_skin_pack">Delete Skin Pack</string>
     <string name="delete_behavior_pack">Delete Behavior Pack</string>
