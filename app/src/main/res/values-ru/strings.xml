@@ -7,8 +7,8 @@
     <string name="debug_badge">Отладочная сборка</string>
 
     <!-- Моды -->
-    <string name="mods_title">Моды (%d)</string>
-    <string name="mods_section_title">Моды</string>
+    <string name="mods_title">🧩 Моды (%d)</string>
+    <string name="mods_section_title">🧩 Моды</string>
     <string name="external_mods_label">Внешние моды</string>
     <string name="inbuilt_mods_label">Встроенные моды</string>
     <string name="manage_mods">Управление модами</string>
@@ -33,7 +33,6 @@
     <string name="content_detected_message">Хотите запустить игру сейчас?\n\nФайл: %s</string>
     <string name="launch_now">Запустить сейчас</string>
     <string name="launch_later">Запустить позже</string>
-    <string name="loading">Загрузка…</string>
 
     <string name="import_confirmation_title">Импортировать моды</string>
     <string name="import_confirmation_message">Вы уверены в том что хотите импортировать выбранные %d файлы модов?</string>
@@ -42,14 +41,13 @@
     <string name="overwrite">Перезаписать</string>
     <string name="skip">Пропустить</string>
     <string name="confirm">Подтвердить</string>
-    <string name="retry">Повторить</string>
 
     <string name="installed_packages">Установленные пакеты</string>
     <string name="local_custom">Доступные версии</string>
 
     <!-- Разрешения -->
-    <string name="storage_permission_title">Разрешение для миграции хранилища</string>
-    <string name="storage_permission_message">Предоставьте доступ к хранилищу, чтобы LeviLauncher мог скопировать данные из старой папки games/org.levimc. Это разрешение нужно только для миграции.</string>
+    <string name="storage_permission_title">Необходимо разрешение на доступ к хранилищу</string>
+    <string name="storage_permission_message">Пожалуйста выдайте доступ к хранилищу для доступа к папке модов и для определения модов.</string>
     <string name="grant_permission">Выдать</string>
     <string name="cancel">Отмена</string>
 
@@ -90,15 +88,6 @@
 
     <string name="check_update">Проверить обновления</string>
     <string name="version_prefix">Версия: </string>
-    <string name="unknown_error">Неизвестная ошибка</string>
-    <string name="preloader_sigs_title">Данные среды выполнения</string>
-    <string name="preloader_sigs_last_update">Последнее обновление: %1$s</string>
-    <string name="preloader_sigs_never_updated">Никогда</string>
-    <string name="preloader_sigs_update">Обновить данные среды выполнения</string>
-    <string name="preloader_sigs_updating">Обновление…</string>
-    <string name="preloader_sigs_update_success">Данные среды выполнения обновлены</string>
-    <string name="preloader_sigs_update_failed">Не удалось обновить данные среды выполнения: %1$s</string>
-    <string name="preloader_sigs_no_remote_url">URL обновления данных среды выполнения не настроен</string>
 
     <string name="dialog_title_no_version">Версия не выбрана</string>
     <string name="dialog_message_no_version">Пожалуйста, выберите версию игры перед запуском.</string>
@@ -107,8 +96,6 @@
     <string name="dialog_positive_enable">Включить</string>
     <string name="dialog_title_launch_failed">Ошибка запуска</string>
     <string name="dialog_message_launch_failed">Не удалось запустить Minecraft: %1$s</string>
-    <string name="dialog_title_incompatible_mods">Несовместимые моды пропущены</string>
-    <string name="dialog_message_incompatible_mods">Некоторые включенные моды несовместимы с текущей версией Minecraft %1$s и были пропущены:\n\n%2$s</string>
     <string name="dialog_title_disable_version_isolation">Отключить изоляцию версии</string>
     <string name="dialog_message_disable_version_isolation">Вы пытаетесь запустить установленную версию с включенной изоляцией версии. Пожалуйста, отключите изоляцию версии, чтобы продолжить.</string>
     <string name="dialog_positive_disable">Отключить</string>
@@ -137,54 +124,8 @@
     <string name="missing_libs_message">Необходимые файлы библиотек игры отсутствуют. Хотите восстановить их сейчас?</string>
     <string name="repair">Восстановить</string>
     <string name="repair_libs_dialog_title">Восстановление библиотек игры</string>
-    <string name="repair_libs_dialog_subtitle">Подготовка нативных библиотек Minecraft</string>
     <string name="repair_preparing">Подготовка…</string>
     <string name="repair_processing">Извлечение библиотек…</string>
-    <string name="repair_finalizing">Завершение восстановления…</string>
-    <string name="storage_migration_title">Требуется миграция хранилища</string>
-    <string name="storage_migration_message">LeviLauncher должен перенести данные из games/org.levimc в %1$s перед продолжением.
-
-Это изменение хранилища необходимо для соответствия требованиям публикации в Google Play. Старая папка останется нетронутой, но после миграции больше не будет использоваться.
-
-Миграция может занять время. Можно оставить приложение в фоне; при интенсивном копировании файлов телефон может нагреваться. Благодарим за понимание.</string>
-    <string name="storage_migration_start">Перенести</string>
-    <string name="storage_migration_permission_denied">Для чтения старой папки во время миграции требуется разрешение на доступ к хранилищу.</string>
-    <string name="storage_migration_progress_title">Миграция хранилища</string>
-    <string name="storage_migration_progress_subtitle">Копирование данных лаунчера в Android/media</string>
-    <string name="storage_migration_scanning">Сканирование старой папки…</string>
-    <string name="storage_migration_progress_detail">%1$d/%2$d файлов · %3$s</string>
-    <string name="storage_migration_eta_pending">Оценка оставшегося времени…</string>
-    <string name="storage_migration_eta_detail">Осталось около %1$s · завершение примерно в %2$s</string>
-    <string name="storage_migration_duration_hours_minutes">%1$d ч %2$d мин</string>
-    <string name="storage_migration_duration_minutes_seconds">%1$d мин %2$d с</string>
-    <string name="storage_migration_duration_seconds">%1$d с</string>
-    <string name="storage_migration_background_hint">Миграция может продолжаться в фоне. Рекомендуется держать телефон заряженным; во время копирования файлов телефон может нагреваться. Благодарим за понимание.</string>
-    <string name="storage_migration_completed_title">Миграция завершена</string>
-    <string name="storage_migration_completed_message">Перенесено файлов: %1$d (%2$s). Уже актуальны: %3$d.
-
-Старая папка games/org.levimc не была удалена и больше не используется.</string>
-    <string name="storage_migration_partial_title">Миграция не завершена</string>
-    <string name="storage_migration_partial_message">Не удалось скопировать %1$d из %2$d файлов. Миграция должна завершиться, прежде чем LeviLauncher сможет продолжить.</string>
-    <string name="storage_migration_failed_title">Ошибка миграции</string>
-    <string name="storage_migration_failed_message">Миграция не может продолжиться: %1$s
-
-Миграция должна завершиться, прежде чем LeviLauncher сможет продолжить.</string>
-    <string name="migration_cleanup_title">Очистить исторический каталог</string>
-    <string name="migration_cleanup_desc">Удаляйте старый каталог games/org.levimc только после того, как убедитесь, что все экземпляры запускаются нормально, а миры, наборы ресурсов, наборы поведения и настройки не пропали. Удалённые исторические данные нельзя будет восстановить из этого каталога.</string>
-    <string name="migration_cleanup_button">Очистить исторический каталог</string>
-    <string name="migration_cleanup_confirm_title">Очистить исторический каталог?</string>
-    <string name="migration_cleanup_confirm_message">Это навсегда удалит старый каталог games/org.levimc.\n\nПеред продолжением убедитесь, что все экземпляры запускаются нормально, а миры, наборы ресурсов, наборы поведения и настройки не пропали.</string>
-    <string name="migration_cleanup_unavailable_not_completed">Миграция хранилища ещё не завершена. Завершите миграцию перед очисткой старого каталога.</string>
-    <string name="migration_cleanup_unavailable_missing">Старый каталог games/org.levimc не найден или уже очищен.</string>
-    <string name="migration_cleanup_ready">Старый каталог можно очистить. Перед продолжением убедитесь, что все перенесённые экземпляры работают корректно.</string>
-    <string name="migration_cleanup_success">Исторический каталог очищен: удалено файлов: %1$d (%2$s).</string>
-    <string name="migration_cleanup_failed">Не удалось очистить исторический каталог: %1$s</string>
-    <string name="shared_storage_layout_title">Каталог общего контента</string>
-    <string name="shared_storage_layout_desc">Использовать новый каталог _shared для общего внутреннего и внешнего контента. Отключите, чтобы использовать исходные внутренний и внешний каталоги данных игры. Файлы при этом не перемещаются.</string>
-    <string name="shared_storage_layout_mode_new">Новый каталог _shared</string>
-    <string name="shared_storage_layout_mode_legacy">Исходные внутренний/внешний каталоги</string>
-    <string name="shared_storage_layout_status">Текущий режим: %1$s\nВнутренний: %2$s\nВнешний: %3$s</string>
-    <string name="shared_storage_layout_changed">Выбор каталога хранилища обновлён. Перезапустите Minecraft и снова откройте управление контентом, чтобы изменение полностью применилось.</string>
 
     <string name="theme_title">Тема</string>
     <string name="theme_follow_system">Как в системе</string>
@@ -208,9 +149,7 @@
     <string name="toast_delete_failed">Ошибка удаления: %1$s</string>
     <string name="error_delete_builtin_version">Нельзя удалить встроенную версию</string>
     <string name="invalid_mod_file">Ошибка</string>
-    <string name="invalid_mod_file_reason">Допускаются только файлы .so, ZIP-пакеты модов или пакеты модов .levipack. Выбранный файл не является допустимым пакетом нативного мода.</string>
-    <string name="invalid_zip_mod_package_title">Недопустимый ZIP-пакет мода</string>
-    <string name="invalid_zip_mod_package_message">ZIP-пакет мода должен содержать manifest.json и файл .so.</string>
+    <string name="invalid_mod_file_reason">Допускаются только файлы .so или ZIP-пакеты модов. Выбранный файл не является допустимым пакетом нативного мода.</string>
     <string name="error_versions">Ошибочные версии</string>
 
     <string name="dialog_title_delete_mod">Удалить мод</string>
@@ -229,8 +168,6 @@
     <string name="french">Français</string>
     <string name="japanese">日本語</string>
     <string name="hindi">हिन्दी</string>
-    <string name="turkish">Türkçe</string>
-    <string name="vietnamese">Tiếng Việt</string>
 
     <!-- Переименовать версию -->
     <string name="rename_version_title">Переименовать версию</string>
@@ -291,15 +228,6 @@
     <string name="confirm_delete_resource_pack">Вы уверены, что хотите удалить этот набор ресурсов? Это действие необратимо.</string>
     <string name="confirm_delete_behavior_pack">Вы уверены, что хотите удалить этот набор поведений? Это действие необратимо.</string>
     <string name="confirm_delete_skin_pack">Вы уверены, что хотите удалить этот скин-пак? Это действие необратимо.</string>
-    <string name="importing_content">Импорт контента…</string>
-    <string name="exporting_world">Экспорт мира…</string>
-    <string name="exporting_pack">Экспорт набора…</string>
-    <string name="backing_up_world">Резервное копирование мира…</string>
-    <string name="deleting_world">Удаление мира…</string>
-    <string name="deleting_pack">Удаление набора…</string>
-    <string name="adding_server">Добавление сервера…</string>
-    <string name="deleting_screenshot">Удаление скриншота…</string>
-    <string name="deleting_server">Удаление сервера…</string>
 
     <!-- World Editor -->
     <string name="edit_world">Редактировать мир</string>
@@ -339,7 +267,7 @@
     <string name="genuine_badge_label">Лицензия не подтверждена</string>
     <string name="invalid_license_detected_toast">Обнаружена нелицензионная версия Minecraft. Убедитесь, что Minecraft установлен из Google Play Маркета</string>
 
-    <string name="full_mods_title">Моды </string>
+    <string name="full_mods_title">🧩 Моды </string>
     <string name="total_mods">Всего модов:</string>
     <string name="enabled_mods">Включено:</string>
     <string name="add_mod">Добавить мод</string>
@@ -359,17 +287,6 @@
 
     <!-- Заставка -->
     <string name="splash_logo_desc">Логотип листа</string>
-    <string name="minecraft_loading_title">Запуск Minecraft</string>
-    <string name="minecraft_loading_subtitle">Подготовка native-библиотек и включенных модов</string>
-    <string name="minecraft_loading_status_preparing">Подготовка runtime</string>
-    <string name="minecraft_loading_log_title">Журнал запуска</string>
-    <string name="minecraft_loading_complete">Runtime готов</string>
-    <string name="minecraft_loading_entering_game">Вход в Minecraft</string>
-    <string name="minecraft_loading_failed">Не удалось запустить</string>
-    <string name="minecraft_loading_return">Вернуться в лаунчер</string>
-    <string name="launcher_restart_title">Возврат в лаунчер</string>
-    <string name="launcher_restart_subtitle">Подождите немного, скоро вы вернетесь на главный экран</string>
-    <string name="launcher_restart_status">Почти готово…</string>
 
     <!-- Accounts & Microsoft Login -->
     <string name="accounts_title">Аккаунты</string>
@@ -609,7 +526,6 @@
     <string name="settings_tab_personalize">Персонализация</string>
     <string name="settings_tab_updates">Обновления</string>
     <string name="settings_tab_about">О приложении</string>
-    <string name="settings_tab_migration">Миграция</string>
     <string name="settings_theme_desc">Выберите тему приложения</string>
     <string name="launch_vertically">Запуск вертикально</string>
     <string name="launch_vertically_desc">Принудительно запускать игру в портретном режиме</string>
@@ -629,19 +545,6 @@
     <string name="instance_delete_warning">Это действие нельзя отменить.</string>
     <string name="instance_delete_confirm_title">Удалить экземпляр</string>
     <string name="instance_delete_confirm_msg">Вы уверены, что хотите удалить этот экземпляр? Все данные, включая миры, будут удалены навсегда.</string>
-    <string name="instance_batch_backup_button">Пакетная копия</string>
-    <string name="instance_batch_backup_title">Пакетное резервное копирование экземпляров</string>
-    <string name="instance_batch_backup_select_message">Выберите экземпляры для резервного копирования. Если Minecraft запущен, сначала выйдите из игры, чтобы избежать изменения данных во время копирования.</string>
-    <string name="instance_batch_backup_select_all">Выбрать все экземпляры</string>
-    <string name="instance_batch_backup_no_instances">Нет экземпляров, доступных для резервного копирования.</string>
-    <string name="instance_batch_backup_no_selection">Выберите хотя бы один экземпляр.</string>
-    <string name="instance_batch_backup_in_progress">Резервное копирование %1$s (%2$d/%3$d)…</string>
-    <string name="instance_batch_backup_success_title">Резервные копии созданы</string>
-    <string name="instance_batch_backup_success_message">Создано резервных копий: %1$d\n%2$s</string>
-    <string name="instance_batch_backup_partial_title">Резервное копирование частично завершено</string>
-    <string name="instance_batch_backup_partial_message">Создано резервных копий: %1$d, ошибок: %2$d.\n\nСохранено:\n%3$s\n\nОшибки:\n%4$s</string>
-    <string name="instance_batch_backup_failed_title">Ошибка пакетного копирования</string>
-    <string name="instance_batch_backup_failed_message">Не удалось создать резервные копии:\n%1$s</string>
     <string name="skin_packs_title">Скин-паки</string>
     <string name="worlds_category">Миры</string>
     <string name="resource_packs_category">Наборы ресурсов</string>
@@ -706,94 +609,7 @@
     <string name="bg_image_desc">Выберите изображение для фона</string>
     <string name="bg_image_none">Изображение не выбрано</string>
     <string name="bg_image_selected">Пользовательский фон активен</string>
-    <string name="bg_image_blur">Размытие</string>
-    <string name="bg_image_blur_value">%1$dpx</string>
-    <string name="bg_image_brightness">Яркость</string>
-    <string name="bg_image_brightness_value">%1$d%%</string>
     <string name="select_image">Выбрать изображение</string>
     <string name="clear">Очистить</string>
 
-    <string name="unsupported_version_title">Неподдерживаемая версия</string>
-    <string name="unsupported_version_msg">Этот лаунчер не поддерживает версии Minecraft старше 1.21.80.</string>
-    <!-- Mod Config -->
-    <string name="mod_author_byline">от %s</string>
-    <string name="mod_version_chip">Версия %s</string>
-    <string name="mod_config_title_format">Конфигурация %s</string>
-    <string name="mod_config_not_found">Редактируемая конфигурация не найдена</string>
-    <string name="mod_config_load_failed">Не удалось загрузить конфигурацию: %s</string>
-    <string name="mod_config_save_failed">Не удалось сохранить конфигурацию</string>
-    <string name="mod_config_saved">Конфигурация сохранена</string>
-    <string name="mod_config_restart_hint">Файл конфигурации сохранен, файл .backup оставлен.</string>
-    <string name="mod_config_validation_failed">Проверка конфигурации не пройдена</string>
-    <string name="mod_config_invalid_json">Недопустимый JSON</string>
-    <string name="mod_config_expand">Развернуть</string>
-    <string name="mod_config_collapse">Свернуть</string>
-    <string name="mod_config_raw_json">Редактировать исходный JSON</string>
-    <string name="mod_config_raw_json_short">JSON</string>
-    <string name="mod_config_item_label">Элемент %1$s</string>
-    <string name="mod_config_object_desc">Группа связанных настроек</string>
-    <string name="mod_config_array_desc">Список значений</string>
-    <string name="mod_config_range_prefix">Диапазон</string>
-    <string name="mod_config_error_number">%1$s должно быть числом</string>
-    <string name="mod_config_error_minimum">%1$s должно быть не меньше %2$s</string>
-    <string name="mod_config_error_maximum">%1$s должно быть не больше %2$s</string>
-    <string name="mod_config_error_boolean">%1$s должно быть включено или выключено</string>
-    <string name="mod_config_error_string">%1$s должно быть текстом</string>
-    <plurals name="mod_config_files_count">
-        <item quantity="one">%d редактируемая конфигурация</item>
-        <item quantity="few">%d редактируемые конфигурации</item>
-        <item quantity="many">%d редактируемых конфигураций</item>
-        <item quantity="other">%d редактируемой конфигурации</item>
-    </plurals>
-    <plurals name="mod_config_choices_count">
-        <item quantity="one">%d вариант</item>
-        <item quantity="few">%d варианта</item>
-        <item quantity="many">%d вариантов</item>
-        <item quantity="other">%d варианта</item>
-    </plurals>
-    <plurals name="mod_config_items_count">
-        <item quantity="one">%d элемент</item>
-        <item quantity="few">%d элемента</item>
-        <item quantity="many">%d элементов</item>
-        <item quantity="other">%d элемента</item>
-    </plurals>
-
-    <!-- Mod Menu synced translations -->
-    <string name="mod_menu_favorites">Избранное</string>
-    <string name="mod_menu_favorite">Добавить в избранное</string>
-    <string name="mod_menu_unfavorite">Удалить из избранного</string>
-    <string name="mod_menu_hud_editor">Редактор HUD</string>
-    <string name="mod_menu_filter_enabled">Включённые</string>
-    <string name="mod_menu_filter_inbuilt">Встроенные</string>
-    <string name="mod_menu_filter_external">Внешние</string>
-    <string name="mod_menu_no_favorites">Избранных модов пока нет</string>
-    <string name="mod_menu_no_matches">Подходящих модов нет</string>
-    <string name="mod_menu_group_inbuilt">Встроенные функции</string>
-    <string name="mod_menu_group_external_ungrouped">Несгруппированные внешние моды</string>
-    <string name="mod_menu_module_count">%1$d / %2$d</string>
-    <string name="mod_menu_general_settings">Общие настройки</string>
-    <string name="mod_menu_appearance">Внешний вид</string>
-    <string name="mod_menu_pause_menu_only">Только меню паузы</string>
-    <string name="mod_menu_pause_menu_only_desc">Показывать меню модов только на экране паузы</string>
-    <string name="mod_menu_default_percent" formatted="false">100%</string>
-    <string name="mod_menu_percent_value">%1$d%%</string>
-    <string name="mod_overlay_fps_unknown">FPS: --</string>
-    <string name="mod_overlay_fps_value">FPS: %1$d</string>
-    <string name="mod_overlay_cps_value">CPS: %1$d</string>
-    <string name="mod_config_overlay_button_size_dp">Размер кнопки оверлея (dp)</string>
-    <string name="mod_config_overlay_opacity_percent" formatted="false">Непрозрачность оверлея (%)</string>
-    <string name="mod_config_cursor_sensitivity_percent" formatted="false">Чувствительность курсора (%)</string>
-    <string name="mod_config_zoom_level_percent" formatted="false">Уровень зума (%)</string>
-    <string name="mod_config_auto_sprint_keybind">Клавиша автоспринта</string>
-    <string name="mod_config_zoom_keybind">Клавиша зума</string>
-    <string name="mod_config_press_any_key">Нажмите любую клавишу для привязки...</string>
-    <string name="mod_config_key_unknown">НЕИЗВЕСТНО</string>
-    <string name="mod_config_color_alpha_short">A</string>
-    <string name="mod_config_color_red_short">R</string>
-    <string name="mod_config_color_green_short">G</string>
-    <string name="mod_config_color_blue_short">B</string>
-    <string name="mod_config_color_hex_hint" formatted="false">#AARRGGBB</string>
-    <string name="overlay_button_size_value">Размер: %1$ddp</string>
-    <string name="overlay_button_opacity_value">Непрозрачность: %1$d%%</string>
-    <string name="reset">Сбросить</string>
 </resources>

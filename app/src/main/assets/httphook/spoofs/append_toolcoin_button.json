@@ -1,0 +1,43 @@
+{
+  "targetArray": "result.layout",
+  "arrayFilter": {
+    "field": "sectionName",
+    "value": "rows"
+  },
+  "targetField": "rows",
+  "insertAfter": {
+    "field": "controlId",
+    "value": "Layout",
+    "occurrence": 1
+  },
+  "row": {
+    "controlId": "NavButtonRow",
+    "components": [
+      {
+        "buttons": [
+          {
+            "buttonSizeIsFill": true,
+            "image": "textures/ui/icons/icon_piratesofthecaribbean",
+            "images": [
+              {
+                "type": "Unknown",
+                "localPath": "textures/ui/icons/icon_piratesofthecaribbean"
+              }
+            ],
+            "navButtonName": "   §l§8>§j>§8>  §0Toolcoin library  §8<§j<§8<§j",
+            "linksToInfo": {
+              "linksTo": "MultiItemPage_Inventory_toolcoin",
+              "linkType": "pageId",
+              "displayType": "store_layout.store_data_driven_screen",
+              "navigateInPlace": false
+            },
+            "defaultColor": [],
+            "interactColor": []
+          }
+        ],
+        "type": "navButtonListComp",
+        "$type": "NavButtonListComponent"
+      }
+    ]
+  }
+}

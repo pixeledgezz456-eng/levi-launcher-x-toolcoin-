@@ -5,7 +5,6 @@ import android.widget.ImageButton;
 
 import org.levimc.launcher.R;
 
-import org.levimc.launcher.core.mods.inbuilt.manager.InbuiltModManager;
 import org.levimc.launcher.core.mods.inbuilt.model.ModIds;
 
 public class AutoSprintOverlay extends BaseOverlayButton {
@@ -57,12 +56,6 @@ public class AutoSprintOverlay extends BaseOverlayButton {
             isActive = false;
         }
         super.hide();
-    }
-
-    @Override
-    public void applyConfigurationChanges() {
-        sprintKey = InbuiltModManager.getInstance(activity).getAutoSprintKeybind();
-        super.applyConfigurationChanges();
     }
 
     private int tickCount = 0;

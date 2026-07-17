@@ -3,7 +3,6 @@ package org.levimc.launcher.core.mods.inbuilt.overlay;
 import android.app.Activity;
 import android.view.MotionEvent;
 
-import org.levimc.launcher.core.mods.inbuilt.ExternalModBridge;
 import org.levimc.launcher.core.mods.inbuilt.manager.InbuiltModManager;
 import org.levimc.launcher.core.mods.inbuilt.model.ModIds;
 
@@ -13,16 +12,11 @@ import java.util.List;
 import java.util.Map;
 
 public class InbuiltOverlayManager {
-    public interface HudEditorSelectionListener {
-        void onHudEditorSelectionChanged(int currentSizeDp);
-    }
-
     private static volatile InbuiltOverlayManager instance;
     private final Activity activity;
     private final List<BaseOverlayButton> overlays = new ArrayList<>();
     private final Map<String, Boolean> modActiveStates = new HashMap<>();
     private final Map<String, BaseOverlayButton> modOverlayMap = new HashMap<>();
-    private final Map<String, ExternalButtonOverlay> externalButtonOverlayMap = new HashMap<>();
     private final Map<String, Integer> modPositionMap = new HashMap<>();
     private ChickPetOverlay chickPetOverlay;
     private ZoomOverlay zoomOverlay;
@@ -30,14 +24,11 @@ public class InbuiltOverlayManager {
     private FpsDisplayOverlay fpsDisplayOverlay;
     private CpsDisplayOverlay cpsDisplayOverlay;
     private ModMenuButton modMenuButton;
-    private HudOverlay hudOverlay;
-    private BaseOverlayButton selectedHudEditorOverlay;
-    private String selectedDisplayModId;
-    private HudEditorSelectionListener hudEditorSelectionListener;
-    private boolean hudEditorMode = false;
+    private HttpInterceptorOverlay httpInterceptorOverlay;
     private int baseY = 150;
     private static final int SPACING = 70;
     private static final int START_X = 50;
+    private boolean isModMenuMode = false;
 
     public InbuiltOverlayManager(Activity activity) {
         this.activity = activity;
@@ -50,15 +41,19 @@ public class InbuiltOverlayManager {
 
     public void showEnabledOverlays() {
         InbuiltModManager manager = InbuiltModManager.getInstance(activity);
-        if (!manager.isModMenuEnabled()) return;
-
-        if (hudOverlay == null) {
-            hudOverlay = new HudOverlay(activity);
-        }
-        hudOverlay.show();
-
         int nextY = baseY;
 
+        isModMenuMode = manager.isModMenuEnabled();
+
+        if (isModMenuMode) {
+            nextY = showModMenuMode(manager, nextY);
+        } else {
+            nextY = showIndividualOverlays(manager, nextY);
+        }
+
+    }
+
+    private int showModMenuMode(InbuiltModManager manager, int nextY) {
         modActiveStates.put(ModIds.QUICK_DROP, false);
         modActiveStates.put(ModIds.CAMERA_PERSPECTIVE, false);
         modActiveStates.put(ModIds.TOGGLE_HUD, false);
@@ -69,6 +64,7 @@ public class InbuiltOverlayManager {
         modActiveStates.put(ModIds.CPS_DISPLAY, false);
         modActiveStates.put(ModIds.SNAPLOOK, false);
         modActiveStates.put(ModIds.VIRTUAL_CURSOR, false);
+        modActiveStates.put(ModIds.HTTP_INTERCEPTOR, true);
 
         modPositionMap.put(ModIds.QUICK_DROP, nextY + SPACING);
         modPositionMap.put(ModIds.CAMERA_PERSPECTIVE, nextY + SPACING * 2);
@@ -90,26 +86,10 @@ public class InbuiltOverlayManager {
             snaplookOverlay.initializeForKeyboard();
         }
 
-        restorePersistedInbuiltModState(manager, ModIds.QUICK_DROP);
-        restorePersistedInbuiltModState(manager, ModIds.CAMERA_PERSPECTIVE);
-        restorePersistedInbuiltModState(manager, ModIds.TOGGLE_HUD);
-        restorePersistedInbuiltModState(manager, ModIds.AUTO_SPRINT);
-        restorePersistedInbuiltModState(manager, ModIds.CHICK_PET);
-        restorePersistedInbuiltModState(manager, ModIds.ZOOM);
-        restorePersistedInbuiltModState(manager, ModIds.FPS_DISPLAY);
-        restorePersistedInbuiltModState(manager, ModIds.CPS_DISPLAY);
-        restorePersistedInbuiltModState(manager, ModIds.SNAPLOOK);
-        restorePersistedInbuiltModState(manager, ModIds.VIRTUAL_CURSOR);
-
         modMenuButton = new ModMenuButton(activity);
         modMenuButton.show(START_X, nextY);
-        refreshExternalButtons();
-    }
-
-    private void restorePersistedInbuiltModState(InbuiltModManager manager, String modId) {
-        if (manager.resolveInbuiltModEnabled(modId, false)) {
-            handleModToggle(modId, true);
-        }
+        showModOverlay(ModIds.HTTP_INTERCEPTOR);
+        return nextY + SPACING;
     }
 
     public void handleModToggle(String modId, boolean enabled) {
@@ -129,13 +109,10 @@ public class InbuiltOverlayManager {
         }
 
         InbuiltModManager manager = InbuiltModManager.getInstance(activity);
-        
-        android.util.DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
-        int centerX = metrics.widthPixels / 2 - (int)(26 * metrics.density);
-        int centerY = metrics.heightPixels / 2 - (int)(26 * metrics.density);
+        int posY = modPositionMap.getOrDefault(modId, baseY + SPACING);
 
-        int savedX = manager.getOverlayPositionX(modId, centerX);
-        int savedY = manager.getOverlayPositionY(modId, centerY);
+        int savedX = manager.getOverlayPositionX(modId, START_X);
+        int savedY = manager.getOverlayPositionY(modId, posY);
 
         switch (modId) {
             case ModIds.QUICK_DROP:
@@ -202,6 +179,12 @@ public class InbuiltOverlayManager {
                 overlays.add(cursorOverlay);
                 modOverlayMap.put(modId, cursorOverlay);
                 break;
+            case ModIds.HTTP_INTERCEPTOR:
+                if (httpInterceptorOverlay == null) {
+                    httpInterceptorOverlay = new HttpInterceptorOverlay(activity);
+                    httpInterceptorOverlay.show(0, 0);
+                }
+                break;
         }
     }
 
@@ -216,12 +199,13 @@ public class InbuiltOverlayManager {
         
         if (modId.equals(ModIds.ZOOM)) {
             if (zoomOverlay != null) {
-                if (zoomOverlay == selectedHudEditorOverlay) {
-                    selectHudEditorOverlay(null);
-                }
                 zoomOverlay.hide();
                 overlays.remove(zoomOverlay);
                 modOverlayMap.remove(modId);
+
+                if (!isModMenuMode) {
+                    zoomOverlay = null;
+                }
             }
             return;
         }
@@ -244,116 +228,22 @@ public class InbuiltOverlayManager {
 
         if (modId.equals(ModIds.SNAPLOOK)) {
             if (snaplookOverlay != null) {
-                if (snaplookOverlay == selectedHudEditorOverlay) {
-                    selectHudEditorOverlay(null);
-                }
                 snaplookOverlay.hide();
                 overlays.remove(snaplookOverlay);
                 modOverlayMap.remove(modId);
+
+                if (!isModMenuMode) {
+                    snaplookOverlay = null;
+                }
             }
             return;
         }
         
         BaseOverlayButton overlay = modOverlayMap.get(modId);
         if (overlay != null) {
-            if (overlay == selectedHudEditorOverlay) {
-                selectHudEditorOverlay(null);
-            }
             overlay.hide();
             overlays.remove(overlay);
             modOverlayMap.remove(modId);
-        }
-    }
-
-    public void handleExternalModuleToggle(String moduleId, boolean enabled) {
-        if (enabled) {
-            showExternalButtonsForModule(moduleId);
-        } else {
-            hideExternalButtonsForModule(moduleId);
-        }
-    }
-
-    private void refreshExternalButtons() {
-        InbuiltModManager manager = InbuiltModManager.getInstance(activity);
-        java.util.Set<String> enabledModules = new java.util.HashSet<>();
-        int extCount = ExternalModBridge.getExternalModCount();
-        for (int i = 0; i < extCount; i++) {
-            try {
-                org.json.JSONObject obj = new org.json.JSONObject(ExternalModBridge.getExternalModInfo(i));
-                String moduleId = obj.optString("module_id", "");
-                if (moduleId.isEmpty()) continue;
-
-                boolean nativeEnabled = obj.optBoolean("enabled", false);
-                boolean enabled = manager.resolveExternalModuleEnabled(moduleId, nativeEnabled);
-                if (enabled != nativeEnabled) {
-                    ExternalModBridge.toggleExternalMod(moduleId, enabled);
-                }
-                if (enabled) {
-                    enabledModules.add(moduleId);
-                }
-            } catch (Exception ignored) {}
-        }
-
-        for (String moduleId : enabledModules) {
-            showExternalButtonsForModule(moduleId);
-        }
-        java.util.List<ExternalButtonOverlay> stale = new java.util.ArrayList<>();
-        for (ExternalButtonOverlay overlay : externalButtonOverlayMap.values()) {
-            if (!enabledModules.contains(overlay.getModuleId())) {
-                stale.add(overlay);
-            }
-        }
-        for (ExternalButtonOverlay overlay : stale) {
-            if (overlay == selectedHudEditorOverlay) {
-                selectHudEditorOverlay(null);
-            }
-            overlay.hide();
-            overlays.remove(overlay);
-            externalButtonOverlayMap.remove(overlay.getButtonId());
-            modOverlayMap.remove(overlay.getModId());
-        }
-    }
-
-    private void showExternalButtonsForModule(String moduleId) {
-        if (moduleId == null || moduleId.isEmpty()) return;
-
-        InbuiltModManager manager = InbuiltModManager.getInstance(activity);
-        android.util.DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
-        int centerX = metrics.widthPixels / 2 - (int)(26 * metrics.density);
-        int centerY = metrics.heightPixels / 2 - (int)(26 * metrics.density);
-
-        int buttonCount = ExternalModBridge.getExternalButtonCount();
-        for (int i = 0; i < buttonCount; i++) {
-            ExternalModBridge.ExternalButton button = ExternalModBridge.getExternalButton(i);
-            if (button == null || !moduleId.equals(button.moduleId)) continue;
-            if (!button.defaultVisible || !button.moduleEnabled) continue;
-            if (externalButtonOverlayMap.containsKey(button.buttonId)) continue;
-
-            int savedX = manager.getOverlayPositionX(button.positionKey(), centerX);
-            int savedY = manager.getOverlayPositionY(button.positionKey(), centerY);
-            ExternalButtonOverlay overlay = new ExternalButtonOverlay(activity, button);
-            overlay.show(savedX, savedY);
-            overlays.add(overlay);
-            externalButtonOverlayMap.put(button.buttonId, overlay);
-            modOverlayMap.put(button.positionKey(), overlay);
-        }
-    }
-
-    private void hideExternalButtonsForModule(String moduleId) {
-        java.util.List<ExternalButtonOverlay> toHide = new java.util.ArrayList<>();
-        for (ExternalButtonOverlay overlay : externalButtonOverlayMap.values()) {
-            if (moduleId.equals(overlay.getModuleId())) {
-                toHide.add(overlay);
-            }
-        }
-        for (ExternalButtonOverlay overlay : toHide) {
-            if (overlay == selectedHudEditorOverlay) {
-                selectHudEditorOverlay(null);
-            }
-            overlay.hide();
-            overlays.remove(overlay);
-            externalButtonOverlayMap.remove(overlay.getButtonId());
-            modOverlayMap.remove(overlay.getModId());
         }
     }
 
@@ -361,15 +251,102 @@ public class InbuiltOverlayManager {
         return modActiveStates.getOrDefault(modId, false);
     }
 
+    private int showIndividualOverlays(InbuiltModManager manager, int nextY) {
+        if (manager.isModAdded(ModIds.QUICK_DROP)) {
+            int x = manager.getOverlayPositionX(ModIds.QUICK_DROP, START_X);
+            int y = manager.getOverlayPositionY(ModIds.QUICK_DROP, nextY);
+            QuickDropOverlay overlay = new QuickDropOverlay(activity);
+            overlay.show(x, y);
+            overlays.add(overlay);
+            nextY += SPACING;
+        }
+        if (manager.isModAdded(ModIds.CAMERA_PERSPECTIVE)) {
+            int x = manager.getOverlayPositionX(ModIds.CAMERA_PERSPECTIVE, START_X);
+            int y = manager.getOverlayPositionY(ModIds.CAMERA_PERSPECTIVE, nextY);
+            CameraPerspectiveOverlay overlay = new CameraPerspectiveOverlay(activity);
+            overlay.show(x, y);
+            overlays.add(overlay);
+            nextY += SPACING;
+        }
+        if (manager.isModAdded(ModIds.TOGGLE_HUD)) {
+            int x = manager.getOverlayPositionX(ModIds.TOGGLE_HUD, START_X);
+            int y = manager.getOverlayPositionY(ModIds.TOGGLE_HUD, nextY);
+            ToggleHudOverlay overlay = new ToggleHudOverlay(activity);
+            overlay.show(x, y);
+            overlays.add(overlay);
+            nextY += SPACING;
+        }
+        if (manager.isModAdded(ModIds.AUTO_SPRINT)) {
+            int x = manager.getOverlayPositionX(ModIds.AUTO_SPRINT, START_X);
+            int y = manager.getOverlayPositionY(ModIds.AUTO_SPRINT, nextY);
+            AutoSprintOverlay overlay = new AutoSprintOverlay(activity, manager.getAutoSprintKeybind());
+            overlay.show(x, y);
+            overlays.add(overlay);
+            nextY += SPACING;
+        }
+
+        if (manager.isModAdded(ModIds.CHICK_PET)) {
+            chickPetOverlay = new ChickPetOverlay(activity);
+            chickPetOverlay.show();
+        }
+
+        if (manager.isModAdded(ModIds.ZOOM)) {
+            int x = manager.getOverlayPositionX(ModIds.ZOOM, START_X);
+            int y = manager.getOverlayPositionY(ModIds.ZOOM, nextY);
+            zoomOverlay = new ZoomOverlay(activity);
+            zoomOverlay.show(x, y);
+            overlays.add(zoomOverlay);
+            modOverlayMap.put(ModIds.ZOOM, zoomOverlay);
+            nextY += SPACING;
+        }
+
+        if (manager.isModAdded(ModIds.FPS_DISPLAY)) {
+            int x = manager.getOverlayPositionX(ModIds.FPS_DISPLAY, START_X);
+            int y = manager.getOverlayPositionY(ModIds.FPS_DISPLAY, nextY);
+            fpsDisplayOverlay = new FpsDisplayOverlay(activity);
+            fpsDisplayOverlay.show(x, y);
+            nextY += SPACING;
+        }
+
+        if (manager.isModAdded(ModIds.CPS_DISPLAY)) {
+            int x = manager.getOverlayPositionX(ModIds.CPS_DISPLAY, START_X);
+            int y = manager.getOverlayPositionY(ModIds.CPS_DISPLAY, nextY);
+            cpsDisplayOverlay = new CpsDisplayOverlay(activity);
+            cpsDisplayOverlay.show(x, y);
+            nextY += SPACING;
+        }
+        if (manager.isModAdded(ModIds.HTTP_INTERCEPTOR)) {
+            httpInterceptorOverlay = new HttpInterceptorOverlay(activity);
+            httpInterceptorOverlay.show(0, 0);
+        }
+
+        if (manager.isModAdded(ModIds.SNAPLOOK)) {
+            int x = manager.getOverlayPositionX(ModIds.SNAPLOOK, START_X);
+            int y = manager.getOverlayPositionY(ModIds.SNAPLOOK, nextY);
+            snaplookOverlay = new SnaplookOverlay(activity);
+            snaplookOverlay.show(x, y);
+            overlays.add(snaplookOverlay);
+            modOverlayMap.put(ModIds.SNAPLOOK, snaplookOverlay);
+            nextY += SPACING;
+        }
+        if (manager.isModAdded(ModIds.VIRTUAL_CURSOR)) {
+            int x = manager.getOverlayPositionX(ModIds.VIRTUAL_CURSOR, START_X);
+            int y = manager.getOverlayPositionY(ModIds.VIRTUAL_CURSOR, nextY);
+            VirtualCursorOverlay overlay = new VirtualCursorOverlay(activity);
+            overlay.show(x, y);
+            overlays.add(overlay);
+            nextY += SPACING;
+        }
+        return nextY;
+    }
+
 
     public void hideAllOverlays() {
-        selectHudEditorOverlay(null);
         for (BaseOverlayButton overlay : overlays) {
             overlay.hide();
         }
         overlays.clear();
         modOverlayMap.clear();
-        externalButtonOverlayMap.clear();
         modActiveStates.clear();
         modPositionMap.clear();
         if (chickPetOverlay != null) {
@@ -396,9 +373,9 @@ public class InbuiltOverlayManager {
             modMenuButton.hide();
             modMenuButton = null;
         }
-        if (hudOverlay != null) {
-            hudOverlay.hide();
-            hudOverlay = null;
+        if (httpInterceptorOverlay != null) {
+            httpInterceptorOverlay.hide();
+            httpInterceptorOverlay = null;
         }
         instance = null;
     }
@@ -406,7 +383,9 @@ public class InbuiltOverlayManager {
     public boolean handleKeyEvent(int keyCode, int action) {
         InbuiltModManager manager = InbuiltModManager.getInstance(activity);
         
-        boolean zoomEnabled = modActiveStates.getOrDefault(ModIds.ZOOM, false);
+        boolean zoomEnabled = isModMenuMode 
+            ? modActiveStates.getOrDefault(ModIds.ZOOM, false)
+            : manager.isModAdded(ModIds.ZOOM);
         
         int zoomKeybind = manager.getZoomKeybind();
         if (zoomEnabled && keyCode == zoomKeybind) {
@@ -421,7 +400,9 @@ public class InbuiltOverlayManager {
             }
         }
 
-        boolean snaplookEnabled = modActiveStates.getOrDefault(ModIds.SNAPLOOK, false);
+        boolean snaplookEnabled = isModMenuMode
+            ? modActiveStates.getOrDefault(ModIds.SNAPLOOK, false)
+            : manager.isModAdded(ModIds.SNAPLOOK);
 
         if (snaplookEnabled && keyCode == android.view.KeyEvent.KEYCODE_X) {
             if (snaplookOverlay != null) {
@@ -439,11 +420,6 @@ public class InbuiltOverlayManager {
     }
 
     public boolean handleScrollEvent(float scrollDelta) {
-        for (ExternalButtonOverlay overlay : externalButtonOverlayMap.values()) {
-            if (overlay.onScroll(scrollDelta)) {
-                return true;
-            }
-        }
         if (zoomOverlay != null && zoomOverlay.isZooming()) {
             zoomOverlay.onScroll(scrollDelta);
             return true;
@@ -485,217 +461,9 @@ public class InbuiltOverlayManager {
         }
     }
 
-    public void setHudEditorMode(boolean active) {
-        hudEditorMode = active;
-        for (BaseOverlayButton overlay : overlays) {
-            overlay.setHudEditorMode(active);
-        }
-        if (fpsDisplayOverlay != null) {
-            fpsDisplayOverlay.setHudEditorMode(active);
-        }
-        if (cpsDisplayOverlay != null) {
-            cpsDisplayOverlay.setHudEditorMode(active);
-        }
-        if (hudOverlay != null) {
-            hudOverlay.setHudEditorMode(active);
-        }
-
-        if (modMenuButton != null) {
-            if (active) {
-                modMenuButton.setVisibility(android.view.View.GONE);
-            } else {
-                modMenuButton.setVisibility(android.view.View.VISIBLE);
-                int savedX = InbuiltModManager.getInstance(activity).getOverlayPositionX(ModIds.MOD_MENU, START_X);
-                int savedY = InbuiltModManager.getInstance(activity).getOverlayPositionY(ModIds.MOD_MENU, baseY);
-                modMenuButton.show(savedX, savedY);
-            }
-        }
-
-        if (active) {
-            selectFirstHudEditorOverlay();
-        } else {
-            selectHudEditorOverlay(null);
-        }
-    }
-
-    public void setHudEditorSelectionListener(HudEditorSelectionListener listener) {
-        hudEditorSelectionListener = listener;
-        if (listener != null) {
-            listener.onHudEditorSelectionChanged(getSelectedHudEditorButtonSize());
-        }
-    }
-
-    public void selectHudEditorOverlay(BaseOverlayButton overlay) {
-        if (!hudEditorMode && overlay != null) {
-            return;
-        }
-        selectedDisplayModId = null;
-        if (selectedHudEditorOverlay == overlay) {
-            notifySelectionListener();
-            return;
-        }
-        if (selectedHudEditorOverlay != null) {
-            selectedHudEditorOverlay.setHudEditorSelected(false);
-        }
-        selectedHudEditorOverlay = overlay;
-        if (selectedHudEditorOverlay != null) {
-            selectedHudEditorOverlay.setHudEditorSelected(true);
-        }
-        notifySelectionListener();
-    }
-
-    public void selectHudEditorDisplay(String modId) {
-        if (!hudEditorMode || modId == null) return;
-        if (selectedHudEditorOverlay != null) {
-            selectedHudEditorOverlay.setHudEditorSelected(false);
-            selectedHudEditorOverlay = null;
-        }
-        selectedDisplayModId = modId;
-        notifySelectionListener();
-    }
-
-    private void notifySelectionListener() {
-        if (hudEditorSelectionListener != null) {
-            hudEditorSelectionListener.onHudEditorSelectionChanged(getSelectedHudEditorButtonSize());
-        }
-    }
-
-    public int getSelectedHudEditorButtonSize() {
-        if (selectedHudEditorOverlay != null) {
-            return selectedHudEditorOverlay.getCurrentButtonSizeDp();
-        }
-        if (selectedDisplayModId != null) {
-            return InbuiltModManager.getInstance(activity).getOverlayButtonSize(selectedDisplayModId);
-        }
-        return 0;
-    }
-
-    public void setSelectedHudEditorButtonSize(int sizeDp) {
-        InbuiltModManager manager = InbuiltModManager.getInstance(activity);
-        if (selectedHudEditorOverlay != null) {
-            manager.setOverlayButtonSize(selectedHudEditorOverlay.getOverlayConfigKey(), sizeDp);
-            selectedHudEditorOverlay.applyConfigurationChanges();
-        } else if (selectedDisplayModId != null) {
-            manager.setOverlayButtonSize(selectedDisplayModId, sizeDp);
-            if (selectedDisplayModId.equals(ModIds.FPS_DISPLAY) && fpsDisplayOverlay != null) {
-                fpsDisplayOverlay.applyConfigurationChanges();
-            } else if (selectedDisplayModId.equals(ModIds.CPS_DISPLAY) && cpsDisplayOverlay != null) {
-                cpsDisplayOverlay.applyConfigurationChanges();
-            }
-        }
-    }
-
-    private void selectFirstHudEditorOverlay() {
-        if (selectedHudEditorOverlay != null) {
-            selectedHudEditorOverlay.setHudEditorSelected(true);
-            notifySelectionListener();
-            return;
-        }
-        if (selectedDisplayModId != null) {
-            notifySelectionListener();
-            return;
-        }
-        if (!overlays.isEmpty()) {
-            selectHudEditorOverlay(overlays.get(0));
-        } else {
-            selectHudEditorOverlay(null);
-        }
-    }
-
-    public void resetAllPositionsToCenter() {
-        android.util.DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
-        int centerX = metrics.widthPixels / 2 - (int)(26 * metrics.density);
-        int centerY = metrics.heightPixels / 2 - (int)(26 * metrics.density);
-
-        InbuiltModManager manager = InbuiltModManager.getInstance(activity);
-        
-        for (java.util.Map.Entry<String, BaseOverlayButton> entry : modOverlayMap.entrySet()) {
-            manager.setOverlayPosition(entry.getKey(), centerX, centerY);
-            entry.getValue().updatePosition(centerX, centerY);
-        }
-        
-        if (fpsDisplayOverlay != null) {
-            manager.setOverlayPosition(ModIds.FPS_DISPLAY, centerX, centerY);
-            fpsDisplayOverlay.updatePosition(centerX, centerY);
-        }
-        if (cpsDisplayOverlay != null) {
-            manager.setOverlayPosition(ModIds.CPS_DISPLAY, centerX, centerY);
-            cpsDisplayOverlay.updatePosition(centerX, centerY);
-        }
-        
-        org.levimc.launcher.core.mods.inbuilt.ExternalModBridge.DrawCommand[] cmds = org.levimc.launcher.core.mods.inbuilt.ExternalModBridge.getDrawCommands();
-        if (cmds != null) {
-            java.util.Set<String> processed = new java.util.HashSet<>();
-            for (org.levimc.launcher.core.mods.inbuilt.ExternalModBridge.DrawCommand cmd : cmds) {
-                if (cmd.moduleId != null && !processed.contains(cmd.moduleId)) {
-                    processed.add(cmd.moduleId);
-                    org.levimc.launcher.core.mods.inbuilt.ExternalModBridge.setExternalModConfig(cmd.moduleId, "hudPosX", String.valueOf(centerX));
-                    org.levimc.launcher.core.mods.inbuilt.ExternalModBridge.setExternalModConfig(cmd.moduleId, "hudPosY", String.valueOf(centerY));
-                }
-            }
-        }
-    }
-
     public void tick() {
         for (BaseOverlayButton overlay : overlays) {
             overlay.tick();
         }
-
-        InbuiltModManager manager = InbuiltModManager.getInstance(activity);
-        boolean isPauseOnly = manager.isPauseMenuOnly();
-        boolean forceGlobalModMenu = org.levimc.launcher.preloader.PreloaderInput.shouldForceGlobalModMenu();
-        boolean isPauseOpen = org.levimc.launcher.preloader.PreloaderInput.isPauseMenuOpen();
-        boolean isHudScreenOpen = org.levimc.launcher.preloader.PreloaderInput.isHudScreenOpen();
-        boolean isShowingMenu = org.levimc.launcher.preloader.PreloaderInput.isShowingMenu();
-
-        boolean showGameOverlays = forceGlobalModMenu || (isHudScreenOpen && !isShowingMenu);
-        boolean inbuiltVisible = hudEditorMode || showGameOverlays;
-
-        activity.runOnUiThread(() -> {
-            if (modMenuButton != null) {
-                if (isPauseOnly && !forceGlobalModMenu) {
-                    if (isPauseOpen) {
-                        modMenuButton.setVisibility(android.view.View.VISIBLE);
-                    } else {
-                        modMenuButton.setVisibility(android.view.View.GONE);
-                        if (modMenuButton.isMenuShowing()) {
-                            modMenuButton.hideMenu();
-                        }
-                    }
-                } else {
-                    modMenuButton.setVisibility(android.view.View.VISIBLE);
-                }
-            }
-
-            if (hudOverlay != null) {
-                if (hudOverlay.isHudEditorMode()) {
-                    hudOverlay.setVisibility(android.view.View.VISIBLE);
-                } else if (showGameOverlays) {
-                    hudOverlay.setVisibility(android.view.View.VISIBLE);
-                } else {
-                    hudOverlay.setVisibility(android.view.View.GONE);
-                }
-            }
-
-            int inbuiltVis = inbuiltVisible
-                    ? android.view.View.VISIBLE
-                    : android.view.View.GONE;
-
-            for (BaseOverlayButton overlay : overlays) {
-                if (overlay.overlayView != null) {
-                    overlay.overlayView.setVisibility(inbuiltVis);
-                }
-            }
-
-            if (fpsDisplayOverlay != null) {
-                fpsDisplayOverlay.setVisibility(inbuiltVis);
-            }
-
-            if (cpsDisplayOverlay != null) {
-                cpsDisplayOverlay.setVisibility(inbuiltVis);
-            }
-
-
-        });
     }
 }

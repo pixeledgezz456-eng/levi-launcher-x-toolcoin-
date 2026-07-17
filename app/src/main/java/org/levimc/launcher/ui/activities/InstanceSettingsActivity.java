@@ -1,18 +1,11 @@
 package org.levimc.launcher.ui.activities;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
@@ -21,17 +14,11 @@ import org.levimc.launcher.core.versions.GameVersion;
 import org.levimc.launcher.core.versions.VersionManager;
 import org.levimc.launcher.ui.animation.DynamicAnim;
 import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
-import org.levimc.launcher.ui.dialogs.InstallProgressDialog;
-import org.levimc.launcher.util.InstanceBackupManager;
 
 public class InstanceSettingsActivity extends BaseActivity {
-    private static final int REQUEST_BACKUP_STORAGE = 4201;
 
     private GameVersion version;
     private VersionManager versionManager;
-    private InstanceBackupManager backupManager;
-    private InstallProgressDialog backupProgressDialog;
-    private Button backupButton;
 
     private TextView tabGeneral, tabLaunchOptions, tabManagement;
     private View sectionGeneral, sectionLaunchOptions, sectionManagement;
@@ -39,7 +26,6 @@ public class InstanceSettingsActivity extends BaseActivity {
     private EditText editName;
     private SwitchMaterial switchIsolation;
     private SwitchMaterial switchLaunchVertically;
-    private String originalDisplayName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +37,6 @@ public class InstanceSettingsActivity extends BaseActivity {
         setupNavBar();
 
         versionManager = VersionManager.get(this);
-        backupManager = new InstanceBackupManager(this);
 
         version = getIntent().getParcelableExtra("version");
         if (version == null) {
@@ -85,10 +70,6 @@ public class InstanceSettingsActivity extends BaseActivity {
         findViewById(R.id.btn_ok).setOnClickListener(v -> saveAndFinish());
 
         Button btnDelete = findViewById(R.id.btn_delete_instance);
-        backupButton = findViewById(R.id.btn_backup_instance);
-        if (backupButton != null) {
-            backupButton.setOnClickListener(v -> confirmBackup());
-        }
         if (version.isInstalled) {
             btnDelete.setEnabled(false);
             btnDelete.setAlpha(0.4f);
@@ -115,7 +96,6 @@ public class InstanceSettingsActivity extends BaseActivity {
                 currentName = dn;
             }
         }
-        originalDisplayName = currentName.trim();
         editName.setText(currentName);
 
         switchIsolation.setChecked(version.versionIsolation);
@@ -161,7 +141,7 @@ public class InstanceSettingsActivity extends BaseActivity {
     private void saveAndFinish() {
         String newName = editName.getText().toString().trim();
 
-        if (!newName.isEmpty() && !version.isInstalled && !newName.equals(originalDisplayName)) {
+        if (!newName.isEmpty() && !version.isInstalled) {
             versionManager.renameCustomVersion(version, newName, new VersionManager.OnRenameVersionCallback() {
                 @Override
                 public void onRenameCompleted(boolean success) {}
@@ -204,99 +184,6 @@ public class InstanceSettingsActivity extends BaseActivity {
                 })
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show();
-    }
-
-    private void confirmBackup() {
-        new CustomAlertDialog(this)
-                .setTitleText(getString(R.string.instance_backup_title))
-                .setMessage(getString(R.string.instance_backup_confirm_message))
-                .setPositiveButton(getString(R.string.backup), v -> startBackupWithPermissionCheck())
-                .setNegativeButton(getString(R.string.cancel), null)
-                .show();
-    }
-
-    private void startBackupWithPermissionCheck() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
-                && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    REQUEST_BACKUP_STORAGE);
-            return;
-        }
-        startBackup();
-    }
-
-    private void startBackup() {
-        if (backupButton != null) {
-            backupButton.setEnabled(false);
-            backupButton.setAlpha(0.55f);
-        }
-        backupProgressDialog = new InstallProgressDialog(this);
-        backupProgressDialog.setTitleText(getString(R.string.instance_backup_title));
-        backupProgressDialog.setStatusText(getString(R.string.instance_backup_in_progress));
-        backupProgressDialog.setProgress(0);
-        backupProgressDialog.show();
-
-        backupManager.backup(version, new InstanceBackupManager.BackupCallback() {
-            @Override
-            public void onStarted() {
-                if (backupProgressDialog != null) {
-                    backupProgressDialog.setProgress(0);
-                    backupProgressDialog.setStatusText(getString(R.string.instance_backup_in_progress));
-                }
-            }
-
-            @Override
-            public void onProgress(int progress) {
-                if (backupProgressDialog != null) {
-                    backupProgressDialog.setProgress(progress);
-                }
-            }
-
-            @Override
-            public void onSuccess(String displayPath) {
-                finishBackupProgress();
-                new CustomAlertDialog(InstanceSettingsActivity.this)
-                        .setTitleText(getString(R.string.instance_backup_success_title))
-                        .setMessage(getString(R.string.instance_backup_success_message, displayPath))
-                        .setPositiveButton(getString(R.string.confirm), null)
-                        .show();
-            }
-
-            @Override
-            public void onError(String message) {
-                finishBackupProgress();
-                new CustomAlertDialog(InstanceSettingsActivity.this)
-                        .setTitleText(getString(R.string.instance_backup_failed_title))
-                        .setMessage(getString(R.string.instance_backup_failed_message, message))
-                        .setPositiveButton(getString(R.string.confirm), null)
-                        .show();
-            }
-        });
-    }
-
-    private void finishBackupProgress() {
-        if (backupProgressDialog != null && backupProgressDialog.isShowing()) {
-            backupProgressDialog.dismiss();
-        }
-        backupProgressDialog = null;
-        if (backupButton != null) {
-            backupButton.setEnabled(true);
-            backupButton.setAlpha(1f);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_BACKUP_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startBackup();
-            } else {
-                Toast.makeText(this, R.string.storage_permission_not_granted, Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     private void setupNavBar() {

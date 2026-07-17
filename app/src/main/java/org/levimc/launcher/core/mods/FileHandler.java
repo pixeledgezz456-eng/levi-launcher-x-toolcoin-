@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -33,10 +34,8 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -44,13 +43,10 @@ public class FileHandler {
     private static final String TAG = "FileHandler";
     private static final int BUFFER_SIZE = 8192;
     private static final String MANIFEST_FILE_NAME = "manifest.json";
-    private static final String OVERWRITE_FILES_FIELD = "overwrite_files";
-    private static final String OVERWRITE_FOLDERS_FIELD = "overwrite_folders";
     private static final String PRELOAD_NATIVE_TYPE = "preload-native";
     private static final String DEFAULT_MOD_AUTHOR = "Unknown";
     private static final String DEFAULT_MOD_ICON = "";
     private static final String DEFAULT_MOD_VERSION = "1.0.0";
-    private static final String FALLBACK_ZIP_FILE_NAME = "imported_mod.zip";
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .disableHtmlEscaping()
@@ -62,18 +58,11 @@ public class FileHandler {
 
     private static final class PreparedImport {
         final String targetId;
-        final String entryPath;
-        final Set<String> overwriteFiles;
-        final Set<String> overwriteFolders;
         final File packageDir;
         final File cleanupRoot;
 
-        PreparedImport(String targetId, String entryPath, Set<String> overwriteFiles, Set<String> overwriteFolders,
-                       File packageDir, File cleanupRoot) {
+        PreparedImport(String targetId, File packageDir, File cleanupRoot) {
             this.targetId = targetId;
-            this.entryPath = entryPath;
-            this.overwriteFiles = overwriteFiles;
-            this.overwriteFolders = overwriteFolders;
             this.packageDir = packageDir;
             this.cleanupRoot = cleanupRoot;
         }
@@ -103,8 +92,8 @@ public class FileHandler {
         List<Uri> fileUris = extractFileUris(intent);
         List<Uri> supportedUris = new ArrayList<>();
         for (Uri uri : fileUris) {
-            String fileName = resolveImportFileName(uri);
-            if (isSupportedImportFile(uri, fileName)) {
+            String fileName = resolveFileName(uri);
+            if (isSupportedImportFile(fileName)) {
                 supportedUris.add(uri);
             }
         }
@@ -113,6 +102,7 @@ public class FileHandler {
             if (isButtonClick) {
                 new CustomAlertDialog(context)
                         .setTitleText(context.getString(R.string.invalid_mod_file))
+                        .setTitleColor(Color.RED)
                         .setMessage(context.getString(R.string.invalid_mod_file_reason))
                         .setUseBorderedBackground(true)
                         .setBlurBackground(true)
@@ -125,15 +115,9 @@ public class FileHandler {
         new Thread(() -> {
             List<Uri> packagedUris = new ArrayList<>();
             List<Uri> bareUris = new ArrayList<>();
-            List<String> invalidZipNames = new ArrayList<>();
             for (Uri uri : supportedUris) {
-                String fileName = resolveImportFileName(uri);
-                if (isZipModPackageFile(uri, fileName) && !isValidZipModPackage(uri)) {
-                    invalidZipNames.add(fileName);
-                    continue;
-                }
-
-                if (needsMetadataInput(fileName)) {
+                String fileName = resolveFileName(uri);
+                if (needsMetadataInput(uri, fileName)) {
                     bareUris.add(uri);
                 } else {
                     packagedUris.add(uri);
@@ -141,140 +125,53 @@ public class FileHandler {
             }
 
             new Handler(Looper.getMainLooper()).post(() -> {
-                Runnable showImportDialogs = () -> {
-                    if (!packagedUris.isEmpty()) {
-                        new CustomAlertDialog(context)
-                                .setTitleText(context.getString(R.string.import_confirmation_title))
-                                .setMessage(context.getString(R.string.import_confirmation_message, packagedUris.size()))
-                                .setPositiveButton(context.getString(R.string.confirm), d -> handleFilesWithOverwriteCheck(packagedUris, null, null, null, callback))
-                                .setNegativeButton(context.getString(R.string.cancel), d -> {
-                                    if (callback != null) {
-                                        callback.onError(context.getString(R.string.user_cancelled));
-                                    }
-                                })
-                                .show();
-                    }
+                if (!packagedUris.isEmpty()) {
+                    new CustomAlertDialog(context)
+                            .setTitleText(context.getString(R.string.import_confirmation_title))
+                            .setMessage(context.getString(R.string.import_confirmation_message, packagedUris.size()))
+                            .setPositiveButton(context.getString(R.string.confirm), d -> handleFilesWithOverwriteCheck(packagedUris, null, null, null, callback))
+                            .setNegativeButton(context.getString(R.string.cancel), d -> {
+                                if (callback != null) {
+                                    callback.onError(context.getString(R.string.user_cancelled));
+                                }
+                            })
+                            .show();
+                }
 
-                    if (!bareUris.isEmpty()) {
-                        showNextMetadataDialog(bareUris, 0, callback);
-                    }
-                };
-
-                if (!invalidZipNames.isEmpty()) {
-                    showInvalidZipPackageDialog(invalidZipNames, showImportDialogs);
-                } else {
-                    showImportDialogs.run();
+                if (!bareUris.isEmpty()) {
+                    showNextMetadataDialog(bareUris, 0, callback);
                 }
             });
         }).start();
     }
 
-    private boolean needsMetadataInput(String fileName) {
+    private boolean needsMetadataInput(Uri uri, String fileName) {
         String lowerName = fileName.toLowerCase(Locale.ROOT);
         if (lowerName.endsWith(".so")) {
             return true;
         }
+        if (lowerName.endsWith(".zip")) {
+            return !peekZipForManifest(uri);
+        }
         return false;
     }
 
-    private boolean isZipModPackageFile(String fileName) {
-        if (fileName == null) {
-            return false;
-        }
-
-        String lowerName = fileName.toLowerCase(Locale.ROOT);
-        return lowerName.endsWith(".zip") || lowerName.endsWith(".levipack");
-    }
-
-    private boolean isZipModPackageFile(Uri uri, String fileName) {
-        return isZipModPackageFile(fileName) || isZipMimeType(uri) || hasZipHeader(uri);
-    }
-
-    private void showInvalidZipPackageDialog(List<String> invalidZipNames, Runnable afterDismiss) {
-        StringBuilder message = new StringBuilder(context.getString(R.string.invalid_zip_mod_package_message));
-        if (!invalidZipNames.isEmpty()) {
-            message.append("\n\n");
-            for (String fileName : invalidZipNames) {
-                message.append("- ").append(fileName).append('\n');
-            }
-        }
-
-        new CustomAlertDialog(context)
-                .setTitleText(context.getString(R.string.invalid_zip_mod_package_title))
-                .setMessage(message.toString().trim())
-                .setUseBorderedBackground(true)
-                .setBlurBackground(true)
-                .setPositiveButton(context.getString(R.string.confirm), d -> {
-                    if (afterDismiss != null) {
-                        afterDismiss.run();
-                    }
-                })
-                .show();
-    }
-
-    private boolean isValidZipModPackage(Uri uri) {
-        Set<String> manifestRoots = new HashSet<>();
-        List<String> soEntries = new ArrayList<>();
-
-        try (InputStream raw = context.getContentResolver().openInputStream(uri)) {
-            if (raw == null) {
-                return false;
-            }
-
-            try (ZipInputStream zis = new ZipInputStream(raw)) {
-                ZipEntry entry;
-                while ((entry = zis.getNextEntry()) != null) {
-                    String name = normalizeZipEntryName(entry.getName());
-                    if (name.isEmpty() || isIgnoredZipEntry(name)) {
-                        zis.closeEntry();
-                        continue;
-                    }
-
-                    if (!entry.isDirectory()) {
-                        if (name.equals(MANIFEST_FILE_NAME)) {
-                            manifestRoots.add("");
-                        } else if (name.endsWith("/" + MANIFEST_FILE_NAME)) {
-                            manifestRoots.add(name.substring(0, name.length() - MANIFEST_FILE_NAME.length() - 1));
-                        }
-
-                        if (name.toLowerCase(Locale.ROOT).endsWith(".so")) {
-                            soEntries.add(name);
-                        }
-                    }
-                    zis.closeEntry();
+    private boolean peekZipForManifest(Uri uri) {
+        try (InputStream raw = context.getContentResolver().openInputStream(uri);
+             ZipInputStream zis = new ZipInputStream(raw)) {
+            if (raw == null) return false;
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                String name = entry.getName();
+                if (name != null && (name.equals(MANIFEST_FILE_NAME) || name.endsWith("/" + MANIFEST_FILE_NAME))) {
+                    return true;
                 }
+                zis.closeEntry();
             }
         } catch (Exception e) {
-            Log.w(TAG, "Invalid zip mod package", e);
-            return false;
+            Log.w(TAG, "Could not peek zip for manifest: " + e.getMessage());
         }
-
-        if (manifestRoots.isEmpty() || soEntries.size() != 1) {
-            return false;
-        }
-        if (manifestRoots.contains("") && isSoUnderRoot("", soEntries.get(0))) {
-            return true;
-        }
-
-        int validRootCount = 0;
-        for (String manifestRoot : manifestRoots) {
-            if (isSoUnderRoot(manifestRoot, soEntries.get(0))) {
-                validRootCount++;
-            }
-        }
-        return validRootCount == 1;
-    }
-
-    private boolean isSoUnderRoot(String root, String soEntry) {
-        if (root == null || root.isEmpty()) {
-            return true;
-        }
-
-        return soEntry != null && soEntry.startsWith(root + "/");
-    }
-
-    private boolean isIgnoredZipEntry(String normalizedName) {
-        return "__MACOSX".equals(normalizedName) || normalizedName.startsWith("__MACOSX/");
+        return false;
     }
 
     private void showNextMetadataDialog(List<Uri> bareUris, int index, FileOperationCallback callback) {
@@ -300,7 +197,7 @@ public class FileHandler {
                 android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
         nameParams.topMargin = (int) (4 * density);
-        
+
         android.widget.EditText etName = buildLabeledEditText(container, context.getString(R.string.plugin_name_label), defaultName, density, nameParams);
 
         android.widget.LinearLayout rowLayout = new android.widget.LinearLayout(context);
@@ -357,7 +254,7 @@ public class FileHandler {
         int cardPadTop = (int) (8 * density);
         int cardPadBottom = (int) (8 * density);
         card.setPadding(cardPadH, cardPadTop, cardPadH, cardPadBottom);
-        
+
         if (layoutParams == null) {
             layoutParams = new android.widget.LinearLayout.LayoutParams(
                     android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
@@ -420,8 +317,8 @@ public class FileHandler {
             for (Uri uri : fileUris) {
                 PreparedImport preparedImport = null;
                 try {
-                    String fileName = resolveImportFileName(uri);
-                    if (!isSupportedImportFile(uri, fileName)) {
+                    String fileName = resolveFileName(uri);
+                    if (!isSupportedImportFile(fileName)) {
                         throw new IOException("Unsupported mod import file: " + fileName);
                     }
 
@@ -431,16 +328,11 @@ public class FileHandler {
                         continue;
                     }
 
-                    if (destinationDir.exists()) {
-                        copyDirectoryPreservingExisting(
-                                preparedImport.packageDir,
-                                destinationDir,
-                                preparedImport.entryPath,
-                                preparedImport.overwriteFiles,
-                                preparedImport.overwriteFolders);
-                    } else {
-                        copyDirectory(preparedImport.packageDir, destinationDir);
+                    if (destinationDir.exists() && !deleteRecursively(destinationDir)) {
+                        throw new IOException("Failed to overwrite existing mod: " + preparedImport.targetId);
                     }
+
+                    copyDirectory(preparedImport.packageDir, destinationDir);
                     ++processed;
                 } catch (Exception e) {
                     lastError = e.getMessage();
@@ -476,7 +368,7 @@ public class FileHandler {
         if (lowerName.endsWith(".so")) {
             return prepareSoImport(uri, fileName, overrideName, overrideType, overrideVersion);
         }
-        if (isZipModPackageFile(uri, fileName)) {
+        if (lowerName.endsWith(".zip")) {
             return prepareZipImport(uri, fileName, overrideName, overrideType, overrideVersion);
         }
         throw new IOException("Unsupported mod import file: " + fileName);
@@ -499,7 +391,7 @@ public class FileHandler {
         copyUriToFile(uri, libraryFile);
         writeManifest(packageDir, createNormalizedManifest(
                 new JsonObject(), displayName, fileName, packageDir, overrideType, overrideVersion));
-        return new PreparedImport(targetId, fileName, new HashSet<>(), new HashSet<>(), packageDir, stagingRoot);
+        return new PreparedImport(targetId, packageDir, stagingRoot);
     }
 
     private PreparedImport prepareZipImport(
@@ -523,18 +415,7 @@ public class FileHandler {
         }
 
         List<String> soFiles = collectRelativeSoFiles(modRoot);
-        if (soFiles.size() != 1) {
-            throw new IOException("Invalid mod zip: exactly one .so entry is required");
-        }
-
-        File manifestFile = new File(modRoot, MANIFEST_FILE_NAME);
-        if (!manifestFile.isFile()) {
-            throw new IOException("Invalid mod zip: manifest.json is required");
-        }
-
         JsonObject manifest = readManifest(modRoot);
-        Set<String> overwriteFiles = parseOverwriteFiles(manifest);
-        Set<String> overwriteFolders = parseOverwriteFolders(manifest);
         String entryPath = resolveEntryPath(manifest, modRoot, soFiles, fileName);
         if (entryPath == null) {
             throw new IOException("Invalid mod zip: manifest entry is missing or ambiguous");
@@ -548,7 +429,7 @@ public class FileHandler {
 
         String rootName = modRoot.equals(stagingRoot) ? stripExtension(fileName) : modRoot.getName();
         String targetId = buildTargetId(displayName, rootName);
-        return new PreparedImport(targetId, entryPath, overwriteFiles, overwriteFolders, modRoot, stagingRoot);
+        return new PreparedImport(targetId, modRoot, stagingRoot);
     }
 
     private JsonObject readManifest(File modRoot) throws IOException {
@@ -752,7 +633,7 @@ public class FileHandler {
         return sanitized.trim();
     }
 
-    static String normalizeEntryPath(String entryPath) {
+    private String normalizeEntryPath(String entryPath) {
         if (entryPath == null) {
             return null;
         }
@@ -769,137 +650,6 @@ public class FileHandler {
             }
         }
         return normalized;
-    }
-
-    static Set<String> parseOverwriteFiles(JsonObject manifest) {
-        Set<String> files = new HashSet<>();
-        JsonElement value = getOverwritePathValue(manifest, OVERWRITE_FILES_FIELD);
-        if (value == null || value.isJsonNull()) {
-            return files;
-        }
-
-        if (value.isJsonArray()) {
-            JsonArray array = value.getAsJsonArray();
-            for (JsonElement element : array) {
-                addOverwriteFile(files, element);
-            }
-            return files;
-        }
-
-        addOverwriteFile(files, value);
-        return files;
-    }
-
-    static Set<String> parseOverwriteFolders(JsonObject manifest) {
-        Set<String> folders = new HashSet<>();
-        JsonElement value = getOverwritePathValue(manifest, OVERWRITE_FOLDERS_FIELD);
-        if (value == null || value.isJsonNull()) {
-            return folders;
-        }
-
-        if (value.isJsonArray()) {
-            JsonArray array = value.getAsJsonArray();
-            for (JsonElement element : array) {
-                addOverwriteFolder(folders, element);
-            }
-            return folders;
-        }
-
-        addOverwriteFolder(folders, value);
-        return folders;
-    }
-
-    private static JsonElement getOverwritePathValue(JsonObject manifest, String fieldName) {
-        if (manifest == null || !manifest.has(fieldName)) {
-            return null;
-        }
-        return manifest.get(fieldName);
-    }
-
-    private static void addOverwriteFile(Set<String> files, JsonElement element) {
-        if (element == null || !element.isJsonPrimitive()) {
-            return;
-        }
-
-        try {
-            String file = normalizeEntryPath(element.getAsString());
-            if (file != null) {
-                files.add(file);
-            }
-        } catch (UnsupportedOperationException | IllegalStateException ignored) {
-        }
-    }
-
-    private static void addOverwriteFolder(Set<String> folders, JsonElement element) {
-        if (element == null || !element.isJsonPrimitive()) {
-            return;
-        }
-
-        try {
-            String folder = normalizeOverwriteFolder(element.getAsString());
-            if (folder != null) {
-                folders.add(folder);
-            }
-        } catch (UnsupportedOperationException | IllegalStateException ignored) {
-        }
-    }
-
-    static String normalizeOverwriteFolder(String folderPath) {
-        if (folderPath == null) {
-            return null;
-        }
-
-        String normalized = folderPath.trim().replace('\\', '/');
-        while (normalized.endsWith("/")) {
-            normalized = normalized.substring(0, normalized.length() - 1);
-        }
-
-        String safePath = normalizeEntryPath(normalized);
-        return safePath == null || safePath.isEmpty() ? null : safePath;
-    }
-
-    static boolean canReplaceImportedPath(
-            String relativePath, String entryPath, Set<String> overwriteFiles, Set<String> overwriteFolders) {
-        String normalizedRelativePath = normalizeEntryPath(relativePath);
-        if (normalizedRelativePath == null) {
-            return false;
-        }
-
-        if (MANIFEST_FILE_NAME.equals(normalizedRelativePath)) {
-            return true;
-        }
-
-        String normalizedEntryPath = normalizeEntryPath(entryPath);
-        if (normalizedRelativePath.equals(normalizedEntryPath)) {
-            return true;
-        }
-
-        if (overwriteFiles != null && overwriteFiles.contains(normalizedRelativePath)) {
-            return true;
-        }
-
-        return isPathInOverwriteFolder(normalizedRelativePath, overwriteFolders);
-    }
-
-    static boolean isPathInOverwriteFolder(String relativePath, Set<String> overwriteFolders) {
-        if (overwriteFolders == null || overwriteFolders.isEmpty()) {
-            return false;
-        }
-
-        String normalizedRelativePath = normalizeEntryPath(relativePath);
-        if (normalizedRelativePath == null) {
-            return false;
-        }
-
-        for (String folder : overwriteFolders) {
-            if (folder == null || folder.isEmpty()) {
-                continue;
-            }
-            if (normalizedRelativePath.startsWith(folder + "/")) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private String normalizeMatchToken(String value) {
@@ -956,7 +706,7 @@ public class FileHandler {
     }
 
     private File findImportedModRoot(File extractedRoot) {
-        if (isValidZipModRoot(extractedRoot)) {
+        if (isDirectModRoot(extractedRoot)) {
             return extractedRoot;
         }
 
@@ -979,7 +729,7 @@ public class FileHandler {
                 continue;
             }
 
-            if (isValidZipModRoot(child)) {
+            if (isDirectModRoot(child)) {
                 candidates.add(child);
                 continue;
             }
@@ -987,14 +737,14 @@ public class FileHandler {
         }
     }
 
-    private boolean isValidZipModRoot(File directory) {
+    private boolean isDirectModRoot(File directory) {
         if (!directory.isDirectory()) {
             return false;
         }
 
         File manifestFile = new File(directory, MANIFEST_FILE_NAME);
-        if (!manifestFile.isFile()) {
-            return false;
+        if (manifestFile.isFile()) {
+            return true;
         }
 
         File[] files = directory.listFiles();
@@ -1002,25 +752,12 @@ public class FileHandler {
             return false;
         }
 
-        return countSoFiles(directory) == 1;
-    }
-
-    private int countSoFiles(File directory) {
-        File[] files = directory.listFiles();
-        if (files == null) {
-            return 0;
-        }
-
-        int soCount = 0;
         for (File file : files) {
             if (file.isFile() && file.getName().toLowerCase(Locale.ROOT).endsWith(".so")) {
-                soCount++;
-            }
-            if (file.isDirectory()) {
-                soCount += countSoFiles(file);
+                return true;
             }
         }
-        return soCount;
+        return false;
     }
 
     private boolean confirmOverwrite(String modName) {
@@ -1168,43 +905,6 @@ public class FileHandler {
         }
     }
 
-    private void copyDirectoryPreservingExisting(
-            File source, File target, String entryPath, Set<String> overwriteFiles, Set<String> overwriteFolders) throws IOException {
-        copyDirectoryPreservingExisting(
-                source, source, target, normalizeEntryPath(entryPath), overwriteFiles, overwriteFolders);
-    }
-
-    private void copyDirectoryPreservingExisting(
-            File root, File source, File target, String entryPath,
-            Set<String> overwriteFiles, Set<String> overwriteFolders) throws IOException {
-        if (source.isDirectory()) {
-            if (!target.exists() && !target.mkdirs()) {
-                throw new IOException("Failed to create directory: " + target.getAbsolutePath());
-            }
-
-            File[] files = source.listFiles();
-            if (files == null) {
-                return;
-            }
-
-            for (File file : files) {
-                copyDirectoryPreservingExisting(
-                        root, file, new File(target, file.getName()), entryPath, overwriteFiles, overwriteFolders);
-            }
-            return;
-        }
-
-        String relativePath = root.toPath().relativize(source.toPath()).toString().replace('\\', '/');
-        boolean mayReplace = canReplaceImportedPath(relativePath, entryPath, overwriteFiles, overwriteFolders);
-        if (target.exists() && !mayReplace) {
-            return;
-        }
-
-        try (FileInputStream fis = new FileInputStream(source)) {
-            copyStreamToFile(fis, target);
-        }
-    }
-
     private File createTempDirectory(String prefix) throws IOException {
         File cacheDir = context.getCacheDir();
         for (int attempt = 0; attempt < 10; attempt++) {
@@ -1249,13 +949,13 @@ public class FileHandler {
         new Handler(Looper.getMainLooper()).post(() -> callback.onError(message));
     }
 
-    private boolean isSupportedImportFile(Uri uri, String fileName) {
+    private boolean isSupportedImportFile(String fileName) {
         if (fileName == null) {
             return false;
         }
 
         String lowerName = fileName.toLowerCase(Locale.ROOT);
-        return lowerName.endsWith(".so") || isZipModPackageFile(uri, fileName);
+        return lowerName.endsWith(".so") || lowerName.endsWith(".zip");
     }
 
     private String getStringProperty(JsonObject object, String key) {
@@ -1263,65 +963,6 @@ public class FileHandler {
             return null;
         }
         return object.get(key).getAsString();
-    }
-
-    private String resolveImportFileName(Uri uri) {
-        String fileName = resolveFileName(uri);
-        if (isZipModPackageFile(fileName) || hasSupportedPlainExtension(fileName)) {
-            return fileName;
-        }
-        if (isZipMimeType(uri) || hasZipHeader(uri)) {
-            return FALLBACK_ZIP_FILE_NAME;
-        }
-        return fileName;
-    }
-
-    private boolean hasSupportedPlainExtension(String fileName) {
-        if (fileName == null) {
-            return false;
-        }
-
-        return fileName.toLowerCase(Locale.ROOT).endsWith(".so");
-    }
-
-    private boolean isZipMimeType(Uri uri) {
-        String mimeType;
-        try {
-            mimeType = context.getContentResolver().getType(uri);
-        } catch (Exception e) {
-            Log.w(TAG, "Failed to resolve MIME type", e);
-            return false;
-        }
-        if (mimeType == null) {
-            return false;
-        }
-
-        String lowerMimeType = mimeType.toLowerCase(Locale.ROOT);
-        return "application/zip".equals(lowerMimeType)
-                || "application/x-zip".equals(lowerMimeType)
-                || "application/x-zip-compressed".equals(lowerMimeType);
-    }
-
-    private boolean hasZipHeader(Uri uri) {
-        try (InputStream input = context.getContentResolver().openInputStream(uri)) {
-            if (input == null) {
-                return false;
-            }
-
-            byte[] header = new byte[4];
-            int read = input.read(header);
-            if (read < header.length) {
-                return false;
-            }
-
-            return header[0] == 0x50
-                    && header[1] == 0x4B
-                    && (header[2] == 0x03 || header[2] == 0x05 || header[2] == 0x07)
-                    && (header[3] == 0x04 || header[3] == 0x06 || header[3] == 0x08);
-        } catch (Exception e) {
-            Log.w(TAG, "Failed to inspect zip header", e);
-            return false;
-        }
     }
 
     private List<Uri> extractFileUris(Intent intent) {

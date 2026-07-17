@@ -41,7 +41,6 @@ public class CustomAlertDialog extends Dialog {
     private int mTitleColor = 0;
     private boolean mUseBorderedBackground;
     private boolean mDismissing;
-    private Runnable mDismissAnimationEndListener;
 
     public CustomAlertDialog(Context context) {
         super(context);
@@ -98,11 +97,6 @@ public class CustomAlertDialog extends Dialog {
 
     public CustomAlertDialog setUseBorderedBackground(boolean bordered) {
         this.mUseBorderedBackground = bordered;
-        return this;
-    }
-
-    public CustomAlertDialog setOnDismissAnimationEndListener(Runnable listener) {
-        this.mDismissAnimationEndListener = listener;
         return this;
     }
 
@@ -296,10 +290,7 @@ public class CustomAlertDialog extends Dialog {
             if (window == null || window.getDecorView().getParent() == null) {
                 try {
                     super.dismiss();
-                } catch (Exception ignored) {
-                } finally {
-                    notifyDismissAnimationEnd();
-                }
+                } catch (Exception ignored) {}
                 return;
             }
             animateBackdropDismiss(window);
@@ -315,25 +306,13 @@ public class CustomAlertDialog extends Dialog {
                                 CustomAlertDialog.super.dismiss();
                             }
                         }
-                    } catch (Exception ignored) {
-                    } finally {
-                        notifyDismissAnimationEnd();
-                    }
+                    } catch (Exception ignored) {}
                 });
             } else {
                 clearBackdrop(window);
                 super.dismiss();
-                notifyDismissAnimationEnd();
             }
         } catch (Exception ignored) {}
-    }
-
-    private void notifyDismissAnimationEnd() {
-        Runnable listener = mDismissAnimationEndListener;
-        mDismissAnimationEndListener = null;
-        if (listener != null) {
-            listener.run();
-        }
     }
 
     private void animateBackdropDismiss(Window window) {

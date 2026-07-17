@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import org.levimc.launcher.core.versions.GameVersion;
-import org.levimc.launcher.util.LauncherStorage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,10 +44,7 @@ public class WorldManager {
 
     public void setCurrentVersion(GameVersion version) {
         if (version != null && version.versionDir != null) {
-            this.worldsDirectory = new File(
-                    LauncherStorage.getProfileGameDataDir(context, version.getStorageProfileId()),
-                    "minecraftWorlds"
-            );
+            this.worldsDirectory = new File(version.versionDir, "games/com.mojang/minecraftWorlds");
             if (!worldsDirectory.exists()) {
                 worldsDirectory.mkdirs();
             }
@@ -105,12 +101,9 @@ public class WorldManager {
                 String tempDirName = "temp_world_" + System.currentTimeMillis();
                 File tempDir = new File(context.getCacheDir(), tempDirName);
                 tempDir.mkdirs();
-                
-                File tempZip = new File(context.getCacheDir(), tempDirName + "_zip.mcworld");
 
                 try {
-                    copyStreamToFile(inputStream, tempZip);
-                    extractZip(tempZip, tempDir, callback);
+                    extractZip(inputStream, tempDir, callback);
 
                     File worldDir = findWorldDirectory(tempDir);
                     if (worldDir == null) {
@@ -127,7 +120,6 @@ public class WorldManager {
                     
                 } finally {
                     deleteDirectory(tempDir);
-                    tempZip.delete();
                     inputStream.close();
                 }
 
@@ -204,29 +196,26 @@ public class WorldManager {
         });
     }
 
-    private void extractZip(File zipFile, File targetDir, WorldOperationCallback callback) throws IOException {
-        try (java.util.zip.ZipFile zip = new java.util.zip.ZipFile(zipFile)) {
-            java.util.Enumeration<? extends ZipEntry> entries = zip.entries();
-            byte[] buffer = new byte[BUFFER_SIZE];
-            
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                File entryFile = new File(targetDir, entry.getName());
+    private void extractZip(InputStream inputStream, File targetDir, WorldOperationCallback callback) throws IOException {
+        ZipInputStream zis = new ZipInputStream(inputStream);
+        ZipEntry entry;
+        byte[] buffer = new byte[BUFFER_SIZE];
+        
+        while ((entry = zis.getNextEntry()) != null) {
+            File entryFile = new File(targetDir, entry.getName());
 
-                if (!entryFile.getCanonicalPath().startsWith(targetDir.getCanonicalPath())) {
-                    continue;
-                }
-                
-                if (entry.isDirectory()) {
-                    entryFile.mkdirs();
-                } else {
-                    entryFile.getParentFile().mkdirs();
-                    try (InputStream is = zip.getInputStream(entry);
-                         FileOutputStream fos = new FileOutputStream(entryFile)) {
-                        int len;
-                        while ((len = is.read(buffer)) > 0) {
-                            fos.write(buffer, 0, len);
-                        }
+            if (!entryFile.getCanonicalPath().startsWith(targetDir.getCanonicalPath())) {
+                continue;
+            }
+            
+            if (entry.isDirectory()) {
+                entryFile.mkdirs();
+            } else {
+                entryFile.getParentFile().mkdirs();
+                try (FileOutputStream fos = new FileOutputStream(entryFile)) {
+                    int len;
+                    while ((len = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
                     }
                 }
             }
@@ -267,16 +256,6 @@ public class WorldManager {
         }
         
         return worldName;
-    }
-
-    private void copyStreamToFile(InputStream input, File output) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream(output)) {
-            byte[] buffer = new byte[BUFFER_SIZE];
-            int len;
-            while ((len = input.read(buffer)) > 0) {
-                fos.write(buffer, 0, len);
-            }
-        }
     }
 
     private void copyDirectory(File source, File target) throws IOException {
@@ -340,7 +319,8 @@ public class WorldManager {
     }
 
     private String createBackup(WorldItem world) throws IOException {
-        File backupDir = LauncherStorage.getWorldBackupsDir(context);
+        File storageDir = android.os.Environment.getExternalStorageDirectory();
+        File backupDir = new File(storageDir, "games/org.levimc/backups/worlds");
         backupDir.mkdirs();
         
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());

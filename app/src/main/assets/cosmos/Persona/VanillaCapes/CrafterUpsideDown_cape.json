@@ -1,0 +1,30 @@
+{
+  "code": 200,
+  "status": "OK",
+  "data": {
+    "Item": {
+      "Id": "fadaddbd-da2a-4d90-b81a-ba1484c1b872",
+      "Contents": [
+        {
+          "Id": "ae22c1d1-f2fc-499e-966d-a71ca4e5fe1d",
+          "Url": "https://capes.bedrock-cosmos.app/zips/CrafterUpsideDown_cape.zip",
+          "MaxClientVersion": "65535.65535.65535",
+          "MinClientVersion": "1.16.0",
+          "Type": "personabinary"
+        }
+      ],
+      "DisplayProperties": {
+        "creatorName": "Minecraft",
+        "originalCreatorId": "9926cc22-2eb0-4bd4-a39d-76c8082a1c58",
+        "purchasable": true,
+        "packIdentity": [
+          {
+            "type": "persona_piece",
+            "uuid": "8af1df2a-87e0-4379-8516-a2cb73dd5277",
+            "version": "1.0.0"
+          }
+        ]
+      }
+    }
+  }
+}

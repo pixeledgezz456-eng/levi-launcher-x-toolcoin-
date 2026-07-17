@@ -1,16 +1,11 @@
 package org.levimc.launcher.util;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.auth.MsftAccountStore;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 public final class AccountTextUtils {
-    private static final ConcurrentHashMap<String, Bitmap> AVATAR_CACHE = new ConcurrentHashMap<>();
-
     private AccountTextUtils() {}
 
     public static String titleOrUnknown(MsftAccountStore.MsftAccount a) {
@@ -45,15 +40,5 @@ public final class AccountTextUtils {
         String u = url.replace("`", "").trim();
         if (!(u.startsWith("http://") || u.startsWith("https://"))) return null;
         return u;
-    }
-
-    public static Bitmap getCachedAvatar(String url) {
-        return url != null ? AVATAR_CACHE.get(url) : null;
-    }
-
-    public static void cacheAvatar(String url, Bitmap bitmap) {
-        if (url != null && bitmap != null) {
-            AVATAR_CACHE.put(url, bitmap);
-        }
     }
 }

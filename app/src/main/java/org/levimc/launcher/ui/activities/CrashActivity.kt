@@ -21,12 +21,19 @@ class CrashActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        CrashReporter.disarmRecovery(this)
+        CrashReporter.refreshPendingCrashFromPreviousExit(this)
+        CrashReporter.pendingCrashIntent(this)?.let { pendingIntent ->
+            intent = pendingIntent
+        }
+
         setContentView(R.layout.activity_crash)
 
         logPath = intent.getStringExtra("LOG_PATH")
         val summary = intent.getStringExtra("SUMMARY")
             ?: intent.getStringExtra("EMERGENCY")
         val crashType = intent.getStringExtra("CRASH_TYPE")
+        CrashReporter.clearPendingCrash(this)
         CrashReporter.sendUnsentReports()
 
         val tvTitle = findViewById<TextView>(R.id.crash_title)
@@ -110,6 +117,7 @@ class CrashActivity : BaseActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
+        CrashReporter.disarmRecovery(this)
     }
 
     private fun StringBuilder.appendHeader(crashType: String?, summary: String?) {
@@ -139,29 +147,20 @@ class CrashActivity : BaseActivity() {
         try {
             val logFile = File(path)
             if (logFile.exists()) {
-                val shareFile = copyLogToShareCache(logFile)
                 val logFileUri = FileProvider.getUriForFile(
                     this,
                     packageName + ".fileprovider",
-                    shareFile
+                    logFile
                 )
                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_STREAM, logFileUri)
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 }
-                startActivity(Intent.createChooser(shareIntent, shareFile.name))
+                startActivity(Intent.createChooser(shareIntent, logFile.name))
             }
         } catch (e: Exception) {
         }
-    }
-
-    private fun copyLogToShareCache(logFile: File): File {
-        val shareDir = File(cacheDir, "crash_logs_share")
-        if (!shareDir.exists()) shareDir.mkdirs()
-        val shareFile = File(shareDir, logFile.name)
-        logFile.copyTo(shareFile, overwrite = true)
-        return shareFile
     }
 
     override fun onDestroy() {

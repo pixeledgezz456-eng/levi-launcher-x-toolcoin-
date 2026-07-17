@@ -1,8 +1,6 @@
 package org.levimc.launcher.core.minecraft;
 
 import android.app.Activity;
-import android.content.Context;
-
 import java.lang.ref.WeakReference;
 
 public final class MinecraftActivityState {
@@ -21,15 +19,7 @@ public final class MinecraftActivityState {
         resumed = true;
     }
 
-    public static void onResumed(Activity activity) {
-        resumed = true;
-    }
-
     public static void onPaused() {
-        resumed = false;
-    }
-
-    public static void onPaused(Activity activity) {
         resumed = false;
     }
 
@@ -39,25 +29,11 @@ public final class MinecraftActivityState {
         currentActivityRef = null;
     }
 
-    public static void onDestroyed(Activity activity) {
-        running = false;
-        resumed = false;
-        currentActivityRef = null;
-    }
-
     public static boolean isRunning() {
         return running;
     }
 
-    public static boolean isRunning(Context context) {
-        return running;
-    }
-
     public static boolean isResumed() {
-        return resumed;
-    }
-
-    public static boolean isResumed(Context context) {
         return resumed;
     }
 

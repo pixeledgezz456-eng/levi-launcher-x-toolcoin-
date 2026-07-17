@@ -1,0 +1,268 @@
+{
+    "result": {
+        "id": "87db3f80-d2b0-4bff-b7c2-c4a3d58665b2",
+        "pageId": "MultiItemPage_steve",
+        "addToRecentlyViewed": false,
+        "pageName": "steve",
+        "pageRefresh": false,
+        "sidebarLayoutType": "Marketplace",
+        "layout": [
+            {
+                "sectionName": "rows",
+                "rows": [
+                    {
+                        "controlId": "Layout",
+                        "components": [
+                            {
+                                "linksToInfo": {
+                                    "linksTo": "MultiItemPage_CoinScreen",
+                                    "linkType": "pageId",
+                                    "displayType": "store_layout.store_data_driven_screen",
+                                    "screenTitle": {
+                                        "value": "Minecoins",
+                                        "style": {
+                                            "highlightColor": [],
+                                            "alignment": "Left",
+                                            "textColor": [],
+                                            "font": "MinecraftTen",
+                                            "showBackground": false,
+                                            "showOutline": false,
+                                            "indent": 0.0,
+                                            "buttonWidth": 0.0,
+                                            "color": [],
+                                            "offerControlIdType": "None",
+                                            "outlineColor": []
+                                        },
+                                        "replacements": []
+                                    },
+                                    "navigateInPlace": false
+                                },
+                                "isVisible": true,
+                                "type": "topBarMinecoinComp",
+                                "$type": "TopBarMinecoinComponent"
+                            },
+                            {
+                                "linksToInfo": {
+                                    "linksTo": "Search_SearchHome",
+                                    "linkType": "pageId",
+                                    "displayType": "store_layout.store_data_driven_screen",
+                                    "screenTitle": {
+                                        "value": "store.search.title",
+                                        "style": {
+                                            "highlightColor": [],
+                                            "alignment": "Left",
+                                            "textColor": [],
+                                            "font": "MinecraftTen",
+                                            "showBackground": false,
+                                            "showOutline": false,
+                                            "indent": 0.0,
+                                            "buttonWidth": 0.0,
+                                            "color": [],
+                                            "offerControlIdType": "None",
+                                            "outlineColor": []
+                                        },
+                                        "replacements": []
+                                    },
+                                    "navigateInPlace": false
+                                },
+                                "isVisible": true,
+                                "type": "topBarSearchComp",
+                                "$type": "TopBarSearchComponent"
+                            },
+                            {
+                                "linksToInfo": {
+                                    "linksTo": "MultiItemPage_Inventory",
+                                    "linkType": "pageId",
+                                    "displayType": "store_layout.store_data_driven_screen",
+                                    "screenTitle": {
+                                        "value": "My Content",
+                                        "style": {
+                                            "highlightColor": [],
+                                            "alignment": "Left",
+                                            "textColor": [],
+                                            "font": "MinecraftTen",
+                                            "showBackground": false,
+                                            "showOutline": false,
+                                            "indent": 0.0,
+                                            "buttonWidth": 0.0,
+                                            "color": [],
+                                            "offerControlIdType": "None",
+                                            "outlineColor": []
+                                        },
+                                        "replacements": []
+                                    },
+                                    "navigateInPlace": false
+                                },
+                                "isVisible": true,
+                                "topBarIcon": {
+                                    "type": "SidebarNavIcon",
+                                    "localPath": "textures/ui/sidebar_icons/my_content_large"
+                                },
+                                "inventoryTitle": {
+                                    "value": "store.myLibrary",
+                                    "style": {
+                                        "highlightColor": [],
+                                        "alignment": "Left",
+                                        "textColor": [],
+                                        "font": "SmoothWithEmoticons",
+                                        "showBackground": false,
+                                        "showOutline": false,
+                                        "indent": 0.0,
+                                        "buttonWidth": 0.0,
+                                        "color": [],
+                                        "offerControlIdType": "None",
+                                        "outlineColor": []
+                                    },
+                                    "replacements": []
+                                },
+                                "type": "topBarInventoryComp",
+                                "$type": "TopBarInventoryComponent"
+                            }
+                        ]
+                    },
+                    {
+                        "controlId": "HeroRow",
+                        "components": [
+                            {
+                                "items": [
+                                    {
+                                        "id": "2275d87a-ec3d-4895-ad3b-2999e935a6c0",
+                                        "contentType": "MarketplaceDurableCatalog_V1.2",
+                                        "thumbnail": {
+                                            "tag": "Thumbnail",
+                                            "type": "Thumbnail",
+                                            "url": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg",
+                                            "urlWithResolution": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg"
+                                        },
+                                        "images": [
+                                            {
+                                                "tag": "Thumbnail",
+                                                "type": "Thumbnail",
+                                                "url": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg",
+                                                "urlWithResolution": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg"
+                                            }
+                                        ],
+                                        "platformRestricted": false,
+                                        "startDate": "2026-04-07T17:00:00Z",
+                                        "subscription": [],
+                                        "thumbnailPreviewOnly": false,
+                                        "namedLinksToInfoMap": {},
+                                        "hardwareMemoryTier": 0
+                                    },
+                                    {
+                                        "id": "2275d87a-ec3d-4895-ad3b-2999e935a6c0",
+                                        "contentType": "MarketplaceDurableCatalog_V1.2",
+                                        "thumbnail": {
+                                            "tag": "Thumbnail",
+                                            "type": "Thumbnail",
+                                            "url": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg",
+                                            "urlWithResolution": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg"
+                                        },
+                                        "images": [
+                                            {
+                                                "tag": "Thumbnail",
+                                                "type": "Thumbnail",
+                                                "url": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg",
+                                                "urlWithResolution": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg"
+                                            }
+                                        ],
+                                        "platformRestricted": false,
+                                        "startDate": "2026-04-07T17:00:00Z",
+                                        "subscription": [],
+                                        "thumbnailPreviewOnly": false,
+                                        "namedLinksToInfoMap": {},
+                                        "hardwareMemoryTier": 0
+                                    },
+                                                                        {
+                                        "id": "2275d87a-ec3d-4895-ad3b-2999e935a6c0",
+                                        "contentType": "MarketplaceDurableCatalog_V1.2",
+                                        "thumbnail": {
+                                            "tag": "Thumbnail",
+                                            "type": "Thumbnail",
+                                            "url": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg",
+                                            "urlWithResolution": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg"
+                                        },
+                                        "images": [
+                                            {
+                                                "tag": "Thumbnail",
+                                                "type": "Thumbnail",
+                                                "url": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg",
+                                                "urlWithResolution": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg"
+                                            }
+                                        ],
+                                        "platformRestricted": false,
+                                        "startDate": "2026-04-07T17:00:00Z",
+                                        "subscription": [],
+                                        "thumbnailPreviewOnly": false,
+                                        "namedLinksToInfoMap": {},
+                                        "hardwareMemoryTier": 0
+                                    },
+                                                                        {
+                                        "id": "2275d87a-ec3d-4895-ad3b-2999e935a6c0",
+                                        "contentType": "MarketplaceDurableCatalog_V1.2",
+                                        "thumbnail": {
+                                            "tag": "Thumbnail",
+                                            "type": "Thumbnail",
+                                            "url": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg",
+                                            "urlWithResolution": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg"
+                                        },
+                                        "images": [
+                                            {
+                                                "tag": "Thumbnail",
+                                                "type": "Thumbnail",
+                                                "url": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg",
+                                                "urlWithResolution": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg"
+                                            }
+                                        ],
+                                        "platformRestricted": false,
+                                        "startDate": "2026-04-07T17:00:00Z",
+                                        "subscription": [],
+                                        "thumbnailPreviewOnly": false,
+                                        "namedLinksToInfoMap": {},
+                                        "hardwareMemoryTier": 0
+                                    },
+                                                                        {
+                                        "id": "2275d87a-ec3d-4895-ad3b-2999e935a6c0",
+                                        "contentType": "MarketplaceDurableCatalog_V1.2",
+                                        "thumbnail": {
+                                            "tag": "Thumbnail",
+                                            "type": "Thumbnail",
+                                            "url": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg",
+                                            "urlWithResolution": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg"
+                                        },
+                                        "images": [
+                                            {
+                                                "tag": "Thumbnail",
+                                                "type": "Thumbnail",
+                                                "url": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg",
+                                                "urlWithResolution": "https://www.blendernation.com/wp-content/uploads/2025/02/image9-1-728x336@2x.jpg"
+                                            }
+                                        ],
+                                        "platformRestricted": false,
+                                        "startDate": "2026-04-07T17:00:00Z",
+                                        "subscription": [],
+                                        "thumbnailPreviewOnly": false,
+                                        "namedLinksToInfoMap": {},
+                                        "hardwareMemoryTier": 0
+                                    }
+                                ],
+                                "totalItems": 5,
+                                "type": "itemListComp",
+                                "$type": "ItemListComponent"
+                            },
+                            {
+                                "type": "carouselComp",
+                                "$type": "CarouselComponent"
+                            }
+                        ],
+                        "telemetryId": "Row 0: Hero - Manual Selection"
+                    }
+                ]
+            },
+            {
+                "sectionName": "navigation",
+                "rows": []
+            }
+        ]
+    }
+}

@@ -1,0 +1,49 @@
+{
+  "code": 200,
+  "status": "OK",
+  "data": {
+    "Item": {
+      "Id": "4d7590d6-8f7f-4f53-989a-2df76b6b015b",
+      "Contents": [
+        {
+          "Id": "8c550c5b-e54e-4fda-ae22-75f1f28e299b",
+          "Url": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/8c550c5b-e54e-4fda-ae22-75f1f28e299b/primary.zip",
+          "MaxClientVersion": "65535.65535.65535",
+          "MinClientVersion": "1.2.10",
+          "Tags": [],
+          "Type": "resourcebinary"
+        },
+        {
+          "Id": "ee8886b1-e32b-4841-b18b-1d9f985a7270",
+          "Url": "https://cdn.bedrockcosmos.app/uss/0f2e0/LittleBigPlanet.zip",
+          "MaxClientVersion": "65535.65535.65535",
+          "MinClientVersion": "1.2.10",
+          "Tags": [],
+          "Type": "skinbinary"
+        }
+      ],
+      "DisplayProperties": {
+        "creatorName": "Minecraft",
+        "originalCreatorId": "2535448579972708",
+        "purchasable": true,
+        "packIdentity": [
+          {
+            "type": "skinpack",
+            "uuid": "0f2e08ee-8ef2-4521-b03d-9f89c907c70e",
+            "version": "3.3.26"
+          },
+          {
+            "type": "resourcepack",
+            "uuid": "abfcab1a-19fe-4564-b4ed-ffbda4a77690",
+            "version": "1.0.73"
+          },
+          {
+            "type": "worldtemplate",
+            "uuid": "1dde574b-2b4d-48e6-951e-d135093bcdc9",
+            "version": "1.0.73"
+          }
+        ]
+      }
+    }
+  }
+}

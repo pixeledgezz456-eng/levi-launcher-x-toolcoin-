@@ -38,14 +38,17 @@ static def getVersionCodeByTimestamp() {
 android {
     namespace 'org.levimc.launcher'
     compileSdkVersion 36
+    def keysUrl = localProperties.getProperty('KEYS_URL') ?: System.getenv('KEYS_URL') ?: ''
+    def decryptionKey = localProperties.getProperty('DECRYPTION_KEY') ?: System.getenv('DECRYPTION_KEY') ?: ''
     defaultConfig {
         applicationId "org.levimc.launcher"
         minSdkVersion 28
         targetSdkVersion 35
         versionCode getVersionCodeByTimestamp()
-        versionName getGitTag()
+        versionName "1.4.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "CURSEFORGE_API_KEY", "\"${localProperties.getProperty('curseforge.api_key', '')}\""
+        buildConfigField "String", "KEYS_URL", "\"${keysUrl}\""
+        buildConfigField "String", "DECRYPTION_KEY", "\"${decryptionKey}\""
         ndk {
             //noinspection ChromeOsAbiSupport
             abiFilters 'arm64-v8a'
@@ -65,11 +68,6 @@ android {
     }
     buildFeatures {
         buildConfig true
-    }
-    sourceSets {
-        main {
-            assets.srcDirs += rootProject.file('resources')
-        }
     }
     buildTypes {
         release {
@@ -135,7 +133,7 @@ android {
         }
     }
 
-    ndkVersion = "28.2.13676358"
+    ndkVersion = "27.2.12479018"
 }
 
 dependencies {
@@ -157,8 +155,6 @@ dependencies {
     implementation libs.okhttp
     implementation libs.androidx.dynamicanimation
     implementation libs.bedrock.connection
-    implementation libs.xcrash
-    implementation libs.play.services.games.v2
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

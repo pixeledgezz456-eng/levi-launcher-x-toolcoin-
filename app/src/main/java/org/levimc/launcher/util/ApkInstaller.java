@@ -3,30 +3,26 @@ package org.levimc.launcher.util;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-import org.levimc.launcher.core.minecraft.MinecraftLauncher;
-import org.levimc.launcher.core.versions.VersionProfileMetadataStore;
-
 import java.io.BufferedInputStream;
-import java.io.FilterInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Writer;
 import java.util.concurrent.ExecutorService;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public class ApkInstaller {
@@ -40,17 +36,11 @@ public class ApkInstaller {
     }
 
     private static final String APK_FILE_NAME = "base.apk.levi";
-    private static final int BUFFER_SIZE = 131072;
-    private static final int PROGRESS_PREPARED = 5;
-    private static final int PROGRESS_COPY_DONE = 55;
-    private static final int PROGRESS_LIBS_DONE = 92;
-    private static final int PROGRESS_METADATA_DONE = 96;
-    private static final int PROGRESS_MAX = 100;
+    private static final int BUFFER_SIZE = 8192;
 
     private final Context context;
     private final ExecutorService executor;
     private final InstallCallback callback;
-    private int lastPostedProgress = -1;
 
     public ApkInstaller(Context context, ExecutorService executor, InstallCallback callback) {
         this.context = context.getApplicationContext();
@@ -69,17 +59,14 @@ public class ApkInstaller {
     public void install(final Uri apkOrApksUri, final String dirName) {
         executor.submit(() -> {
             try {
-                lastPostedProgress = -1;
-                postProgress(0);
-                File metadataDir = LauncherStorage.getProfileMetadataDir(context, dirName);
-                if (metadataDir.exists() && !deleteDir(metadataDir))
+                File internalDir = new File(context.getDataDir(), "minecraft/" + dirName);
+                if (internalDir.exists() && !deleteDir(internalDir))
                     return;
-                File externalDir = LauncherStorage.getVersionDir(context, dirName);
+                File externalDir = new File(Environment.getExternalStorageDirectory(), "games/org.levimc/minecraft/" + dirName);
                 if (externalDir.exists() && !deleteDir(externalDir))
                     return;
-                postProgress(5);
 
-                File libTargetDir = MinecraftLauncher.getRuntimeLibDir(context, dirName);
+                File libTargetDir = new File(internalDir, "lib");
                 if (libTargetDir.exists()) {
                     deleteDir(libTargetDir);
                 }
@@ -90,62 +77,59 @@ public class ApkInstaller {
                 }
 
                 String fileName = getFileName(apkOrApksUri);
-                long sourceSize = getContentSize(apkOrApksUri);
-                List<File> apkFilesToExtract = new ArrayList<>();
                 if (fileName != null && fileName.toLowerCase().endsWith(".apks")) {
                     boolean foundBaseApk = false;
                     File splitsDir = new File(baseDir, "splits");
 
-                    try (InputStream rawInput = context.getContentResolver().openInputStream(apkOrApksUri)) {
-                        if (rawInput == null) {
-                            postError("Open apks failed");
-                            return;
-                        }
-                        CountingInputStream countingInput = new CountingInputStream(rawInput);
-                        ZipInputStream zis = new ZipInputStream(new BufferedInputStream(countingInput));
+                    try (InputStream is = context.getContentResolver().openInputStream(apkOrApksUri);
+                         ZipInputStream zis = new ZipInputStream(new BufferedInputStream(is))) {
                         ZipEntry entry;
-                        try {
-                            while ((entry = zis.getNextEntry()) != null) {
-                                if (entry.isDirectory()) {
-                                    zis.closeEntry();
-                                    continue;
-                                }
-
-                                String entryName = entry.getName();
-                                if (!entryName.endsWith(".apk")) {
-                                    zis.closeEntry();
-                                    continue;
-                                }
-
-                                File outFile;
-                                String outputName;
-
-                                if (entryName.equals("base.apk") || entryName.endsWith("/base.apk")) {
-                                    outFile = new File(baseDir, APK_FILE_NAME);
-                                    outputName = APK_FILE_NAME;
-                                } else {
-                                    if (!splitsDir.exists()) splitsDir.mkdirs();
-                                    String splitName = new File(entryName).getName();
-                                    splitName = splitName.replace(".apk", ".apk.levi");
-                                    outFile = new File(splitsDir, splitName);
-                                    outputName = splitName;
-                                }
-
-                                File parent = outFile.getParentFile();
-                                if (parent != null && !parent.exists()) parent.mkdirs();
-
-                                try (FileOutputStream fos = new FileOutputStream(outFile)) {
-                                    copyStream(zis, fos, bytesCopied -> postProgressFromBytes(countingInput.getBytesRead(), sourceSize, PROGRESS_PREPARED, PROGRESS_COPY_DONE));
-                                }
-                                apkFilesToExtract.add(outFile);
-
-                                if (outputName.equals(APK_FILE_NAME)) {
-                                    foundBaseApk = true;
-                                }
+                        while ((entry = zis.getNextEntry()) != null) {
+                            if (entry.isDirectory()) {
                                 zis.closeEntry();
+                                continue;
                             }
-                        } finally {
-                            zis.close();
+
+                            String entryName = entry.getName();
+                            if (!entryName.endsWith(".apk")) {
+                                zis.closeEntry();
+                                continue;
+                            }
+
+                            File outFile;
+                            String outputName;
+
+                            if (entryName.equals("base.apk") || entryName.endsWith("/base.apk")) {
+                                outFile = new File(baseDir, APK_FILE_NAME);
+                                outputName = APK_FILE_NAME;
+                            } else {
+                                if (!splitsDir.exists()) splitsDir.mkdirs();
+                                String splitName = new File(entryName).getName();
+                                splitName = splitName.replace(".apk", ".apk.levi");
+                                outFile = new File(splitsDir, splitName);
+                                outputName = splitName;
+                            }
+
+                            File parent = outFile.getParentFile();
+                            if (parent != null && !parent.exists()) parent.mkdirs();
+
+                            try (FileOutputStream fos = new FileOutputStream(outFile)) {
+                                copyStream(zis, fos);
+                            }
+
+                            if (outputName.equals(APK_FILE_NAME)) {
+                                try (InputStream is2 = new FileInputStream(outFile);
+                                     ZipInputStream zis2 = new ZipInputStream(new BufferedInputStream(is2))) {
+                                    ApkUtils.unzipLibsToSystemAbi(libTargetDir, zis2);
+                                }
+                                foundBaseApk = true;
+                            } else if (outputName.contains("arm64") || outputName.contains("armeabi") || outputName.contains("x86")) {
+                                try (InputStream is2 = new FileInputStream(outFile);
+                                     ZipInputStream zis2 = new ZipInputStream(new BufferedInputStream(is2))) {
+                                    ApkUtils.unzipLibsToSystemAbi(libTargetDir, zis2);
+                                }
+                            }
+                            zis.closeEntry();
                         }
                     }
                     if (!foundBaseApk) {
@@ -160,23 +144,18 @@ public class ApkInstaller {
                             postError("Open apk failed");
                             return;
                         }
-                        long[] copied = {0};
-                        copyStream(is, os, bytesCopied -> {
-                            copied[0] += bytesCopied;
-                            postProgressFromBytes(copied[0], sourceSize, PROGRESS_PREPARED, PROGRESS_COPY_DONE);
-                        });
+                        copyStream(is, os);
                     }
-                    apkFilesToExtract.add(dstApkFile);
+                    try (InputStream is2 = new FileInputStream(dstApkFile);
+                         ZipInputStream zis2 = new ZipInputStream(new BufferedInputStream(is2))) {
+                        ApkUtils.unzipLibsToSystemAbi(libTargetDir, zis2);
+                    }
                 }
 
-                postProgress(PROGRESS_COPY_DONE);
-                extractNativeLibsWithProgress(apkFilesToExtract, libTargetDir);
-
                 String versionName = extractVersionName(apkOrApksUri, baseDir, dirName);
-                postProgress(PROGRESS_METADATA_DONE);
-                writeProfileMetadata(metadataDir, dirName, versionName);
+                if (!internalDir.exists()) internalDir.mkdirs();
+                writeTextFile(new File(internalDir, "version.txt"), versionName);
 
-                postProgress(PROGRESS_MAX);
                 postSuccess(versionName);
 
             } catch (Exception e) {
@@ -199,83 +178,23 @@ public class ApkInstaller {
     }
 
     private static void copyStream(InputStream is, OutputStream os) throws IOException {
-        copyStream(is, os, null);
-    }
-
-    private static void copyStream(InputStream is, OutputStream os, ProgressReporter reporter) throws IOException {
         byte[] buffer = new byte[BUFFER_SIZE];
         int len;
         while ((len = is.read(buffer)) != -1) {
             os.write(buffer, 0, len);
-            if (reporter != null) {
-                reporter.onBytesCopied(len);
-            }
         }
     }
 
-    private static void writeProfileMetadata(File metadataDir, String dirName, String versionName) throws IOException {
-        VersionProfileMetadataStore store = new VersionProfileMetadataStore();
-        store.loadOrCreate(metadataDir, VersionProfileMetadataStore.Defaults.custom(dirName, versionName));
+    private static void writeTextFile(File file, String content) throws IOException {
+        try (Writer writer = new FileWriter(file, false)) {
+            writer.write(content);
+        }
     }
 
     private void postProgress(int progress) {
-        int clamped = Math.max(0, Math.min(100, progress));
-        if (clamped <= lastPostedProgress && clamped < 100) {
-            return;
-        }
-        lastPostedProgress = clamped;
         new Handler(Looper.getMainLooper()).post(() -> {
-            if (callback != null) callback.onProgress(clamped);
+            if (callback != null) callback.onProgress(progress);
         });
-    }
-
-    private void postProgressFromBytes(long processedBytes, long totalBytes, int start, int end) {
-        if (totalBytes <= 0) {
-            return;
-        }
-        long safeProcessed = Math.max(0, Math.min(processedBytes, totalBytes));
-        int progress = start + (int) ((safeProcessed * (end - start)) / totalBytes);
-        postProgress(progress);
-    }
-
-    private void extractNativeLibsWithProgress(List<File> apkFiles, File libTargetDir) throws IOException {
-        long totalLibBytes = calculateNativeLibBytes(apkFiles);
-        if (totalLibBytes <= 0) {
-            postProgress(PROGRESS_LIBS_DONE);
-            return;
-        }
-
-        long[] extractedBytes = {0};
-        for (File apkFile : apkFiles) {
-            try (InputStream is = new FileInputStream(apkFile);
-                 ZipInputStream zis = new ZipInputStream(new BufferedInputStream(is))) {
-                ApkUtils.unzipLibsToSystemAbi(libTargetDir, zis, bytesExtracted -> {
-                    extractedBytes[0] += bytesExtracted;
-                    postProgressFromBytes(extractedBytes[0], totalLibBytes, PROGRESS_COPY_DONE, PROGRESS_LIBS_DONE);
-                });
-            }
-        }
-        postProgress(PROGRESS_LIBS_DONE);
-    }
-
-    private long calculateNativeLibBytes(List<File> apkFiles) {
-        long total = 0;
-        for (File apkFile : apkFiles) {
-            try (ZipFile zipFile = new ZipFile(apkFile)) {
-                java.util.Enumeration<? extends ZipEntry> entries = zipFile.entries();
-                while (entries.hasMoreElements()) {
-                    ZipEntry entry = entries.nextElement();
-                    if (entry.isDirectory() || !entry.getName().startsWith("lib/")) {
-                        continue;
-                    }
-                    long size = entry.getSize();
-                    if (size > 0) {
-                        total += size;
-                    }
-                }
-            } catch (IOException ignored) {}
-        }
-        return total;
     }
 
     private void postSuccess(String versionName) {
@@ -288,6 +207,44 @@ public class ApkInstaller {
         new Handler(Looper.getMainLooper()).post(() -> {
             if (callback != null) callback.onError(error);
         });
+    }
+
+    private VersionAbi extractVersionAndAbi(Uri apkOrApksUri) throws Exception {
+        File tempFile = new File(context.getCacheDir(), "temp_apk_" + System.currentTimeMillis() + ".apk");
+        String fileName = getFileName(apkOrApksUri);
+        try {
+            if (fileName != null && fileName.toLowerCase().endsWith(".apks")) {
+                try (InputStream apksIs = context.getContentResolver().openInputStream(apkOrApksUri);
+                     ZipInputStream zis = new ZipInputStream(new BufferedInputStream(apksIs))) {
+                    boolean found = false;
+                    ZipEntry entry;
+                    while ((entry = zis.getNextEntry()) != null) {
+                        if (!entry.isDirectory() && entry.getName().endsWith(".apk")) {
+                            boolean isBase = entry.getName().equals("base.apk") || entry.getName().endsWith("/base.apk");
+                            if (isBase || !found) {
+                                try (OutputStream os = new FileOutputStream(tempFile)) {
+                                    copyStream(zis, os);
+                                }
+                                found = true;
+                                if (isBase) break;
+                            }
+                        }
+                        zis.closeEntry();
+                    }
+                    if (!found) throw new FileNotFoundException("apks no base.apk!");
+                }
+            } else {
+                try (InputStream is = context.getContentResolver().openInputStream(apkOrApksUri);
+                     OutputStream os = new FileOutputStream(tempFile)) {
+                    if (is == null) throw new FileNotFoundException("打开apk失败");
+                    copyStream(is, os);
+                }
+            }
+            String versionName = extractApkVersionName(tempFile);
+            return new VersionAbi(versionName);
+        } finally {
+            tempFile.delete();
+        }
     }
 
     private String extractApkVersionName(File apkFile) {
@@ -317,61 +274,6 @@ public class ApkInstaller {
             cursor.close();
         }
         return result;
-    }
-
-    private long getContentSize(Uri uri) {
-        if ("file".equals(uri.getScheme()) && uri.getPath() != null) {
-            return new File(uri.getPath()).length();
-        }
-
-        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
-        if (cursor != null) {
-            try {
-                int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
-                if (sizeIndex != -1 && cursor.moveToFirst()) {
-                    return cursor.getLong(sizeIndex);
-                }
-            } finally {
-                cursor.close();
-            }
-        }
-
-        try (ParcelFileDescriptor fd = context.getContentResolver().openFileDescriptor(uri, "r")) {
-            if (fd != null) {
-                return fd.getStatSize();
-            }
-        } catch (Exception ignored) {}
-        return -1L;
-    }
-
-    private interface ProgressReporter {
-        void onBytesCopied(int bytesCopied);
-    }
-
-    private static class CountingInputStream extends FilterInputStream {
-        private long bytesRead;
-
-        CountingInputStream(InputStream in) {
-            super(in);
-        }
-
-        long getBytesRead() {
-            return bytesRead;
-        }
-
-        @Override
-        public int read() throws IOException {
-            int value = super.read();
-            if (value != -1) bytesRead++;
-            return value;
-        }
-
-        @Override
-        public int read(byte[] b, int off, int len) throws IOException {
-            int read = super.read(b, off, len);
-            if (read > 0) bytesRead += read;
-            return read;
-        }
     }
 
     public static boolean deleteDir(File dir) {

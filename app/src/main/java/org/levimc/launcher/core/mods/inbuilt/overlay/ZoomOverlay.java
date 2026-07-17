@@ -60,12 +60,9 @@ public class ZoomOverlay extends BaseOverlayButton {
     private void applyZoomLevel() {
         int zoomPercent = InbuiltModManager.getInstance(activity).getZoomLevel();
         long normalFov = 5360000000L;
-        long zoomDifference = 250000000L;
-        long zoomLevel = normalFov - (long)(zoomDifference * (zoomPercent / 100.0));
+        long maxZoomFov = 5310000000L;
+        long zoomLevel = normalFov - (long)((normalFov - maxZoomFov) * zoomPercent / 100.0);
         ZoomMod.nativeSetZoomLevel(zoomLevel);
-        
-        int transitionDuration = InbuiltModManager.getInstance(activity).getZoomTransitionDuration();
-        ZoomMod.nativeSetTransitionDuration(transitionDuration);
     }
 
     @Override
@@ -138,14 +135,6 @@ public class ZoomOverlay extends BaseOverlayButton {
 
     public boolean isZooming() {
         return isZooming;
-    }
-
-    @Override
-    public void applyConfigurationChanges() {
-        super.applyConfigurationChanges();
-        if (initialized) {
-            applyZoomLevel();
-        }
     }
 
     public boolean isInitialized() {

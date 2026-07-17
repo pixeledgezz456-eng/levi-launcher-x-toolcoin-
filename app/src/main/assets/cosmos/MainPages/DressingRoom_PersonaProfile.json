@@ -1,0 +1,1218 @@
+{
+  "result": {
+    "id": "2ca7bdff-c904-4d5a-afe0-24abeaf61725",
+    "pageId": "DressingRoom_PersonaProfile",
+    "addToRecentlyViewed": false,
+    "pageName": "Home L1",
+    "pageRefresh": false,
+    "sidebarLayoutType": "Persona",
+    "layout": [
+      {
+        "sectionName": "rows",
+        "rows": [
+          {
+            "controlId": "Layout",
+            "components": [
+              {
+                "linksToInfo": {
+                  "linksTo": "MultiItemPage_DressingRoomCoinScreen",
+                  "linkType": "pageId",
+                  "displayType": "store_layout.character_creator_screen",
+                  "screenTitle": {
+                    "value": "dr.header.minecoin.screen",
+                    "style": {
+                      "highlightColor": [],
+                      "alignment": "Left",
+                      "textColor": [],
+                      "font": "MinecraftTen",
+                      "showBackground": false,
+                      "showOutline": false,
+                      "indent": 0.0,
+                      "buttonWidth": 0.0,
+                      "color": [],
+                      "offerControlIdType": "None"
+                    },
+                    "replacements": []
+                  },
+                  "navigateInPlace": false
+                },
+                "isVisible": true,
+                "type": "topBarMinecoinComp",
+                "$type": "TopBarMinecoinComponent"
+              }
+            ]
+          },
+          {
+            "controlId": "CharacterSelectorRow",
+            "components": [
+              {
+                "skinsPage": {
+                  "linksTo": "MultiItemPage_PersonaSkinSelector",
+                  "linkType": "openProfileScreen",
+                  "displayType": "store_layout.skin_selector_screen",
+                  "screenTitle": {
+                    "value": "dr.header.classic_skins",
+                    "replacements": []
+                  },
+                  "navigateInPlace": false
+                },
+                "characterPage": {
+                  "linksTo": "MultiItemPage_PersonaCharacterCreator",
+                  "linkType": "openProfileScreen",
+                  "displayType": "store_layout.character_creator_screen",
+                  "screenTitle": {
+                    "value": "dr.header.customization",
+                    "replacements": []
+                  },
+                  "navigateInPlace": false
+                },
+                "personaDropdownId": 0,
+                "classicSkinDropdownId": 1,
+                "type": "characterSelectComp",
+                "$type": "CharacterSelectorComponent"
+              },
+              {
+                "isExpanded": true,
+                "dropdownId": 0,
+                "type": "dropdownComp",
+                "$type": "DropdownComponent"
+              }
+            ]
+          },
+          {
+            "controlId": "VerticalFillPadding",
+            "components": []
+          },
+          {
+            "controlId": "StoreRow",
+            "components": [
+              {
+                "text": {
+                  "value": "dr.header.featured",
+                  "style": {
+                    "highlightColor": [0.2, 0.2, 0.2],
+                    "alignment": "Left",
+                    "textColor": [1.0, 1.0, 1.0],
+                    "font": "MinecraftTen",
+                    "showBackground": true,
+                    "showOutline": true,
+                    "indent": 3.0,
+                    "buttonWidth": 0.0,
+                    "color": [],
+                    "offerControlIdType": "None"
+                  },
+                  "replacements": []
+                },
+                "type": "headerComp",
+                "$type": "HeaderComponent"
+              },
+              {
+                "items": [
+                  {
+                    "linksTo": "DressingRoom_Capes",
+                    "linksToInfo": {
+                      "linksTo": "DressingRoom_Capes",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.character_creator_screen",
+                      "screenTitle": {
+                        "value": "profileScreen.Header",
+                        "replacements": []
+                      },
+                      "navigateInPlace": false
+                    },
+                    "thumbnailPreviewOnly": true,
+                    "id": "00000000-0000-0000-0000-000000000000",
+                    "contentType": "PersonaDurable",
+                    "title": "Minecon 2011 Cape",
+                    "creatorName": "Minecraft",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://capes.bedrock-cosmos.app/icons/Minecon2011_cape.png",
+                      "urlWithResolution": "https://capes.bedrock-cosmos.app/icons/Minecon2011_cape.png"
+                    },
+                    "price": {
+                      "listPrice": 0,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "pieceType": "persona_capes",
+                    "rarity": "legendary",
+                    "ownership": "NotOwned",
+                    "packType": "Persona",
+                    "packIdentity": [
+                      {
+                        "type": "persona_piece",
+                        "uuid": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                        "version": "1.0.0"
+                      }
+                    ],
+                    "startDate": "2025-10-25T12:00:00Z",
+                    "namedLinksToInfoMap": {
+                      "dr.persona_creator_page": {
+                        "linksTo": "DressingRoom_Capes",
+                        "linkType": "external",
+                        "displayType": "store_layout.character_creator_screen",
+                        "navigateInPlace": false
+                      }
+                    }
+                  },
+                  {
+                    "linksTo": "DressingRoom_Capes",
+                    "linksToInfo": {
+                      "linksTo": "DressingRoom_Capes",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.character_creator_screen",
+                      "screenTitle": {
+                        "value": "profileScreen.Header",
+                        "replacements": []
+                      },
+                      "navigateInPlace": false
+                    },
+                    "thumbnailPreviewOnly": true,
+                    "id": "00000000-0000-0000-0000-000000000001",
+                    "contentType": "PersonaDurable",
+                    "title": "Minecon 2012 Cape",
+                    "creatorName": "Minecraft",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://capes.bedrock-cosmos.app/icons/Minecon2012_cape.png",
+                      "urlWithResolution": "https://capes.bedrock-cosmos.app/icons/Minecon2012_cape.png"
+                    },
+                    "price": {
+                      "listPrice": 0,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "pieceType": "persona_capes",
+                    "rarity": "legendary",
+                    "ownership": "NotOwned",
+                    "packType": "Persona",
+                    "packIdentity": [
+                      {
+                        "type": "persona_piece",
+                        "uuid": "00ae51ce-d9cb-4d4a-bf9c-ab24b90eb93f",
+                        "version": "1.0.0"
+                      }
+                    ],
+                    "startDate": "2025-10-25T12:00:00Z",
+                    "namedLinksToInfoMap": {
+                      "dr.persona_creator_page": {
+                        "linksTo": "DressingRoom_Capes",
+                        "linkType": "external",
+                        "displayType": "store_layout.character_creator_screen",
+                        "navigateInPlace": false
+                      }
+                    }
+                  },
+                  {
+                    "linksTo": "DressingRoom_Capes",
+                    "linksToInfo": {
+                      "linksTo": "DressingRoom_Capes",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.character_creator_screen",
+                      "screenTitle": {
+                        "value": "profileScreen.Header",
+                        "replacements": []
+                      },
+                      "navigateInPlace": false
+                    },
+                    "thumbnailPreviewOnly": true,
+                    "id": "00000000-0000-0000-0000-000000000002",
+                    "contentType": "PersonaDurable",
+                    "title": "Minecon 2013 Cape",
+                    "creatorName": "Minecraft",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://capes.bedrock-cosmos.app/icons/Minecon2013_cape.png",
+                      "urlWithResolution": "https://capes.bedrock-cosmos.app/icons/Minecon2013_cape.png"
+                    },
+                    "price": {
+                      "listPrice": 0,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "pieceType": "persona_capes",
+                    "rarity": "legendary",
+                    "ownership": "NotOwned",
+                    "packType": "Persona",
+                    "packIdentity": [
+                      {
+                        "type": "persona_piece",
+                        "uuid": "e701dbaa-fe9f-4d6a-920d-ee3f4b40102e",
+                        "version": "1.0.0"
+                      }
+                    ],
+                    "startDate": "2025-10-25T12:00:00Z",
+                    "namedLinksToInfoMap": {
+                      "dr.persona_creator_page": {
+                        "linksTo": "DressingRoom_Capes",
+                        "linkType": "external",
+                        "displayType": "store_layout.character_creator_screen",
+                        "navigateInPlace": false
+                      }
+                    }
+                  },
+                  {
+                    "linksTo": "DressingRoom_Capes",
+                    "linksToInfo": {
+                      "linksTo": "DressingRoom_Capes",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.character_creator_screen",
+                      "screenTitle": {
+                        "value": "profileScreen.Header",
+                        "replacements": []
+                      },
+                      "navigateInPlace": false
+                    },
+                    "thumbnailPreviewOnly": true,
+                    "id": "00000000-0000-0000-0000-000000000003",
+                    "contentType": "PersonaDurable",
+                    "title": "Minecon 2015 Cape",
+                    "creatorName": "Minecraft",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://capes.bedrock-cosmos.app/icons/Minecon2015_cape.png",
+                      "urlWithResolution": "https://capes.bedrock-cosmos.app/icons/Minecon2015_cape.png"
+                    },
+                    "price": {
+                      "listPrice": 0,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "pieceType": "persona_capes",
+                    "rarity": "legendary",
+                    "ownership": "NotOwned",
+                    "packType": "Persona",
+                    "packIdentity": [
+                      {
+                        "type": "persona_piece",
+                        "uuid": "61e8f038-e067-43d9-bd6e-0f8fa3bdf13b",
+                        "version": "1.0.0"
+                      }
+                    ],
+                    "startDate": "2025-10-25T12:00:00Z",
+                    "namedLinksToInfoMap": {
+                      "dr.persona_creator_page": {
+                        "linksTo": "DressingRoom_Capes",
+                        "linkType": "external",
+                        "displayType": "store_layout.character_creator_screen",
+                        "navigateInPlace": false
+                      }
+                    }
+                  },
+                  {
+                    "linksTo": "DressingRoom_Capes",
+                    "linksToInfo": {
+                      "linksTo": "DressingRoom_Capes",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.character_creator_screen",
+                      "screenTitle": {
+                        "value": "profileScreen.Header",
+                        "replacements": []
+                      },
+                      "navigateInPlace": false
+                    },
+                    "thumbnailPreviewOnly": true,
+                    "id": "00000000-0000-0000-0000-000000000004",
+                    "contentType": "PersonaDurable",
+                    "title": "Minecon 2016 Cape",
+                    "creatorName": "Minecraft",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://capes.bedrock-cosmos.app/icons/Minecon2016_cape.png",
+                      "urlWithResolution": "https://capes.bedrock-cosmos.app/icons/Minecon2016_cape.png"
+                    },
+                    "price": {
+                      "listPrice": 0,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "pieceType": "persona_capes",
+                    "rarity": "legendary",
+                    "ownership": "NotOwned",
+                    "packType": "Persona",
+                    "packIdentity": [
+                      {
+                        "type": "persona_piece",
+                        "uuid": "bb3f8cd6-9a5b-47ad-b629-9352e140d3eb",
+                        "version": "1.0.0"
+                      }
+                    ],
+                    "startDate": "2025-10-25T12:00:00Z",
+                    "namedLinksToInfoMap": {
+                      "dr.persona_creator_page": {
+                        "linksTo": "DressingRoom_Capes",
+                        "linkType": "external",
+                        "displayType": "store_layout.character_creator_screen",
+                        "navigateInPlace": false
+                      }
+                    }
+                  },
+                  {
+                    "linksTo": "DressingRoom_Capes",
+                    "linksToInfo": {
+                      "linksTo": "DressingRoom_Capes",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.character_creator_screen",
+                      "screenTitle": {
+                        "value": "profileScreen.Header",
+                        "replacements": []
+                      },
+                      "navigateInPlace": false
+                    },
+                    "thumbnailPreviewOnly": true,
+                    "id": "00000000-0000-0000-0000-000000000005",
+                    "contentType": "PersonaDurable",
+                    "title": "Founder's Cape",
+                    "creatorName": "Minecraft",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://xforgeassets002.xboxlive.com/pf-title-b63a0803d3653643-ee7b/98626e0c-d0e0-412c-9bf9-c901d866593b/founders_cape_thumbnail_0.png",
+                      "urlWithResolution": "https://xforgeassets002.xboxlive.com:443/pf-title-b63a0803d3653643-ee7b/98626e0c-d0e0-412c-9bf9-c901d866593b/founders_cape_thumbnail_0.png?width=800&height=450"
+                    },
+                    "price": {
+                      "listPrice": 0,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "pieceType": "persona_capes",
+                    "rarity": "legendary",
+                    "ownership": "NotOwned",
+                    "packType": "Persona",
+                    "packIdentity": [
+                      {
+                        "type": "persona_piece",
+                        "uuid": "1b99b77c-3caa-4aaa-8f79-f79f053e586f",
+                        "version": "1.1.0"
+                      }
+                    ],
+                    "startDate": "2025-10-25T12:00:00Z",
+                    "namedLinksToInfoMap": {
+                      "dr.persona_creator_page": {
+                        "linksTo": "DressingRoom_Capes",
+                        "linkType": "external",
+                        "displayType": "store_layout.character_creator_screen",
+                        "navigateInPlace": false
+                      }
+                    }
+                  },
+                  {
+                    "linksTo": "DressingRoom_Capes",
+                    "linksToInfo": {
+                      "linksTo": "DressingRoom_Capes",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.character_creator_screen",
+                      "screenTitle": {
+                        "value": "profileScreen.Header",
+                        "replacements": []
+                      },
+                      "navigateInPlace": false
+                    },
+                    "thumbnailPreviewOnly": true,
+                    "id": "00000000-0000-0000-0000-000000000006",
+                    "contentType": "PersonaDurable",
+                    "title": "Mojang Cape (Old)",
+                    "creatorName": "Minecraft",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://capes.bedrock-cosmos.app/icons/MojangOld_cape.png",
+                      "urlWithResolution": "https://capes.bedrock-cosmos.app/icons/MojangOld_cape.png"
+                    },
+                    "price": {
+                      "listPrice": 0,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "pieceType": "persona_capes",
+                    "rarity": "legendary",
+                    "ownership": "NotOwned",
+                    "packType": "Persona",
+                    "packIdentity": [
+                      {
+                        "type": "persona_piece",
+                        "uuid": "a199b5f5-006e-47c6-a288-8f5b949938e4",
+                        "version": "1.0.0"
+                      }
+                    ],
+                    "startDate": "2025-10-25T12:00:00Z",
+                    "namedLinksToInfoMap": {
+                      "dr.persona_creator_page": {
+                        "linksTo": "DressingRoom_Capes",
+                        "linkType": "external",
+                        "displayType": "store_layout.character_creator_screen",
+                        "navigateInPlace": false
+                      }
+                    }
+                  },
+                  {
+                    "linksTo": "DressingRoom_Capes",
+                    "linksToInfo": {
+                      "linksTo": "DressingRoom_Capes",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.character_creator_screen",
+                      "screenTitle": {
+                        "value": "profileScreen.Header",
+                        "replacements": []
+                      },
+                      "navigateInPlace": false
+                    },
+                    "thumbnailPreviewOnly": true,
+                    "id": "00000000-0000-0000-0000-000000000007",
+                    "contentType": "PersonaDurable",
+                    "title": "Mojang Cape",
+                    "creatorName": "Minecraft",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://capes.bedrock-cosmos.app/icons/Mojang_cape.png",
+                      "urlWithResolution": "https://capes.bedrock-cosmos.app/icons/Mojang_cape.png"
+                    },
+                    "price": {
+                      "listPrice": 0,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "pieceType": "persona_capes",
+                    "rarity": "legendary",
+                    "ownership": "NotOwned",
+                    "packType": "Persona",
+                    "packIdentity": [
+                      {
+                        "type": "persona_piece",
+                        "uuid": "3c24e2cb-e12f-4eca-aa03-998cf96404fb",
+                        "version": "1.0.0"
+                      }
+                    ],
+                    "startDate": "2025-10-25T12:00:00Z",
+                    "namedLinksToInfoMap": {
+                      "dr.persona_creator_page": {
+                        "linksTo": "DressingRoom_Capes",
+                        "linkType": "external",
+                        "displayType": "store_layout.character_creator_screen",
+                        "navigateInPlace": false
+                      }
+                    }
+                  },
+                  {
+                    "linksTo": "DressingRoom_Capes",
+                    "linksToInfo": {
+                      "linksTo": "DressingRoom_Capes",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.character_creator_screen",
+                      "screenTitle": {
+                        "value": "profileScreen.Header",
+                        "replacements": []
+                      },
+                      "navigateInPlace": false
+                    },
+                    "thumbnailPreviewOnly": true,
+                    "id": "00000000-0000-0000-0000-000000000008",
+                    "contentType": "PersonaDurable",
+                    "title": "Mojang Studios Cape",
+                    "creatorName": "Minecraft",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://xforgeassets002.xboxlive.com/pf-title-b63a0803d3653643-20ca2/105e3182-d377-408b-9739-a3ee53072d40/mojang_studios_cape_thumbnail_0.png",
+                      "urlWithResolution": "https://xforgeassets002.xboxlive.com/pf-title-b63a0803d3653643-20ca2/105e3182-d377-408b-9739-a3ee53072d40/mojang_studios_cape_thumbnail_0.png?width=800&height=450"
+                    },
+                    "price": {
+                      "listPrice": 0,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "pieceType": "persona_capes",
+                    "rarity": "legendary",
+                    "ownership": "NotOwned",
+                    "packType": "Persona",
+                    "packIdentity": [
+                      {
+                        "type": "persona_piece",
+                        "uuid": "1b302e84-6da6-11ec-90d6-0242ac120003",
+                        "version": "1.0.1"
+                      }
+                    ],
+                    "startDate": "2025-10-25T12:00:00Z",
+                    "namedLinksToInfoMap": {
+                      "dr.persona_creator_page": {
+                        "linksTo": "DressingRoom_Capes",
+                        "linkType": "external",
+                        "displayType": "store_layout.character_creator_screen",
+                        "navigateInPlace": false
+                      }
+                    }
+                  },
+                  {
+                    "linksTo": "DressingRoom_Capes",
+                    "linksToInfo": {
+                      "linksTo": "DressingRoom_Capes",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.character_creator_screen",
+                      "screenTitle": {
+                        "value": "profileScreen.Header",
+                        "replacements": []
+                      },
+                      "navigateInPlace": false
+                    },
+                    "thumbnailPreviewOnly": true,
+                    "id": "00000000-0000-0000-0000-000000000009",
+                    "contentType": "PersonaDurable",
+                    "title": "Tiny Takeover Cape",
+                    "description": "\u00a7",
+                    "creatorName": "Essential",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://capes.bedrock-cosmos.app/icons/Essential/TinyTakeoverCape.png",
+                      "urlWithResolution": "https://capes.bedrock-cosmos.app/icons/Essential/TinyTakeoverCape.png"
+                    },
+                    "price": {
+                      "listPrice": 0,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "pieceType": "persona_capes",
+                    "rarity": "legendary",
+                    "ownership": "Purchased",
+                    "packType": "Persona",
+                    "packIdentity": [
+                      {
+                        "type": "persona_piece",
+                        "uuid": "3ddf71f3-8eb2-4491-9b48-cd1c8bf6f465",
+                        "version": "1.0.0"
+                      }
+                    ],
+                    "startDate": "2026-03-30T12:00:00Z",
+                    "namedLinksToInfoMap": {
+                      "dr.persona_creator_page": {
+                        "linksTo": "DressingRoom_Capes",
+                        "linkType": "external",
+                        "displayType": "store_layout.character_creator_screen",
+                        "navigateInPlace": false
+                      }
+                    }
+                  }
+                ],
+                "totalItems": 10,
+                "customStoreRowConfiguration": {
+                  "seeAllVisible": false,
+                  "maxOffers": 10,
+                  "arrowsVisible": true,
+                  "visibleOffersPerRow": 10
+                },
+                "style": {
+                  "highlightColor": [0.098, 0.098, 0.098],
+                  "alignment": "Left",
+                  "textColor": [],
+                  "font": "default",
+                  "showBackground": true,
+                  "showOutline": true,
+                  "indent": 0.0,
+                  "buttonWidth": 15.0,
+                  "color": [],
+                  "offerControlIdType": "None"
+                },
+                "type": "itemListComp",
+                "$type": "ItemListComponent"
+              },
+              {
+                "dropdownId": 0,
+                "type": "dropdownOptionComp",
+                "$type": "DropdownOptionComponent"
+              },
+              {
+                "type": "carouselComp",
+                "$type": "CarouselComponent"
+              }
+            ]
+          },
+          {
+            "controlId": "StoreRow",
+            "components": [
+              {
+                "text": {
+                  "value": "dr.header.featured_skins",
+                  "style": {
+                    "highlightColor": [0.2, 0.2, 0.2],
+                    "alignment": "Left",
+                    "textColor": [1.0, 1.0, 1.0],
+                    "font": "MinecraftTen",
+                    "showBackground": false,
+                    "showOutline": true,
+                    "indent": 3.0,
+                    "buttonWidth": 0.0,
+                    "color": [],
+                    "offerControlIdType": "None"
+                  },
+                  "replacements": []
+                },
+                "type": "headerComp",
+                "$type": "HeaderComponent"
+              },
+              {
+                "items": [
+                  {
+                    "id": "MultiItemPage_BedrockCosmosMarketplaceCategoryPage",
+                    "contentType": "MarketplaceDurableCatalog_V1.2",
+                    "title": "Bedrock Cosmos Packs",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://bedrock-cosmos.app/thumbnails/All-Packs.jpg",
+                      "urlWithResolution": "https://bedrock-cosmos.app/thumbnails/All-Packs.jpg?width=800&height=450"
+                    },
+                    "packType": "Realms",
+                    "linksTo": "MultiItemPage_BedrockCosmosMarketplaceCategoryPage",
+                    "linksToInfo": {
+                      "linksTo": "MultiItemPage_BedrockCosmosMarketplaceCategoryPage",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.store_data_driven_screen",
+                      "navigateInPlace": false
+                    },
+                    "startDate": "2025-10-25T12:00:00Z"
+                  },
+                  {
+                    "id": "60a2047b-fe99-4a1d-9ccf-79d6a9b63adb",
+                    "contentType": "MarketplaceDurableCatalog_V1.2",
+                    "title": "Doctor Who Skins Volume I",
+                    "creatorName": "Minecraft",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://xforgeassets001.xboxlive.com/pf-title-6af55d1d10b42870-e9d1/f512ceae-67a7-40d1-84f2-7b4ef380f27e/DrWho1_Thumbnail_0.jpg",
+                      "urlWithResolution": "https://xforgeassets001.xboxlive.com/pf-title-6af55d1d10b42870-e9d1/f512ceae-67a7-40d1-84f2-7b4ef380f27e/DrWho1_Thumbnail_0.jpg?width=800&height=450"
+                    },
+                    "price": {
+                      "listPrice": -1,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "linksTo": "ItemDetail_60a2047b-fe99-4a1d-9ccf-79d6a9b63adb",
+                    "linksToInfo": {
+                      "linksTo": "ItemDetail_60a2047b-fe99-4a1d-9ccf-79d6a9b63adb",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.store_data_driven_screen",
+                      "navigateInPlace": false
+                    },
+                    "statistics": {
+                      "skins": 57,
+                      "worlds": 0,
+                      "textures": 0,
+                      "behaviors": 0,
+                      "addOns": 0
+                    },
+                    "flags": [],
+                    "ownership": "Purchased",
+                    "packType": "SkinPack",
+                    "packIdentity": [
+                      {
+                        "type": "skinpack",
+                        "uuid": "e58fb8eb-0e70-4c89-9f60-e7a4a72f9061",
+                        "version": "1.0.6"
+                      }
+                    ],
+                    "startDate": "2025-10-25T12:00:00Z"
+                  },
+                  {
+                    "id": "c65b1919-df90-4c9b-b3d5-a59c7d7a3979",
+                    "contentType": "MarketplaceDurableCatalog_V1.2",
+                    "title": "Doctor Who Skins Volume II",
+                    "creatorName": "Minecraft",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://xforgeassets002.xboxlive.com/pf-title-6af55d1d10b42870-e9d1/53d3bee7-73e7-4c54-933c-06d693cc6eb9/DrWho2_Thumbnail_0.jpg",
+                      "urlWithResolution": "https://xforgeassets002.xboxlive.com/pf-title-6af55d1d10b42870-e9d1/53d3bee7-73e7-4c54-933c-06d693cc6eb9/DrWho2_Thumbnail_0.jpg?width=800&height=450"
+                    },
+                    "price": {
+                      "listPrice": -1,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "linksTo": "ItemDetail_c65b1919-df90-4c9b-b3d5-a59c7d7a3979",
+                    "linksToInfo": {
+                      "linksTo": "ItemDetail_c65b1919-df90-4c9b-b3d5-a59c7d7a3979",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.store_data_driven_screen",
+                      "navigateInPlace": false
+                    },
+                    "statistics": {
+                      "skins": 51,
+                      "worlds": 0,
+                      "textures": 0,
+                      "behaviors": 0,
+                      "addOns": 0
+                    },
+                    "flags": [],
+                    "ownership": "Purchased",
+                    "packType": "SkinPack",
+                    "packIdentity": [
+                      {
+                        "type": "skinpack",
+                        "uuid": "83ba3582-970f-4100-b8cc-277a10217b13",
+                        "version": "1.0.6"
+                      }
+                    ],
+                    "startDate": "2025-10-25T12:00:00Z"
+                  },
+                  {
+                    "id": "62c68fd4-3075-40ed-8b7b-15dcc7b667ff",
+                    "contentType": "MarketplaceDurableCatalog_V1.2",
+                    "title": "Festive Mash-Up",
+                    "creatorName": "Minecraft",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://bedrock-cosmos.app/thumbnails/FestiveLegacy.jpeg",
+                      "urlWithResolution": "https://bedrock-cosmos.app/thumbnails/FestiveLegacy.jpeg?width=800&height=450"
+                    },
+                    "price": {
+                      "listPrice": -1,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "linksTo": "ItemDetail_62c68fd4-3075-40ed-8b7b-15dcc7b667ff",
+                    "linksToInfo": {
+                      "linksTo": "ItemDetail_62c68fd4-3075-40ed-8b7b-15dcc7b667ff",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.store_data_driven_screen",
+                      "navigateInPlace": false
+                    },
+                    "creatorPage": "CreatorPage_master_player_account!HiddenDelisted",
+                    "statistics": {
+                      "skins": 1,
+                      "worlds": 0,
+                      "textures": 0,
+                      "behaviors": 0,
+                      "addOns": 0
+                    },
+                    "flags": [],
+                    "ownership": "Purchased",
+                    "packType": "SkinPack",
+                    "packIdentity": [
+                      {
+                        "type": "skinpack",
+                        "uuid": "d44ba892-7378-4fcd-a3f1-72de53675d24",
+                        "version": "1.0.0"
+                      }
+                    ],
+                    "startDate": "2025-10-25T12:00:00Z"
+                  },
+                  {
+                    "id": "4d7590d6-8f7f-4f53-989a-2df76b6b015b",
+                    "contentType": "MarketplaceDurableCatalog_V1.2",
+                    "title": "LittleBigPlanet™ Mash-up",
+                    "description": "Mix the crazy, non-stop creativity of LittleBigPlanet™ into the endless fun and freedom of Minecraft with this special mashup pack.\r\nSackboy®, Sackgirl®, OddSock, Toggle and Swoop will decorate your Minecraft universe with a whole heap of LBP characters, creatures and stuff.\r\nOnly available for Minecraft on PlayStation®4.",
+                    "creatorName": "Minecraft (Hidden/Delisted)",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/0d96b5b9-79ac-402b-a796-3bce90f12348/LittleBigPlanet_Thumbnail_0.jpg",
+                      "urlWithResolution": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/0d96b5b9-79ac-402b-a796-3bce90f12348/LittleBigPlanet_Thumbnail_0.jpg?width=800&height=450"
+                    },
+                    "Rating": {
+                      "Average": 4.3,
+                      "TotalCount": 18670,
+                      "Count5Star": 13923,
+                      "Count4Star": 1394,
+                      "Count3Star": 863,
+                      "Count2Star": 367,
+                      "Count1Star": 2123
+                    },
+                    "price": {
+                      "listPrice": 990,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "linksTo": "ItemDetail_4d7590d6-8f7f-4f53-989a-2df76b6b015b",
+                    "linksToInfo": {
+                      "linksTo": "ItemDetail_4d7590d6-8f7f-4f53-989a-2df76b6b015b",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.store_data_driven_screen",
+                      "navigateInPlace": false
+                    },
+                    "creatorPage": "CreatorPage_master_player_account!HiddenDelisted",
+                    "statistics": {
+                      "skins": 1,
+                      "worlds": 0,
+                      "textures": 0,
+                      "behaviors": 0,
+                      "addOns": 0
+                    },
+                    "ownership": "NotOwned",
+                    "packType": "SkinPack",
+                    "packIdentity": [
+                      {
+                        "type": "skinpack",
+                        "uuid": "0f2e08ee-8ef2-4521-b03d-9f89c907c70e",
+                        "version": "1.14.2026"
+                      },
+                      {
+                        "type": "resourcepack",
+                        "uuid": "abfcab1a-19fe-4564-b4ed-ffbda4a77690",
+                        "version": "1.0.71"
+                      },
+                      {
+                        "type": "worldtemplate",
+                        "uuid": "1dde574b-2b4d-48e6-951e-d135093bcdc9",
+                        "version": "1.0.71"
+                      }
+                    ],
+                    "tags": [],
+                    "images": [
+                      {
+                        "tag": "packicon",
+                        "type": "Screenshot",
+                        "url": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/cca99798-f06c-4d08-be8b-e7bcc68125a0/LittleBigPlanet_packicon_0.jpg",
+                        "urlWithResolution": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/cca99798-f06c-4d08-be8b-e7bcc68125a0/LittleBigPlanet_packicon_0.jpg?width=800&height=450"
+                      },
+                      {
+                        "tag": "panorama",
+                        "type": "Screenshot",
+                        "url": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/adbdc2e3-e587-4dc9-ae44-e8f7c7b01716/LittleBigPlanet_panorama_0.jpg",
+                        "urlWithResolution": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/adbdc2e3-e587-4dc9-ae44-e8f7c7b01716/LittleBigPlanet_panorama_0.jpg?width=800&height=450"
+                      },
+                      {
+                        "tag": "screenshot",
+                        "type": "Screenshot",
+                        "url": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/90f0019f-6e36-4703-b956-caf68ae936c9/LittleBigPlanet_Screenshot_0.jpg",
+                        "urlWithResolution": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/90f0019f-6e36-4703-b956-caf68ae936c9/LittleBigPlanet_Screenshot_0.jpg?width=800&height=450"
+                      },
+                      {
+                        "tag": "screenshot",
+                        "type": "Screenshot",
+                        "url": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/8a0ca0fc-6fa4-46f6-b74b-0b75ca3d9b46/LittleBigPlanet_Screenshot_1.jpg",
+                        "urlWithResolution": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/8a0ca0fc-6fa4-46f6-b74b-0b75ca3d9b46/LittleBigPlanet_Screenshot_1.jpg?width=800&height=450"
+                      },
+                      {
+                        "tag": "screenshot",
+                        "type": "Screenshot",
+                        "url": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/c803adc4-097f-49ae-8dd3-1f4e46e70c97/LittleBigPlanet_Screenshot_2.jpg",
+                        "urlWithResolution": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/c803adc4-097f-49ae-8dd3-1f4e46e70c97/LittleBigPlanet_Screenshot_2.jpg?width=800&height=450"
+                      },
+                      {
+                        "tag": "screenshot",
+                        "type": "Screenshot",
+                        "url": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/9b28994c-ab09-48da-8da1-ab48c364e173/LittleBigPlanet_Screenshot_3.jpg",
+                        "urlWithResolution": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/9b28994c-ab09-48da-8da1-ab48c364e173/LittleBigPlanet_Screenshot_3.jpg?width=800&height=450"
+                      },
+                      {
+                        "tag": "screenshot",
+                        "type": "Screenshot",
+                        "url": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/45249c39-5f5f-4afd-a6bb-89cd2a6b5568/LittleBigPlanet_Screenshot_4.jpg",
+                        "urlWithResolution": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/45249c39-5f5f-4afd-a6bb-89cd2a6b5568/LittleBigPlanet_Screenshot_4.jpg?width=800&height=450"
+                      },
+                      {
+                        "tag": "Thumbnail",
+                        "type": "Thumbnail",
+                        "url": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/0d96b5b9-79ac-402b-a796-3bce90f12348/LittleBigPlanet_Thumbnail_0.jpg",
+                        "urlWithResolution": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/0d96b5b9-79ac-402b-a796-3bce90f12348/LittleBigPlanet_Thumbnail_0.jpg?width=800&height=450"
+                      }
+                    ],
+                    "contents": [],
+                    "platformRestricted": false,
+                    "iconOverlay": [],
+                    "descriptionLineByLine": [],
+                    "startDate": "2019-12-10T18:00:00Z",
+                    "subscription": [],
+                    "thumbnailPreviewOnly": false,
+                    "namedLinksToInfoMap": {}
+                  },
+                  {
+                    "id": "a3cf70ed-85aa-4b43-8475-54763110e6f9",
+                    "contentType": "MarketplaceDurableCatalog_V1.2",
+                    "title": "Mario Mash-Up",
+                    "description": "Super Mario meets Minecraft! This Mash-Up Pack contains a Super Mario-style Texture Pack, Skin Pack and a Super Mario-themed world to explore!",
+                    "creatorName": "Minecraft (Hidden/Delisted)",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://bedrock-cosmos.app/thumbnails/MarioSkinPack.jpeg",
+                      "urlWithResolution": "https://bedrock-cosmos.app/thumbnails/MarioSkinPack.jpeg"
+                    },
+                    "price": {
+                      "listPrice": -1,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "linksTo": "ItemDetail_1fc32dd0-b399-4255-a4c7-e6e262a40ab6",
+                    "linksToInfo": {
+                      "linksTo": "ItemDetail_1fc32dd0-b399-4255-a4c7-e6e262a40ab6",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.store_data_driven_screen",
+                      "navigateInPlace": false
+                    },
+                    "creatorPage": "CreatorPage_master_player_account!HiddenDelisted",
+                    "statistics": {
+                      "skins": 40,
+                      "worlds": 0,
+                      "textures": 0,
+                      "behaviors": 0,
+                      "addOns": 0
+                    },
+                    "flags": [],
+                    "ownership": "Purchased",
+                    "packType": "SkinPack",
+                    "packIdentity": [
+                      {
+                        "type": "skinpack",
+                        "uuid": "47ca6989-81db-404b-a9f1-f3391258b8a2",
+                        "version": "1.14.2026"
+                      }
+                    ],
+                    "videoUrl": "https://www.youtube.com/watch?v=sNcVYOPw6r0",
+                    "tags": [],
+                    "images": [
+                      {
+                        "tag": "Thumbnail",
+                        "type": "Thumbnail",
+                        "url": "https://bedrock-cosmos.app/thumbnails/MarioSkinPack.jpeg",
+                        "urlWithResolution": "https://bedrock-cosmos.app/thumbnails/MarioSkinPack.jpeg"
+                      }
+                    ],
+                    "contents": [],
+                    "platformRestricted": true,
+                    "iconOverlay": [],
+                    "descriptionLineByLine": [],
+                    "startDate": "2025-10-26T00:00:00Z",
+                    "subscription": [],
+                    "thumbnailPreviewOnly": false,
+                    "namedLinksToInfoMap": {}
+                  },
+                  {
+                    "id": "2f60a7a0-8010-49b1-8b57-851ac41f34cf",
+                    "contentType": "MarketplaceDurableCatalog_V1.2",
+                    "title": "Skin Pack 4",
+                    "creatorName": "Minecraft (Hidden/Delisted)",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://www.4jstudios.com/wp-content/uploads/2022/09/skinpack4_Thumbnail_0.jpg",
+                      "urlWithResolution": "https://www.4jstudios.com/wp-content/uploads/2022/09/skinpack4_Thumbnail_0.jpg?width=800&height=450"
+                    },
+                    "price": {
+                      "listPrice": -1,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "linksTo": "ItemDetail_2f60a7a0-8010-49b1-8b57-851ac41f34cf",
+                    "linksToInfo": {
+                      "linksTo": "ItemDetail_2f60a7a0-8010-49b1-8b57-851ac41f34cf",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.store_data_driven_screen",
+                      "navigateInPlace": false
+                    },
+                    "creatorPage": "CreatorPage_master_player_account!HiddenDelisted",
+                    "statistics": {
+                      "skins": 50,
+                      "worlds": 0,
+                      "textures": 0,
+                      "behaviors": 0,
+                      "addOns": 0
+                    },
+                    "flags": [],
+                    "ownership": "Purchased",
+                    "packType": "SkinPack",
+                    "packIdentity": [
+                      {
+                        "type": "skinpack",
+                        "uuid": "55fa75f0-1635-485f-9586-1bdd0cb6a255",
+                        "version": "1.0.0"
+                      }
+                    ],
+                    "startDate": "2019-12-09T18:00:00Z"
+                  },
+                  {
+                    "id": "80c85890-dad7-4d3a-b2ef-60071327b7cf",
+                    "contentType": "MarketplaceDurableCatalog_V1.2",
+                    "title": "Skin Pack 5",
+                    "creatorName": "Minecraft (Hidden/Delisted)",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://www.4jstudios.com/wp-content/uploads/2022/09/skinpack5_Thumbnail_0.jpg",
+                      "urlWithResolution": "https://www.4jstudios.com/wp-content/uploads/2022/09/skinpack5_Thumbnail_0.jpg?width=800&height=450"
+                    },
+                    "price": {
+                      "listPrice": -1,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "linksTo": "ItemDetail_80c85890-dad7-4d3a-b2ef-60071327b7cf",
+                    "linksToInfo": {
+                      "linksTo": "ItemDetail_80c85890-dad7-4d3a-b2ef-60071327b7cf",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.store_data_driven_screen",
+                      "navigateInPlace": false
+                    },
+                    "creatorPage": "CreatorPage_master_player_account!HiddenDelisted",
+                    "statistics": {
+                      "skins": 50,
+                      "worlds": 0,
+                      "textures": 0,
+                      "behaviors": 0,
+                      "addOns": 0
+                    },
+                    "flags": [],
+                    "ownership": "Purchased",
+                    "packType": "SkinPack",
+                    "packIdentity": [
+                      {
+                        "type": "skinpack",
+                        "uuid": "cc59b688-7cfb-4fa0-a76e-84aa55b92cae",
+                        "version": "1.0.0"
+                      }
+                    ],
+                    "startDate": "2019-12-09T18:00:00Z"
+                  },
+                  {
+                    "id": "4c61b1f5-2bbc-492f-8a2a-1f3b813c4113",
+                    "contentType": "MarketplaceDurableCatalog_V1.2",
+                    "title": "Skin Pack 6",
+                    "creatorName": "Minecraft (Hidden/Delisted)",
+                    "thumbnail": {
+                      "tag": "Thumbnail",
+                      "type": "Thumbnail",
+                      "url": "https://www.4jstudios.com/wp-content/uploads/2022/09/skinpack6_Thumbnail_0.jpg",
+                      "urlWithResolution": "https://www.4jstudios.com/wp-content/uploads/2022/09/skinpack6_Thumbnail_0.jpg?width=800&height=450"
+                    },
+                    "price": {
+                      "listPrice": -1,
+                      "realmsInfo": {
+                        "inRealmsPlus": false
+                      },
+                      "currencyId": "ecd19d3c-7635-402c-a185-eb11cb6c6946",
+                      "virtualCurrencyType": "Minecoin"
+                    },
+                    "linksTo": "ItemDetail_4c61b1f5-2bbc-492f-8a2a-1f3b813c4113",
+                    "linksToInfo": {
+                      "linksTo": "ItemDetail_4c61b1f5-2bbc-492f-8a2a-1f3b813c4113",
+                      "linkType": "pageId",
+                      "displayType": "store_layout.store_data_driven_screen",
+                      "navigateInPlace": false
+                    },
+                    "creatorPage": "CreatorPage_master_player_account!HiddenDelisted",
+                    "statistics": {
+                      "skins": 46,
+                      "worlds": 0,
+                      "textures": 0,
+                      "behaviors": 0,
+                      "addOns": 0
+                    },
+                    "flags": [],
+                    "ownership": "Purchased",
+                    "packType": "SkinPack",
+                    "packIdentity": [
+                      {
+                        "type": "skinpack",
+                        "uuid": "0037a29f-876e-4709-8bb8-a388738e6f51",
+                        "version": "1.0.0"
+                      }
+                    ],
+                    "startDate": "2019-12-09T18:00:00Z"
+                  }
+                ],
+                "totalItems": 11,
+                "linksTo": "MultiItemPage_PersonaSkinSelector%7cSkinPack_10000000-2000-3000-4000-500000000000",
+                "linksToInfo": {
+                  "linksTo": "MultiItemPage_PersonaSkinSelector%7cSkinPack_10000000-2000-3000-4000-500000000000",
+                  "linkType": "pageId",
+                  "displayType": "store_layout.skin_selector_screen",
+                  "navigateInPlace": false
+                },
+                "customStoreRowConfiguration": {
+                  "seeAllVisible": false,
+                  "maxOffers": 12,
+                  "arrowsVisible": true,
+                  "visibleOffersPerRow": 6
+                },
+                "style": {
+                  "highlightColor": [0.098, 0.098, 0.098],
+                  "alignment": "Left",
+                  "textColor": [],
+                  "font": "default",
+                  "showBackground": false,
+                  "showOutline": false,
+                  "indent": 0.0,
+                  "buttonWidth": 15.0,
+                  "color": [],
+                  "offerControlIdType": "ThumbnailOnly"
+                },
+                "type": "itemListComp",
+                "$type": "ItemListComponent"
+              },
+              {
+                "dropdownId": 1,
+                "type": "dropdownOptionComp",
+                "$type": "DropdownOptionComponent"
+              },
+              {
+                "type": "carouselComp",
+                "$type": "CarouselComponent"
+              }
+            ]
+          }
+        ]
+      },
+      { "sectionName": "navigation", "rows": [] }
+    ]
+  }
+}

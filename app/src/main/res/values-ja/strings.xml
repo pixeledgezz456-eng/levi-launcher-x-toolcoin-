@@ -11,7 +11,7 @@
     <string name="current_instance">現在のインスタンス</string>
 
     <!-- Mods -->
-    <string name="mods_title">モッド (%d)</string>
+    <string name="mods_title">🧩 モッド (%d)</string>
     <string name="mods_section_title">モッド</string>
     <string name="external_mods_label">外部モッド</string>
     <string name="inbuilt_mods_label">内蔵モッド</string>
@@ -40,7 +40,6 @@
     <string name="content_detected_message">今すぐゲームを起動しますか？\n\nファイル: %s</string>
     <string name="launch_now">今すぐ起動</string>
     <string name="launch_later">後で起動</string>
-    <string name="loading">読み込み中…</string>
 
     <string name="import_confirmation_title">モッドのインポート</string>
     <string name="import_confirmation_message">選択した %d 個のモッドファイルをインポートしてもよろしいですか？</string>
@@ -54,14 +53,13 @@
     <string name="overwrite">上書き</string>
     <string name="skip">スキップ</string>
     <string name="confirm">確認</string>
-    <string name="retry">再試行</string>
 
     <string name="installed_packages">インストール済みパッケージ</string>
     <string name="local_custom">ローカルカスタム</string>
 
     <!-- Permissions -->
-    <string name="storage_permission_title">ストレージ移行の権限</string>
-    <string name="storage_permission_message">古い games/org.levimc ディレクトリからデータをコピーするため、LeviLauncher にストレージ権限を付与してください。この権限は移行手順でのみ必要です。</string>
+    <string name="storage_permission_title">ストレージ権限が必要です</string>
+    <string name="storage_permission_message">モッドディレクトリにアクセスしてモッドを検出するために、ストレージ権限を付与してください。</string>
     <string name="grant_permission">許可する</string>
     <string name="cancel">キャンセル</string>
 
@@ -100,7 +98,6 @@
     <string name="settings_tab_personalize">カスタマイズ</string>
     <string name="settings_tab_updates">アップデート</string>
     <string name="settings_tab_about">アプリについて</string>
-    <string name="settings_tab_migration">移行</string>
     <string name="settings_theme_desc">アプリのテーマを選択</string>
 
     <string name="unknown_sources_permission_title">インストールの許可</string>
@@ -108,15 +105,6 @@
 
     <string name="check_update">アップデートを確認</string>
     <string name="version_prefix">バージョン: </string>
-    <string name="unknown_error">不明なエラー</string>
-    <string name="preloader_sigs_title">ランタイムデータ</string>
-    <string name="preloader_sigs_last_update">最終更新: %1$s</string>
-    <string name="preloader_sigs_never_updated">未更新</string>
-    <string name="preloader_sigs_update">ランタイムデータを更新</string>
-    <string name="preloader_sigs_updating">更新中…</string>
-    <string name="preloader_sigs_update_success">ランタイムデータを更新しました</string>
-    <string name="preloader_sigs_update_failed">ランタイムデータの更新に失敗しました: %1$s</string>
-    <string name="preloader_sigs_no_remote_url">ランタイムデータ更新URLが設定されていません</string>
 
     <string name="dialog_title_no_version">バージョンが選択されていません</string>
     <string name="dialog_message_no_version">起動する前にゲームのバージョンを選択してください。</string>
@@ -125,8 +113,6 @@
     <string name="dialog_positive_enable">有効にする</string>
     <string name="dialog_title_launch_failed">起動失敗</string>
     <string name="dialog_message_launch_failed">Minecraft の起動に失敗しました: %1$s</string>
-    <string name="dialog_title_incompatible_mods">互換性のない Mod をスキップしました</string>
-    <string name="dialog_message_incompatible_mods">有効な一部の Mod は現在の Minecraft バージョン %1$s と互換性がないためスキップされました:\n\n%2$s</string>
     <string name="dialog_title_disable_version_isolation">バージョン分離を無効にする</string>
     <string name="dialog_message_disable_version_isolation">バージョン分離が有効な状態でインストール済みバージョンを起動しようとしています。続行するには無効にしてください。</string>
     <string name="dialog_positive_disable">無効にする</string>
@@ -154,54 +140,8 @@
     <string name="missing_libs_message">必要なゲームライブラリファイルが不足しています。今すぐ修復しますか？</string>
     <string name="repair">修復</string>
     <string name="repair_libs_dialog_title">ゲームライブラリの修復</string>
-    <string name="repair_libs_dialog_subtitle">Minecraft のネイティブランタイムを準備中</string>
     <string name="repair_preparing">準備中…</string>
     <string name="repair_processing">ライブラリを展開中…</string>
-    <string name="repair_finalizing">修復を完了しています…</string>
-    <string name="storage_migration_title">ストレージ移行が必要です</string>
-    <string name="storage_migration_message">LeviLauncher を続行する前に、games/org.levimc のデータを %1$s に移行する必要があります。
-
-このストレージ変更は Google Play への公開要件を満たすために必要です。古いディレクトリはそのまま保持されますが、移行後は使用されません。
-
-移行には時間がかかる場合があります。実行中はアプリをバックグラウンドにしておけます。大量のファイルコピー中は端末が熱くなることがあります。ご理解ください。</string>
-    <string name="storage_migration_start">移行</string>
-    <string name="storage_migration_permission_denied">移行のために古いディレクトリを読み取るには、ストレージ権限が必要です。</string>
-    <string name="storage_migration_progress_title">ストレージを移行中</string>
-    <string name="storage_migration_progress_subtitle">ランチャーデータを Android/media にコピーしています</string>
-    <string name="storage_migration_scanning">古いディレクトリをスキャン中…</string>
-    <string name="storage_migration_progress_detail">%1$d/%2$d ファイル · %3$s</string>
-    <string name="storage_migration_eta_pending">残り時間を推定中…</string>
-    <string name="storage_migration_eta_detail">残り約 %1$s · %2$s 頃に完了</string>
-    <string name="storage_migration_duration_hours_minutes">%1$d時間%2$d分</string>
-    <string name="storage_migration_duration_minutes_seconds">%1$d分%2$d秒</string>
-    <string name="storage_migration_duration_seconds">%1$d秒</string>
-    <string name="storage_migration_background_hint">移行はバックグラウンドで続行できます。充電したままにすることをおすすめします。ファイルコピー中は端末が熱くなることがあります。ご理解ください。</string>
-    <string name="storage_migration_completed_title">移行完了</string>
-    <string name="storage_migration_completed_message">%1$d 個のファイル (%2$s) を移行しました。%3$d 個のファイルは既に最新でした。
-
-古い games/org.levimc ディレクトリは削除されておらず、今後は使用されません。</string>
-    <string name="storage_migration_partial_title">移行が完了していません</string>
-    <string name="storage_migration_partial_message">%1$d/%2$d 個のファイルをコピーできませんでした。LeviLauncher を続行するには移行を完了する必要があります。</string>
-    <string name="storage_migration_failed_title">移行失敗</string>
-    <string name="storage_migration_failed_message">移行を続行できませんでした: %1$s
-
-LeviLauncher を続行するには移行を完了する必要があります。</string>
-    <string name="migration_cleanup_title">履歴ディレクトリを削除</string>
-    <string name="migration_cleanup_desc">すべてのインスタンスが正常に起動し、ワールド、リソースパック、ビヘイビアーパック、設定が失われていないことを確認してから、古い games/org.levimc ディレクトリを削除してください。削除した履歴データはこのディレクトリから復元できません。</string>
-    <string name="migration_cleanup_button">履歴ディレクトリを削除</string>
-    <string name="migration_cleanup_confirm_title">履歴ディレクトリを削除しますか？</string>
-    <string name="migration_cleanup_confirm_message">古い games/org.levimc ディレクトリを完全に削除します。\n\n続行する前に、すべてのインスタンスが正常に起動し、ワールド、リソースパック、ビヘイビアーパック、設定が失われていないことを確認してください。</string>
-    <string name="migration_cleanup_unavailable_not_completed">ストレージ移行がまだ完了していません。古いディレクトリを削除する前に移行を完了してください。</string>
-    <string name="migration_cleanup_unavailable_missing">古い games/org.levimc ディレクトリが見つからないか、すでに削除されています。</string>
-    <string name="migration_cleanup_ready">古いディレクトリを削除できます。続行する前に、移行済みのすべてのインスタンスが正常であることを確認してください。</string>
-    <string name="migration_cleanup_success">履歴ディレクトリを削除しました: %1$d 個のファイルを削除 (%2$s)。</string>
-    <string name="migration_cleanup_failed">履歴ディレクトリの削除に失敗しました: %1$s</string>
-    <string name="shared_storage_layout_title">共有コンテンツディレクトリ</string>
-    <string name="shared_storage_layout_desc">Internal と External の共有コンテンツに新しい _shared ディレクトリを使用します。オフにすると、元の internal/external ゲームデータディレクトリを使用します。ファイルは移動されません。</string>
-    <string name="shared_storage_layout_mode_new">新しい _shared ディレクトリ</string>
-    <string name="shared_storage_layout_mode_legacy">元の internal/external ディレクトリ</string>
-    <string name="shared_storage_layout_status">現在のモード: %1$s\nInternal: %2$s\nExternal: %3$s</string>
-    <string name="shared_storage_layout_changed">ストレージディレクトリの選択を更新しました。変更を完全に反映するには Minecraft を再起動し、コンテンツ管理を開き直してください。</string>
 
     <string name="theme_title">テーマモード</string>
     <string name="theme_follow_system">システムに従う</string>
@@ -225,9 +165,7 @@ LeviLauncher を続行するには移行を完了する必要があります。<
     <string name="toast_delete_failed">削除に失敗しました: %1$s</string>
     <string name="error_delete_builtin_version">組み込みバージョンは削除できません</string>
     <string name="invalid_mod_file">失敗</string>
-    <string name="invalid_mod_file_reason">.so ファイル、.zip モッドパッケージ、または .levipack モッドパッケージのみ許可されています。</string>
-    <string name="invalid_zip_mod_package_title">無効な ZIP モッドパッケージ</string>
-    <string name="invalid_zip_mod_package_message">ZIP モッドパッケージには manifest.json と .so ファイルが含まれている必要があります。</string>
+    <string name="invalid_mod_file_reason">.so ファイルまたは .zip のモッドパッケージのみ許可されています。</string>
     <string name="error_versions">エラーバージョン</string>
 
     <string name="dialog_title_delete_mod">モッドの削除</string>
@@ -253,19 +191,6 @@ LeviLauncher を続行するには移行を完了する必要があります。<
     <string name="instance_delete_warning">この操作は元に戻せません。</string>
     <string name="instance_delete_confirm_title">インスタンスの削除</string>
     <string name="instance_delete_confirm_msg">本当に削除しますか？ワールドを含むすべてのデータが完全に失われます。</string>
-    <string name="instance_batch_backup_button">一括バックアップ</string>
-    <string name="instance_batch_backup_title">インスタンスを一括バックアップ</string>
-    <string name="instance_batch_backup_select_message">バックアップするインスタンスを選択してください。Minecraft が実行中の場合は、バックアップ中のデータ変更を避けるため先に終了してください。</string>
-    <string name="instance_batch_backup_select_all">すべてのインスタンスを選択</string>
-    <string name="instance_batch_backup_no_instances">バックアップ可能なインスタンスがありません。</string>
-    <string name="instance_batch_backup_no_selection">少なくとも 1 つのインスタンスを選択してください。</string>
-    <string name="instance_batch_backup_in_progress">%1$s をバックアップ中 (%2$d/%3$d)…</string>
-    <string name="instance_batch_backup_success_title">バックアップを作成しました</string>
-    <string name="instance_batch_backup_success_message">%1$d 件のバックアップを作成しました:\n%2$s</string>
-    <string name="instance_batch_backup_partial_title">バックアップは一部完了しました</string>
-    <string name="instance_batch_backup_partial_message">%1$d 件のバックアップを作成し、%2$d 件が失敗しました。\n\n保存済み:\n%3$s\n\n失敗:\n%4$s</string>
-    <string name="instance_batch_backup_failed_title">一括バックアップに失敗しました</string>
-    <string name="instance_batch_backup_failed_message">バックアップを作成できませんでした:\n%1$s</string>
 
     <string name="language">言語 (Language)</string>
     <string name="english">English</string>
@@ -277,8 +202,6 @@ LeviLauncher を続行するには移行を完了する必要があります。<
     <string name="french">Français</string>
     <string name="japanese">日本語</string>
     <string name="hindi">हिन्दी</string>
-    <string name="turkish">Türkçe</string>
-    <string name="vietnamese">Tiếng Việt</string>
 
     <string name="rename_version_title">バージョンの名前変更</string>
     <string name="rename_version_message">このバージョンの新しい名前を入力してください:</string>
@@ -341,15 +264,6 @@ LeviLauncher を続行するには移行を完了する必要があります。<
     <string name="confirm_delete_resource_pack">このパックを削除してもよろしいですか？この操作は元に戻せません。</string>
     <string name="confirm_delete_behavior_pack">このパックを削除してもよろしいですか？この操作は元に戻せません。</string>
     <string name="confirm_delete_skin_pack">このパックを削除してもよろしいですか？この操作は元に戻せません。</string>
-    <string name="importing_content">コンテンツをインポート中…</string>
-    <string name="exporting_world">ワールドをエクスポート中…</string>
-    <string name="exporting_pack">パックをエクスポート中…</string>
-    <string name="backing_up_world">ワールドをバックアップ中…</string>
-    <string name="deleting_world">ワールドを削除中…</string>
-    <string name="deleting_pack">パックを削除中…</string>
-    <string name="adding_server">サーバーを追加中…</string>
-    <string name="deleting_screenshot">スクリーンショットを削除中…</string>
-    <string name="deleting_server">サーバーを削除中…</string>
 
     <string name="edit_world">ワールドの編集</string>
     <string name="edit">編集</string>
@@ -404,17 +318,6 @@ LeviLauncher を続行するには移行を完了する必要があります。<
     <string name="back">戻る</string>
 
     <string name="splash_logo_desc">葉のロゴ</string>
-    <string name="minecraft_loading_title">Minecraft を起動中</string>
-    <string name="minecraft_loading_subtitle">ネイティブライブラリと有効な Mod を準備しています</string>
-    <string name="minecraft_loading_status_preparing">ランタイムを準備中</string>
-    <string name="minecraft_loading_log_title">起動ログ</string>
-    <string name="minecraft_loading_complete">ランタイムの準備完了</string>
-    <string name="minecraft_loading_entering_game">Minecraft に入っています</string>
-    <string name="minecraft_loading_failed">起動に失敗しました</string>
-    <string name="minecraft_loading_return">ランチャーに戻る</string>
-    <string name="launcher_restart_title">ランチャーに戻ります</string>
-    <string name="launcher_restart_subtitle">少しお待ちください。まもなくメイン画面に戻ります</string>
-    <string name="launcher_restart_status">もう少しです…</string>
 
     <string name="accounts_title">アカウント</string>
     <string name="microsoft_accounts">Microsoft アカウント</string>
@@ -682,85 +585,7 @@ LeviLauncher を続行するには移行を完了する必要があります。<
     <string name="bg_image_desc">背景として使用する画像を選択してください</string>
     <string name="bg_image_none">画像が選択されていません</string>
     <string name="bg_image_selected">カスタム背景がアクティブです</string>
-    <string name="bg_image_blur">ぼかし</string>
-    <string name="bg_image_blur_value">%1$dpx</string>
-    <string name="bg_image_brightness">明るさ</string>
-    <string name="bg_image_brightness_value">%1$d%%</string>
     <string name="select_image">画像を選択</string>
     <string name="clear">クリア</string>
 
-    <string name="unsupported_version_title">サポートされていないバージョン</string>
-    <string name="unsupported_version_msg">このランチャーは1.21.80より前のMinecraftバージョンをサポートしていません。</string>
-    <!-- Mod Config -->
-    <string name="mod_author_byline">by %s</string>
-    <string name="mod_version_chip">バージョン %s</string>
-    <string name="mod_config_title_format">%s の設定</string>
-    <string name="mod_config_not_found">編集可能な設定が見つかりません</string>
-    <string name="mod_config_load_failed">設定の読み込みに失敗しました: %s</string>
-    <string name="mod_config_save_failed">設定の保存に失敗しました</string>
-    <string name="mod_config_saved">設定を保存しました</string>
-    <string name="mod_config_restart_hint">設定ファイルを保存し、.backup ファイルを保持しました。</string>
-    <string name="mod_config_validation_failed">設定の検証に失敗しました</string>
-    <string name="mod_config_invalid_json">無効な JSON</string>
-    <string name="mod_config_expand">展開</string>
-    <string name="mod_config_collapse">折りたたむ</string>
-    <string name="mod_config_raw_json">元の JSON を編集</string>
-    <string name="mod_config_raw_json_short">JSON</string>
-    <string name="mod_config_item_label">項目 %1$s</string>
-    <string name="mod_config_object_desc">関連設定のグループ</string>
-    <string name="mod_config_array_desc">値のリスト</string>
-    <string name="mod_config_range_prefix">範囲</string>
-    <string name="mod_config_error_number">%1$s は数値である必要があります</string>
-    <string name="mod_config_error_minimum">%1$s は %2$s 以上である必要があります</string>
-    <string name="mod_config_error_maximum">%1$s は %2$s 以下である必要があります</string>
-    <string name="mod_config_error_boolean">%1$s はオンまたはオフである必要があります</string>
-    <string name="mod_config_error_string">%1$s はテキストである必要があります</string>
-    <plurals name="mod_config_files_count">
-        <item quantity="other">%d 個の編集可能な設定</item>
-    </plurals>
-    <plurals name="mod_config_choices_count">
-        <item quantity="other">%d 個の選択肢</item>
-    </plurals>
-    <plurals name="mod_config_items_count">
-        <item quantity="other">%d 個の項目</item>
-    </plurals>
-
-    <!-- Mod Menu synced translations -->
-    <string name="mod_menu_favorites">お気に入り</string>
-    <string name="mod_menu_favorite">お気に入りに追加</string>
-    <string name="mod_menu_unfavorite">お気に入りから削除</string>
-    <string name="mod_menu_hud_editor">HUD エディター</string>
-    <string name="mod_menu_filter_enabled">有効</string>
-    <string name="mod_menu_filter_inbuilt">内蔵</string>
-    <string name="mod_menu_filter_external">外部</string>
-    <string name="mod_menu_no_favorites">お気に入りのModはまだありません</string>
-    <string name="mod_menu_no_matches">一致するModがありません</string>
-    <string name="mod_menu_group_inbuilt">内蔵機能</string>
-    <string name="mod_menu_group_external_ungrouped">未グループの外部Mod</string>
-    <string name="mod_menu_module_count">%1$d / %2$d</string>
-    <string name="mod_menu_general_settings">一般設定</string>
-    <string name="mod_menu_appearance">外観</string>
-    <string name="mod_menu_pause_menu_only">ポーズメニューのみ</string>
-    <string name="mod_menu_pause_menu_only_desc">ポーズ画面でのみModメニューを表示</string>
-    <string name="mod_menu_default_percent" formatted="false">100%</string>
-    <string name="mod_menu_percent_value">%1$d%%</string>
-    <string name="mod_overlay_fps_unknown">FPS: --</string>
-    <string name="mod_overlay_fps_value">FPS: %1$d</string>
-    <string name="mod_overlay_cps_value">CPS: %1$d</string>
-    <string name="mod_config_overlay_button_size_dp">オーバーレイボタンサイズ (dp)</string>
-    <string name="mod_config_overlay_opacity_percent" formatted="false">オーバーレイ透明度 (%)</string>
-    <string name="mod_config_cursor_sensitivity_percent" formatted="false">カーソル感度 (%)</string>
-    <string name="mod_config_zoom_level_percent" formatted="false">ズームレベル (%)</string>
-    <string name="mod_config_auto_sprint_keybind">オートスプリントのキー割り当て</string>
-    <string name="mod_config_zoom_keybind">ズームのキー割り当て</string>
-    <string name="mod_config_press_any_key">割り当てるキーを押してください...</string>
-    <string name="mod_config_key_unknown">不明</string>
-    <string name="mod_config_color_alpha_short">A</string>
-    <string name="mod_config_color_red_short">R</string>
-    <string name="mod_config_color_green_short">G</string>
-    <string name="mod_config_color_blue_short">B</string>
-    <string name="mod_config_color_hex_hint" formatted="false">#AARRGGBB</string>
-    <string name="overlay_button_size_value">サイズ: %1$ddp</string>
-    <string name="overlay_button_opacity_value">透明度: %1$d%%</string>
-    <string name="reset">リセット</string>
 </resources>

@@ -40,7 +40,6 @@
     <string name="content_detected_message">¿Quieres iniciar el juego ahora?\n\nArchivo: %s</string>
     <string name="launch_now">Iniciar ahora</string>
     <string name="launch_later">Iniciar más tarde</string>
-    <string name="loading">Cargando…</string>
 
     <string name="import_confirmation_title">Importar Mods</string>
     <string name="import_confirmation_message">¿Estás seguro de que quieres importar los %d archivos de mods seleccionados?</string>
@@ -54,14 +53,13 @@
     <string name="overwrite">Sobrescribir</string>
     <string name="skip">Omitir</string>
     <string name="confirm">Confirmar</string>
-    <string name="retry">Reintentar</string>
 
     <string name="installed_packages">Paquetes Instalados</string>
     <string name="local_custom">Personalizado Local</string>
 
     <!-- Permissions -->
-    <string name="storage_permission_title">Permiso para migrar almacenamiento</string>
-    <string name="storage_permission_message">Concede permiso de almacenamiento para que LeviLauncher copie los datos desde el antiguo directorio games/org.levimc. Este permiso solo se usa durante la migración.</string>
+    <string name="storage_permission_title">Permiso de almacenamiento requerido</string>
+    <string name="storage_permission_message">Concede permiso de almacenamiento para acceder al directorio de mods y detectarlos.</string>
     <string name="grant_permission">Conceder</string>
     <string name="cancel">Cancelar</string>
 
@@ -100,7 +98,6 @@
     <string name="settings_tab_personalize">Personalización</string>
     <string name="settings_tab_updates">Actualizaciones</string>
     <string name="settings_tab_about">Acerca de</string>
-    <string name="settings_tab_migration">Migración</string>
     <string name="settings_theme_desc">Elige el tema de la aplicación</string>
 
     <string name="unknown_sources_permission_title">Permiso de Instalación</string>
@@ -108,15 +105,6 @@
 
     <string name="check_update">Buscar actualizaciones</string>
     <string name="version_prefix">Versión: </string>
-    <string name="unknown_error">Error desconocido</string>
-    <string name="preloader_sigs_title">Datos de tiempo de ejecución</string>
-    <string name="preloader_sigs_last_update">Última actualización: %1$s</string>
-    <string name="preloader_sigs_never_updated">Nunca</string>
-    <string name="preloader_sigs_update">Actualizar datos de tiempo de ejecución</string>
-    <string name="preloader_sigs_updating">Actualizando…</string>
-    <string name="preloader_sigs_update_success">Datos de tiempo de ejecución actualizados</string>
-    <string name="preloader_sigs_update_failed">Error al actualizar los datos de tiempo de ejecución: %1$s</string>
-    <string name="preloader_sigs_no_remote_url">La URL de actualización de los datos de tiempo de ejecución no está configurada</string>
 
     <string name="dialog_title_no_version">Ninguna versión seleccionada</string>
     <string name="dialog_message_no_version">Por favor selecciona una versión del juego antes de iniciar.</string>
@@ -125,8 +113,6 @@
     <string name="dialog_positive_enable">Habilitar</string>
     <string name="dialog_title_launch_failed">Fallo al iniciar</string>
     <string name="dialog_message_launch_failed">Fallo al iniciar Minecraft: %1$s</string>
-    <string name="dialog_title_incompatible_mods">Mods incompatibles omitidos</string>
-    <string name="dialog_message_incompatible_mods">Algunos mods habilitados son incompatibles con tu versión actual de Minecraft %1$s y se omitieron:\n\n%2$s</string>
     <string name="dialog_title_disable_version_isolation">Deshabilitar Aislamiento</string>
     <string name="dialog_message_disable_version_isolation">Intentas iniciar una versión instalada con el aislamiento habilitado. Deshabilita el aislamiento de versión para continuar.</string>
     <string name="dialog_positive_disable">Deshabilitar</string>
@@ -154,54 +140,8 @@
     <string name="missing_libs_message">Faltan archivos de biblioteca necesarios. ¿Quieres repararlos ahora?</string>
     <string name="repair">Reparar</string>
     <string name="repair_libs_dialog_title">Reparando bibliotecas del juego</string>
-    <string name="repair_libs_dialog_subtitle">Preparando bibliotecas nativas de Minecraft</string>
     <string name="repair_preparing">Preparando…</string>
     <string name="repair_processing">Extrayendo bibliotecas…</string>
-    <string name="repair_finalizing">Finalizando reparación…</string>
-    <string name="storage_migration_title">Migración de almacenamiento requerida</string>
-    <string name="storage_migration_message">LeviLauncher debe migrar los datos de games/org.levimc a %1$s antes de continuar.
-
-Este cambio de almacenamiento es necesario para cumplir los requisitos de publicación en Google Play. El directorio antiguo se conservará intacto, pero ya no se usará después de la migración.
-
-La migración puede tardar. Puedes dejar la app en segundo plano mientras se ejecuta; el teléfono puede calentarse durante la copia intensa de archivos. Gracias por tu comprensión.</string>
-    <string name="storage_migration_start">Migrar</string>
-    <string name="storage_migration_permission_denied">Se necesita permiso de almacenamiento para leer el directorio antiguo durante la migración.</string>
-    <string name="storage_migration_progress_title">Migrando almacenamiento</string>
-    <string name="storage_migration_progress_subtitle">Copiando datos del lanzador a Android/media</string>
-    <string name="storage_migration_scanning">Escaneando directorio antiguo…</string>
-    <string name="storage_migration_progress_detail">%1$d/%2$d archivos · %3$s</string>
-    <string name="storage_migration_eta_pending">Calculando tiempo restante…</string>
-    <string name="storage_migration_eta_detail">Quedan aprox. %1$s · termina sobre las %2$s</string>
-    <string name="storage_migration_duration_hours_minutes">%1$d h %2$d min</string>
-    <string name="storage_migration_duration_minutes_seconds">%1$d min %2$d s</string>
-    <string name="storage_migration_duration_seconds">%1$d s</string>
-    <string name="storage_migration_background_hint">La migración puede seguir en segundo plano. Se recomienda mantener el teléfono cargado; el teléfono puede calentarse durante la copia de archivos. Gracias por tu comprensión.</string>
-    <string name="storage_migration_completed_title">Migración completada</string>
-    <string name="storage_migration_completed_message">Se migraron %1$d archivos (%2$s). %3$d archivos ya estaban actualizados.
-
-El antiguo directorio games/org.levimc no fue eliminado y ya no se usa.</string>
-    <string name="storage_migration_partial_title">Migración incompleta</string>
-    <string name="storage_migration_partial_message">No se pudieron copiar %1$d de %2$d archivos. La migración debe completarse antes de continuar con LeviLauncher.</string>
-    <string name="storage_migration_failed_title">Migración fallida</string>
-    <string name="storage_migration_failed_message">La migración no pudo continuar: %1$s
-
-La migración debe completarse antes de continuar con LeviLauncher.</string>
-    <string name="migration_cleanup_title">Limpiar directorio histórico</string>
-    <string name="migration_cleanup_desc">Elimina el directorio antiguo games/org.levimc solo después de confirmar que todas las instancias se inician correctamente y que no faltan mundos, paquetes de recursos, paquetes de comportamiento ni ajustes. Los datos históricos eliminados no se podrán restaurar desde este directorio.</string>
-    <string name="migration_cleanup_button">Limpiar directorio histórico</string>
-    <string name="migration_cleanup_confirm_title">¿Limpiar directorio histórico?</string>
-    <string name="migration_cleanup_confirm_message">Esto eliminará permanentemente el directorio antiguo games/org.levimc.\n\nAntes de continuar, asegúrate de que todas las instancias se inicien correctamente y que no falten mundos, paquetes de recursos, paquetes de comportamiento ni ajustes.</string>
-    <string name="migration_cleanup_unavailable_not_completed">La migración de almacenamiento aún no se ha completado. Completa la migración antes de limpiar el directorio antiguo.</string>
-    <string name="migration_cleanup_unavailable_missing">No se encontró el directorio antiguo games/org.levimc o ya fue limpiado.</string>
-    <string name="migration_cleanup_ready">El directorio antiguo se puede limpiar. Confirma que todas las instancias migradas funcionen correctamente antes de continuar.</string>
-    <string name="migration_cleanup_success">Directorio histórico limpiado: %1$d archivos eliminados (%2$s).</string>
-    <string name="migration_cleanup_failed">No se pudo limpiar el directorio histórico: %1$s</string>
-    <string name="shared_storage_layout_title">Directorio de contenido compartido</string>
-    <string name="shared_storage_layout_desc">Usa el nuevo directorio _shared para el contenido compartido interno y externo. Desactívalo para usar los directorios originales de datos internos y externos del juego. Esto no mueve archivos.</string>
-    <string name="shared_storage_layout_mode_new">Nuevo directorio _shared</string>
-    <string name="shared_storage_layout_mode_legacy">Directorios internos/externos originales</string>
-    <string name="shared_storage_layout_status">Modo actual: %1$s\nInterno: %2$s\nExterno: %3$s</string>
-    <string name="shared_storage_layout_changed">La selección del directorio de almacenamiento se actualizó. Reinicia Minecraft y vuelve a abrir la gestión de contenido para aplicar completamente el cambio.</string>
 
     <string name="theme_title">Modo de Tema</string>
     <string name="theme_follow_system">Seguir Sistema</string>
@@ -225,9 +165,7 @@ La migración debe completarse antes de continuar con LeviLauncher.</string>
     <string name="toast_delete_failed">Fallo al eliminar: %1$s</string>
     <string name="error_delete_builtin_version">No se puede eliminar la versión integrada</string>
     <string name="invalid_mod_file">Fallo</string>
-    <string name="invalid_mod_file_reason">Solo se permiten archivos .so, paquetes de mods .zip o paquetes de mods .levipack. El archivo seleccionado no es un paquete válido de mod nativo.</string>
-    <string name="invalid_zip_mod_package_title">Paquete ZIP de mod no válido</string>
-    <string name="invalid_zip_mod_package_message">El paquete ZIP de mod debe contener manifest.json y un archivo .so.</string>
+    <string name="invalid_mod_file_reason">Solo se permiten archivos .so o paquetes de mods .zip. El archivo seleccionado no es un paquete válido de mod nativo.</string>
     <string name="error_versions">Versiones con error</string>
 
     <string name="dialog_title_delete_mod">Eliminar Mod</string>
@@ -253,19 +191,6 @@ La migración debe completarse antes de continuar con LeviLauncher.</string>
     <string name="instance_delete_warning">Esta acción no se puede deshacer.</string>
     <string name="instance_delete_confirm_title">Eliminar Instancia</string>
     <string name="instance_delete_confirm_msg">¿Estás seguro? Todos los datos, incluyendo mundos, se eliminarán permanentemente.</string>
-    <string name="instance_batch_backup_button">Copia por lotes</string>
-    <string name="instance_batch_backup_title">Copia por lotes de instancias</string>
-    <string name="instance_batch_backup_select_message">Selecciona las instancias que quieres respaldar. Si Minecraft está en ejecución, sal primero para evitar cambios de datos durante la copia.</string>
-    <string name="instance_batch_backup_select_all">Seleccionar todas las instancias</string>
-    <string name="instance_batch_backup_no_instances">No hay instancias disponibles para respaldar.</string>
-    <string name="instance_batch_backup_no_selection">Selecciona al menos una instancia.</string>
-    <string name="instance_batch_backup_in_progress">Respaldando %1$s (%2$d/%3$d)…</string>
-    <string name="instance_batch_backup_success_title">Copias creadas</string>
-    <string name="instance_batch_backup_success_message">Se crearon %1$d copias:\n%2$s</string>
-    <string name="instance_batch_backup_partial_title">Copia completada parcialmente</string>
-    <string name="instance_batch_backup_partial_message">Se crearon %1$d copias, %2$d fallaron.\n\nGuardadas:\n%3$s\n\nFallidas:\n%4$s</string>
-    <string name="instance_batch_backup_failed_title">Error en la copia por lotes</string>
-    <string name="instance_batch_backup_failed_message">No se pudo crear ninguna copia:\n%1$s</string>
 
     <string name="language">Idioma (Language)</string>
     <string name="english">English</string>
@@ -277,8 +202,6 @@ La migración debe completarse antes de continuar con LeviLauncher.</string>
     <string name="french">Français</string>
     <string name="japanese">日本語</string>
     <string name="hindi">हिन्दी</string>
-    <string name="turkish">Türkçe</string>
-    <string name="vietnamese">Tiếng Việt</string>
 
     <string name="rename_version_title">Renombrar Versión</string>
     <string name="rename_version_message">Introduce un nuevo nombre para esta versión:</string>
@@ -341,15 +264,6 @@ La migración debe completarse antes de continuar con LeviLauncher.</string>
     <string name="confirm_delete_resource_pack">¿Seguro que quieres eliminar este pack de recursos? No se puede deshacer.</string>
     <string name="confirm_delete_behavior_pack">¿Seguro que quieres eliminar este pack de comportamientos? No se puede deshacer.</string>
     <string name="confirm_delete_skin_pack">¿Seguro que quieres eliminar este pack de aspectos? No se puede deshacer.</string>
-    <string name="importing_content">Importando contenido…</string>
-    <string name="exporting_world">Exportando mundo…</string>
-    <string name="exporting_pack">Exportando paquete…</string>
-    <string name="backing_up_world">Creando copia de seguridad del mundo…</string>
-    <string name="deleting_world">Eliminando mundo…</string>
-    <string name="deleting_pack">Eliminando paquete…</string>
-    <string name="adding_server">Añadiendo servidor…</string>
-    <string name="deleting_screenshot">Eliminando captura de pantalla…</string>
-    <string name="deleting_server">Eliminando servidor…</string>
 
     <string name="edit_world">Editar Mundo</string>
     <string name="edit">Editar</string>
@@ -404,17 +318,6 @@ La migración debe completarse antes de continuar con LeviLauncher.</string>
     <string name="back">Atrás</string>
 
     <string name="splash_logo_desc">Logo de hoja</string>
-    <string name="minecraft_loading_title">Iniciando Minecraft</string>
-    <string name="minecraft_loading_subtitle">Preparando bibliotecas nativas y mods habilitados</string>
-    <string name="minecraft_loading_status_preparing">Preparando entorno</string>
-    <string name="minecraft_loading_log_title">Registro de inicio</string>
-    <string name="minecraft_loading_complete">Entorno listo</string>
-    <string name="minecraft_loading_entering_game">Entrando a Minecraft</string>
-    <string name="minecraft_loading_failed">Error al iniciar</string>
-    <string name="minecraft_loading_return">Volver al launcher</string>
-    <string name="launcher_restart_title">Volver al launcher</string>
-    <string name="launcher_restart_subtitle">Espera un momento, volverás a la pantalla principal</string>
-    <string name="launcher_restart_status">Ya casi…</string>
 
     <string name="accounts_title">Cuentas</string>
     <string name="microsoft_accounts">Cuentas de Microsoft</string>
@@ -682,88 +585,7 @@ La migración debe completarse antes de continuar con LeviLauncher.</string>
     <string name="bg_image_desc">Selecciona una imagen como fondo</string>
     <string name="bg_image_none">Ninguna imagen seleccionada</string>
     <string name="bg_image_selected">Fondo personalizado activo</string>
-    <string name="bg_image_blur">Desenfoque</string>
-    <string name="bg_image_blur_value">%1$dpx</string>
-    <string name="bg_image_brightness">Brillo</string>
-    <string name="bg_image_brightness_value">%1$d%%</string>
     <string name="select_image">Seleccionar Imagen</string>
     <string name="clear">Limpiar</string>
 
-    <string name="unsupported_version_title">Versión no soportada</string>
-    <string name="unsupported_version_msg">Este lanzador no soporta versiones de Minecraft anteriores a 1.21.80.</string>
-    <!-- Mod Config -->
-    <string name="mod_author_byline">por %s</string>
-    <string name="mod_version_chip">Versión %s</string>
-    <string name="mod_config_title_format">Configuración de %s</string>
-    <string name="mod_config_not_found">No se encontró configuración editable</string>
-    <string name="mod_config_load_failed">Error al cargar la configuración: %s</string>
-    <string name="mod_config_save_failed">Error al guardar la configuración</string>
-    <string name="mod_config_saved">Configuración guardada</string>
-    <string name="mod_config_restart_hint">El archivo de configuración se guardó y se conservó un archivo .backup.</string>
-    <string name="mod_config_validation_failed">La validación de configuración falló</string>
-    <string name="mod_config_invalid_json">JSON no válido</string>
-    <string name="mod_config_expand">Expandir</string>
-    <string name="mod_config_collapse">Contraer</string>
-    <string name="mod_config_raw_json">Editar JSON original</string>
-    <string name="mod_config_raw_json_short">JSON</string>
-    <string name="mod_config_item_label">Elemento %1$s</string>
-    <string name="mod_config_object_desc">Grupo de ajustes relacionados</string>
-    <string name="mod_config_array_desc">Lista de valores</string>
-    <string name="mod_config_range_prefix">Rango</string>
-    <string name="mod_config_error_number">%1$s debe ser un número</string>
-    <string name="mod_config_error_minimum">%1$s debe ser al menos %2$s</string>
-    <string name="mod_config_error_maximum">%1$s debe ser como máximo %2$s</string>
-    <string name="mod_config_error_boolean">%1$s debe estar activado o desactivado</string>
-    <string name="mod_config_error_string">%1$s debe ser texto</string>
-    <plurals name="mod_config_files_count">
-        <item quantity="one">%d configuración editable</item>
-        <item quantity="other">%d configuraciones editables</item>
-    </plurals>
-    <plurals name="mod_config_choices_count">
-        <item quantity="one">%d opción</item>
-        <item quantity="other">%d opciones</item>
-    </plurals>
-    <plurals name="mod_config_items_count">
-        <item quantity="one">%d elemento</item>
-        <item quantity="other">%d elementos</item>
-    </plurals>
-
-    <!-- Mod Menu synced translations -->
-    <string name="mod_menu_favorites">Favoritos</string>
-    <string name="mod_menu_favorite">Añadir a favoritos</string>
-    <string name="mod_menu_unfavorite">Quitar de favoritos</string>
-    <string name="mod_menu_hud_editor">Editor de HUD</string>
-    <string name="mod_menu_filter_enabled">Activados</string>
-    <string name="mod_menu_filter_inbuilt">Integrados</string>
-    <string name="mod_menu_filter_external">Externos</string>
-    <string name="mod_menu_no_favorites">Aún no hay mods favoritos</string>
-    <string name="mod_menu_no_matches">No hay mods coincidentes</string>
-    <string name="mod_menu_group_inbuilt">Funciones integradas</string>
-    <string name="mod_menu_group_external_ungrouped">Mods externos sin agrupar</string>
-    <string name="mod_menu_module_count">%1$d / %2$d</string>
-    <string name="mod_menu_general_settings">Ajustes generales</string>
-    <string name="mod_menu_appearance">Apariencia</string>
-    <string name="mod_menu_pause_menu_only">Solo en menú de pausa</string>
-    <string name="mod_menu_pause_menu_only_desc">Mostrar el menú de mods solo en la pantalla de pausa</string>
-    <string name="mod_menu_default_percent" formatted="false">100%</string>
-    <string name="mod_menu_percent_value">%1$d%%</string>
-    <string name="mod_overlay_fps_unknown">FPS: --</string>
-    <string name="mod_overlay_fps_value">FPS: %1$d</string>
-    <string name="mod_overlay_cps_value">CPS: %1$d</string>
-    <string name="mod_config_overlay_button_size_dp">Tamaño del botón superpuesto (dp)</string>
-    <string name="mod_config_overlay_opacity_percent" formatted="false">Opacidad de superposición (%)</string>
-    <string name="mod_config_cursor_sensitivity_percent" formatted="false">Sensibilidad del cursor (%)</string>
-    <string name="mod_config_zoom_level_percent" formatted="false">Nivel de zoom (%)</string>
-    <string name="mod_config_auto_sprint_keybind">Tecla de sprint automático</string>
-    <string name="mod_config_zoom_keybind">Tecla de zoom</string>
-    <string name="mod_config_press_any_key">Presiona cualquier tecla para asignar...</string>
-    <string name="mod_config_key_unknown">DESCONOCIDO</string>
-    <string name="mod_config_color_alpha_short">A</string>
-    <string name="mod_config_color_red_short">R</string>
-    <string name="mod_config_color_green_short">G</string>
-    <string name="mod_config_color_blue_short">B</string>
-    <string name="mod_config_color_hex_hint" formatted="false">#AARRGGBB</string>
-    <string name="overlay_button_size_value">Tamaño: %1$ddp</string>
-    <string name="overlay_button_opacity_value">Opacidad: %1$d%%</string>
-    <string name="reset">Restablecer</string>
 </resources>

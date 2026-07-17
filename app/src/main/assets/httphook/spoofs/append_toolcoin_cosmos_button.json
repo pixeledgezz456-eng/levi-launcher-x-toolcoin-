@@ -1,0 +1,65 @@
+{
+    "targetArray": "result.layout",
+    "arrayFilter": {
+        "field": "sectionName",
+        "value": "rows"
+    },
+    "targetField": "rows",
+    "insertAfter": {
+        "field": "controlId",
+        "value": "Layout",
+        "occurrence": 1
+    },
+    "row": {
+        "controlId": "NavButtonRow",
+        "components": [
+            {
+                "buttons": [
+                    {
+                        "buttonSizeIsFill": true,
+                        "image": "textures/ui/icons/icon_piratesofthecaribbean",
+                        "images": [
+                            {
+                                "type": "Unknown",
+                                "localPath": "textures/ui/icons/icon_piratesofthecaribbean"
+                            }
+                        ],
+                        "navButtonName": "   §l§8>§j>§8>  §0Toolcoin library  §8<§j<§8<§j",
+                        "linksToInfo": {
+                            "linksTo": "MultiItemPage_Inventory_toolcoin",
+                            "linkType": "pageId",
+                            "displayType": "store_layout.store_data_driven_screen",
+                            "navigateInPlace": false
+                        },
+                        "defaultColor": [],
+                        "interactColor": []
+                    },
+                    {
+                        "buttonSizeIsFill": true,
+                        "images": [
+                            {
+                                "type": "Unknown",
+                                "url": "https://bedrock-cosmos.app/icons/icon.png",
+                                "urlWithResolution": "https://bedrock-cosmos.app/icons/icon.png"
+                            }
+                        ],
+                        "navButtonName": "   §l§5>§0>§5>  §0Bedrock Cosmos Packs!  §5<§0<§5<§0",
+                        "linksTo": "MultiItemPage_BedrockCosmosMarketplaceCategoryPage",
+                        "linksToInfo": {
+                            "linksTo": "MultiItemPage_BedrockCosmosMarketplaceCategoryPage",
+                            "linkType": "pageId",
+                            "displayType": "store_layout.store_data_driven_screen",
+                            "screenTitle": {
+                                "value": "Bedrock Cosmos Packs",
+                                "replacements": []
+                            },
+                            "navigateInPlace": false
+                        }
+                    }
+                ],
+                "type": "navButtonListComp",
+                "$type": "NavButtonListComponent"
+            }
+        ]
+    }
+}

@@ -32,8 +32,6 @@ import org.levimc.launcher.core.curseforge.models.Content;
 import org.levimc.launcher.core.curseforge.models.ContentFile;
 import org.levimc.launcher.core.versions.GameVersion;
 import org.levimc.launcher.core.versions.VersionManager;
-import org.levimc.launcher.settings.FeatureSettings;
-import org.levimc.launcher.util.LauncherStorage;
 
 
 
@@ -272,51 +270,44 @@ public class ContentDetailsActivity extends BaseActivity {
     }
 
     private void showFilesDialog(java.util.List<ContentFile> files) {
-        com.google.android.material.bottomsheet.BottomSheetDialog dialog = new com.google.android.material.bottomsheet.BottomSheetDialog(this);
+        android.app.Dialog dialog = new android.app.Dialog(this);
         dialog.setContentView(R.layout.dialog_file_list);
+        dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        android.view.WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        params.dimAmount = 0.6f;
+        
+        android.util.DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = (int)(metrics.widthPixels * 0.90);
+        int height = (int)(metrics.heightPixels * 0.80);
+        params.width = width;
+        params.height = height;
+        dialog.getWindow().setAttributes(params);
 
         org.levimc.launcher.util.PersonalizationManager pm = new org.levimc.launcher.util.PersonalizationManager(this);
-        int accent = pm.hasCustomAccent() ? pm.getAccentColor() : androidx.core.content.ContextCompat.getColor(this, R.color.primary);
+        View dialogRoot = dialog.findViewById(android.R.id.content);
+        if (dialogRoot instanceof android.view.ViewGroup) {
+            android.view.ViewGroup rootGroup = (android.view.ViewGroup) dialogRoot;
+            for (int i = 0; i < rootGroup.getChildCount(); i++) {
+                pm.applyGlassToView(rootGroup.getChildAt(i));
+            }
+        }
 
         RecyclerView recycler = dialog.findViewById(R.id.recycler_files);
+        View btnClose = dialog.findViewById(R.id.btn_close);
 
         org.levimc.launcher.ui.adapter.FileListAdapter adapter = new org.levimc.launcher.ui.adapter.FileListAdapter(file -> {
             dialog.dismiss();
             downloadAndImport(file);
-        }, accent);
+        });
 
         recycler.setLayoutManager(new LinearLayoutManager(this));
         recycler.setAdapter(adapter);
         adapter.setFiles(files);
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setFlags(android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
-        }
+        btnClose.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
-        
-        if (dialog.getWindow() != null) {
-            android.view.View decorView = dialog.getWindow().getDecorView();
-            decorView.setSystemUiVisibility(
-                    android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            | android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            );
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-                dialog.getWindow().setDecorFitsSystemWindows(false);
-                android.view.WindowInsetsController controller = decorView.getWindowInsetsController();
-                if (controller != null) {
-                    controller.setSystemBarsBehavior(android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-                    controller.hide(android.view.WindowInsets.Type.statusBars() | android.view.WindowInsets.Type.navigationBars());
-                }
-            }
-            dialog.getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
-        }
-
-        dialog.getBehavior().setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED);
     }
 
     private void onBrowserClick() {
@@ -415,34 +406,60 @@ public class ContentDetailsActivity extends BaseActivity {
             });
     }
     private File getPackDirectory(String packType) {
-        File gameDataDir = getGameDataDirForSavedStorageType();
-        return gameDataDir == null ? null : new File(gameDataDir, packType);
+        android.content.SharedPreferences prefs = getSharedPreferences("content_management", MODE_PRIVATE);
+        String savedType = prefs.getString("storage_type", "INTERNAL");
+        org.levimc.launcher.settings.FeatureSettings.StorageType currentStorageType = org.levimc.launcher.settings.FeatureSettings.StorageType.valueOf(savedType);
+        
+        GameVersion currentVersion = versionManager.getSelectedVersion();
+
+        switch (currentStorageType) {
+            case VERSION_ISOLATION:
+                if (currentVersion != null && currentVersion.versionDir != null) {
+                    File gameDataDir = new File(currentVersion.versionDir, "games/com.mojang");
+                    return new File(gameDataDir, packType);
+                }
+                break;
+            case EXTERNAL:
+                File externalDir = getExternalFilesDir(null);
+                if (externalDir != null) {
+                    File gameDataDir = new File(externalDir, "games/com.mojang");
+                    return new File(gameDataDir, packType);
+                }
+                break;
+            case INTERNAL:
+                File internalDir = new File(getDataDir(), "games/com.mojang");
+                return new File(internalDir, packType);
+        }
+        return null;
     }
 
     private File getWorldsDirectory() {
-        File gameDataDir = getGameDataDirForSavedStorageType();
-        return gameDataDir == null ? null : new File(gameDataDir, "minecraftWorlds");
-    }
-
-    private File getGameDataDirForSavedStorageType() {
         android.content.SharedPreferences prefs = getSharedPreferences("content_management", MODE_PRIVATE);
         String savedType = prefs.getString("storage_type", "INTERNAL");
-        FeatureSettings.StorageType currentStorageType = parseStorageType(savedType);
+        org.levimc.launcher.settings.FeatureSettings.StorageType currentStorageType = org.levimc.launcher.settings.FeatureSettings.StorageType.valueOf(savedType);
+
         GameVersion currentVersion = versionManager.getSelectedVersion();
         if (currentVersion == null) return null;
-        currentStorageType = LauncherStorage.normalizeContentStorageType(
-                currentStorageType,
-                currentVersion.versionIsolation
-        );
-        return LauncherStorage.getContentGameDataDir(this, currentVersion.getStorageProfileId(), currentStorageType);
-    }
 
-    private FeatureSettings.StorageType parseStorageType(String value) {
-        try {
-            return FeatureSettings.StorageType.valueOf(value);
-        } catch (Exception ignored) {
-            return FeatureSettings.StorageType.INTERNAL;
+        switch (currentStorageType) {
+            case VERSION_ISOLATION:
+                if (currentVersion.versionDir != null) {
+                    File gameDataDir = new File(currentVersion.versionDir, "games/com.mojang");
+                    return new File(gameDataDir, "minecraftWorlds");
+                }
+                break;
+            case EXTERNAL:
+                File externalDir = getExternalFilesDir(null);
+                if (externalDir != null) {
+                    File gameDataDir = new File(externalDir, "games/com.mojang");
+                    return new File(gameDataDir, "minecraftWorlds");
+                }
+                break;
+            case INTERNAL:
+                File internalDir = new File(getDataDir(), "games/com.mojang");
+                return new File(internalDir, "minecraftWorlds");
         }
+        return null;
     }
 
     private String getHexColor(int colorResId) {

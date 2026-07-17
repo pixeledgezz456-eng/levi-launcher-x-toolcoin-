@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
+    android:padding="12dp"
     android:background="?android:attr/selectableItemBackground">
 
     <TextView
@@ -46,13 +46,15 @@
         app:layout_constraintTop_toTopOf="@id/file_date"
         tools:text="1.20.40" />
 
-    <com.google.android.material.button.MaterialButton
+
+
+    <ImageButton
         android:id="@+id/btn_download"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Download"
-        app:icon="@drawable/ic_download"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_download"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:tint="@color/primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

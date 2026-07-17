@@ -39,7 +39,6 @@ import org.levimc.launcher.ui.adapter.StructuresAdapter;
 import org.levimc.launcher.ui.adapter.WorldsAdapter;
 import org.levimc.launcher.ui.animation.DynamicAnim;
 import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
-import org.levimc.launcher.util.LauncherStorage;
 
 import android.provider.MediaStore;
 import android.content.ContentValues;
@@ -119,11 +118,11 @@ public class ContentListActivity extends BaseActivity {
         
         String storageTypeStr = getIntent().getStringExtra(EXTRA_CURRENT_STORAGE_TYPE);
         if (storageTypeStr != null) {
-            currentStorageType = parseStorageType(storageTypeStr);
+            currentStorageType = FeatureSettings.StorageType.valueOf(storageTypeStr);
         } else {
             SharedPreferences prefs = getSharedPreferences("content_management", MODE_PRIVATE);
             String savedType = prefs.getString("storage_type", "INTERNAL");
-            currentStorageType = parseStorageType(savedType);
+            currentStorageType = FeatureSettings.StorageType.valueOf(savedType);
         }
 
         setupActivityResultLaunchers();
@@ -916,16 +915,12 @@ public class ContentListActivity extends BaseActivity {
         RadioGroup radioGroup = dialogView.findViewById(R.id.storage_radio_group);
         RadioButton radioInternal = dialogView.findViewById(R.id.radio_internal);
         RadioButton radioExternal = dialogView.findViewById(R.id.radio_external);
-        RadioButton radioVersionIsolationInternal = dialogView.findViewById(R.id.radio_version_isolation_internal);
         RadioButton radioVersionIsolation = dialogView.findViewById(R.id.radio_version_isolation);
-        radioVersionIsolationInternal.setText(getString(R.string.storage_version_isolation) + " (" + getString(R.string.storage_internal) + ")");
-        radioVersionIsolation.setText(getString(R.string.storage_version_isolation) + " (" + getString(R.string.storage_external) + ")");
 
         switch (currentStorageType) {
             case INTERNAL -> radioInternal.setEnabled(false);
             case EXTERNAL -> radioExternal.setEnabled(false);
-            case VERSION_ISOLATION_INTERNAL -> radioVersionIsolationInternal.setEnabled(false);
-            case VERSION_ISOLATION, VERSION_ISOLATION_EXTERNAL -> radioVersionIsolation.setEnabled(false);
+            case VERSION_ISOLATION -> radioVersionIsolation.setEnabled(false);
         }
 
         AlertDialog dialog = new MaterialAlertDialogBuilder(this)
@@ -939,10 +934,8 @@ public class ContentListActivity extends BaseActivity {
                     targetType = FeatureSettings.StorageType.INTERNAL;
                 } else if (selectedId == R.id.radio_external) {
                     targetType = FeatureSettings.StorageType.EXTERNAL;
-                } else if (selectedId == R.id.radio_version_isolation_internal) {
-                    targetType = FeatureSettings.StorageType.VERSION_ISOLATION_INTERNAL;
                 } else if (selectedId == R.id.radio_version_isolation) {
-                    targetType = FeatureSettings.StorageType.VERSION_ISOLATION_EXTERNAL;
+                    targetType = FeatureSettings.StorageType.VERSION_ISOLATION;
                 }
 
                 if (targetType != null && targetType != currentStorageType) {
@@ -968,16 +961,12 @@ public class ContentListActivity extends BaseActivity {
         RadioGroup radioGroup = dialogView.findViewById(R.id.storage_radio_group);
         RadioButton radioInternal = dialogView.findViewById(R.id.radio_internal);
         RadioButton radioExternal = dialogView.findViewById(R.id.radio_external);
-        RadioButton radioVersionIsolationInternal = dialogView.findViewById(R.id.radio_version_isolation_internal);
         RadioButton radioVersionIsolation = dialogView.findViewById(R.id.radio_version_isolation);
-        radioVersionIsolationInternal.setText(getString(R.string.storage_version_isolation) + " (" + getString(R.string.storage_internal) + ")");
-        radioVersionIsolation.setText(getString(R.string.storage_version_isolation) + " (" + getString(R.string.storage_external) + ")");
 
         switch (currentStorageType) {
             case INTERNAL -> radioInternal.setEnabled(false);
             case EXTERNAL -> radioExternal.setEnabled(false);
-            case VERSION_ISOLATION_INTERNAL -> radioVersionIsolationInternal.setEnabled(false);
-            case VERSION_ISOLATION, VERSION_ISOLATION_EXTERNAL -> radioVersionIsolation.setEnabled(false);
+            case VERSION_ISOLATION -> radioVersionIsolation.setEnabled(false);
         }
 
         AlertDialog dialog = new MaterialAlertDialogBuilder(this)
@@ -991,10 +980,8 @@ public class ContentListActivity extends BaseActivity {
                     targetType = FeatureSettings.StorageType.INTERNAL;
                 } else if (selectedId == R.id.radio_external) {
                     targetType = FeatureSettings.StorageType.EXTERNAL;
-                } else if (selectedId == R.id.radio_version_isolation_internal) {
-                    targetType = FeatureSettings.StorageType.VERSION_ISOLATION_INTERNAL;
                 } else if (selectedId == R.id.radio_version_isolation) {
-                    targetType = FeatureSettings.StorageType.VERSION_ISOLATION_EXTERNAL;
+                    targetType = FeatureSettings.StorageType.VERSION_ISOLATION;
                 }
 
                 if (targetType != null && targetType != currentStorageType) {
@@ -1079,31 +1066,51 @@ public class ContentListActivity extends BaseActivity {
     }
 
     private File getWorldsDirectoryForType(FeatureSettings.StorageType storageType) {
-        File gameDataDir = getGameDataDirForType(storageType);
-        return gameDataDir == null ? null : new File(gameDataDir, "minecraftWorlds");
+        GameVersion currentVersion = versionManager.getSelectedVersion();
+        
+        switch (storageType) {
+            case VERSION_ISOLATION:
+                if (currentVersion != null && currentVersion.versionDir != null) {
+                    File gameDataDir = new File(currentVersion.versionDir, "games/com.mojang");
+                    return new File(gameDataDir, "minecraftWorlds");
+                }
+                break;
+            case EXTERNAL:
+                File externalDir = getExternalFilesDir(null);
+                if (externalDir != null) {
+                    File gameDataDir = new File(externalDir, "games/com.mojang");
+                    return new File(gameDataDir, "minecraftWorlds");
+                }
+                break;
+            case INTERNAL:
+                File internalDir = new File(getDataDir(), "games/com.mojang");
+                return new File(internalDir, "minecraftWorlds");
+        }
+        return null;
     }
 
     private File getPackDirectoryForType(FeatureSettings.StorageType storageType, String packType) {
-        File gameDataDir = getGameDataDirForType(storageType);
-        return gameDataDir == null ? null : new File(gameDataDir, packType);
-    }
-
-    private File getGameDataDirForType(FeatureSettings.StorageType storageType) {
         GameVersion currentVersion = versionManager.getSelectedVersion();
-        if (currentVersion == null) return null;
-        FeatureSettings.StorageType resolvedType = LauncherStorage.normalizeContentStorageType(
-                storageType,
-                currentVersion.versionIsolation
-        );
-        return LauncherStorage.getContentGameDataDir(this, currentVersion.getStorageProfileId(), resolvedType);
-    }
-
-    private FeatureSettings.StorageType parseStorageType(String value) {
-        try {
-            return FeatureSettings.StorageType.valueOf(value);
-        } catch (Exception ignored) {
-            return FeatureSettings.StorageType.INTERNAL;
+        
+        switch (storageType) {
+            case VERSION_ISOLATION:
+                if (currentVersion != null && currentVersion.versionDir != null) {
+                    File gameDataDir = new File(currentVersion.versionDir, "games/com.mojang");
+                    return new File(gameDataDir, packType);
+                }
+                break;
+            case EXTERNAL:
+                File externalDir = getExternalFilesDir(null);
+                if (externalDir != null) {
+                    File gameDataDir = new File(externalDir, "games/com.mojang");
+                    return new File(gameDataDir, packType);
+                }
+                break;
+            case INTERNAL:
+                File internalDir = new File(getDataDir(), "games/com.mojang");
+                return new File(internalDir, packType);
         }
+        return null;
     }
 
     @Override

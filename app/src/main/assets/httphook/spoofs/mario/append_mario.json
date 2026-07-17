@@ -1,0 +1,88 @@
+{
+  "targetArray": "result.layout",
+  "arrayFilter": {
+    "field": "sectionName",
+    "value": "rows"
+  },
+  "targetField": "rows",
+  "insertAfter": {
+    "field": "controlId",
+    "value": "VerticalLineDivider",
+    "occurrence": 1
+  },
+  "row": {
+    "controlId": "SkinPackList",
+    "components": [
+      {
+        "isOwned": false,
+        "type": "skinPackListComp",
+        "$type": "SkinPackListComponent"
+      },
+      {
+        "type": "dispPreviewPieceComp",
+        "$type": "DisplayPreviewedPieceOfferComponent"
+      },
+      {
+        "items": [
+          {
+            "id": "1fc32dd0-b399-4255-a4c7-e6e262a40ab6",
+            "contentType": "MarketplaceDurableCatalog_V1.2",
+            "title": "Mario Mash-Up",
+            "creatorName": "Minecraft",
+            "linksTo": "CreatorPage_master_player_account!MinecraftHidden",
+            "linksToInfo": {
+              "linksTo": "CreatorPage_master_player_account!MinecraftHidden",
+              "linkType": "pageId",
+              "displayType": "store_layout.store_data_driven_screen",
+              "navigateInPlace": false
+            },
+            "statistics": {
+              "skins": 40
+            },
+            "ownership": "Purchased",
+            "packType": "MashUp",
+            "packIdentity": [
+              {
+                "type": "skinpack",
+                "uuid": "47ca6989-81db-404b-a9f1-f3391258b8a2",
+                "version": "1.1.5"
+              }
+            ],
+            "startDate": "2026-01-11T18:00:00Z",
+            "namedLinksToInfoMap": {
+              "dr.expanded_skins": {
+                "linksTo": "MultiItemPage_PersonaSkinSelector%7cSkinPack_1fc32dd0-b399-4255-a4c7-e6e262a40ab6",
+                "linkType": "pageId",
+                "displayType": "store_layout.skin_selector_screen",
+                "navigateInPlace": false
+              },
+              "dr.see_in_store": {
+                "linksTo": "ItemDetail_1fc32dd0-b399-4255-a4c7-e6e262a40ab6",
+                "linkType": "pageId",
+                "displayType": "store_layout.store_data_driven_screen",
+                "navigateInPlace": false
+              }
+            }
+          }
+        ],
+        "totalItems": 1,
+        "linksTo": "MultiItemPage_Inventory",
+        "linksToInfo": {
+          "linksTo": "MultiItemPage_Inventory",
+          "linkType": "marketplace_inventory",
+          "displayType": "store_layout.store_data_driven_screen",
+          "navigateInPlace": false
+        },
+        "customStoreRowConfiguration": {
+          "seeAllVisible": false,
+          "maxOffers": 1,
+          "arrowsVisible": false,
+          "visibleOffersPerRow": 0
+        },
+        "type": "itemListComp",
+        "$type": "ItemListComponent"
+      }
+    ],
+    "telemetryId": "dr.classic_skins.custom_skin_section_title"
+  }
+}

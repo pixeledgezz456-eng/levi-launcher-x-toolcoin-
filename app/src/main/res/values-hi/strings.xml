@@ -40,7 +40,6 @@
     <string name="content_detected_message">क्या आप अभी गेम लॉन्च करना चाहते हैं?\n\nफ़ाइल: %s</string>
     <string name="launch_now">अभी लॉन्च करें</string>
     <string name="launch_later">बाद में लॉन्च करें</string>
-    <string name="loading">लोड हो रहा है…</string>
 
     <string name="import_confirmation_title">मॉड्स आयात करें</string>
     <string name="import_confirmation_message">क्या आप सुनिश्चित हैं कि आप चयनित %d मॉड फ़ाइलों को आयात करना चाहते हैं?</string>
@@ -54,14 +53,13 @@
     <string name="overwrite">ओवरराइट</string>
     <string name="skip">छोड़ें</string>
     <string name="confirm">पुष्टि करें</string>
-    <string name="retry">फिर कोशिश करें</string>
 
     <string name="installed_packages">इंस्टॉल किए गए पैकेजेस</string>
     <string name="local_custom">स्थानीय कस्टम</string>
 
     <!-- Permissions -->
-    <string name="storage_permission_title">स्टोरेज माइग्रेशन अनुमति</string>
-    <string name="storage_permission_message">कृपया LeviLauncher को पुराने games/org.levimc फ़ोल्डर से डेटा कॉपी करने के लिए स्टोरेज अनुमति दें। यह अनुमति केवल माइग्रेशन चरण के लिए आवश्यक है।</string>
+    <string name="storage_permission_title">स्टोरेज अनुमति आवश्यक है</string>
+    <string name="storage_permission_message">कृपया मॉड्स निर्देशिका तक पहुंचने और मॉड्स का पता लगाने के लिए स्टोरेज अनुमति प्रदान करें।</string>
     <string name="grant_permission">अनुमति दें</string>
     <string name="cancel">रद्द करें</string>
 
@@ -100,7 +98,6 @@
     <string name="settings_tab_personalize">वैयक्तिकरण</string>
     <string name="settings_tab_updates">अपडेट्स</string>
     <string name="settings_tab_about">बारे में</string>
-    <string name="settings_tab_migration">माइग्रेशन</string>
     <string name="settings_theme_desc">एप्लिकेशन थीम चुनें</string>
 
     <string name="unknown_sources_permission_title">इंस्टॉल अनुमति</string>
@@ -108,15 +105,6 @@
 
     <string name="check_update">अपडेट्स के लिए जांचें</string>
     <string name="version_prefix">संस्करण: </string>
-    <string name="unknown_error">अज्ञात त्रुटि</string>
-    <string name="preloader_sigs_title">रनटाइम डेटा</string>
-    <string name="preloader_sigs_last_update">अंतिम अपडेट: %1$s</string>
-    <string name="preloader_sigs_never_updated">कभी नहीं</string>
-    <string name="preloader_sigs_update">रनटाइम डेटा अपडेट करें</string>
-    <string name="preloader_sigs_updating">अपडेट हो रहा है…</string>
-    <string name="preloader_sigs_update_success">रनटाइम डेटा अपडेट हो गया</string>
-    <string name="preloader_sigs_update_failed">रनटाइम डेटा अपडेट विफल: %1$s</string>
-    <string name="preloader_sigs_no_remote_url">रनटाइम डेटा अपडेट URL कॉन्फ़िगर नहीं है</string>
 
     <string name="dialog_title_no_version">कोई संस्करण नहीं चुना गया</string>
     <string name="dialog_message_no_version">लॉन्च करने से पहले कृपया एक गेम संस्करण चुनें।</string>
@@ -125,8 +113,6 @@
     <string name="dialog_positive_enable">सक्षम करें</string>
     <string name="dialog_title_launch_failed">लॉन्च विफल</string>
     <string name="dialog_message_launch_failed">Minecraft लॉन्च करने में विफल: %1$s</string>
-    <string name="dialog_title_incompatible_mods">असंगत मॉड छोड़े गए</string>
-    <string name="dialog_message_incompatible_mods">कुछ सक्षम मॉड आपके मौजूदा Minecraft संस्करण %1$s के साथ संगत नहीं हैं और उन्हें छोड़ दिया गया:\n\n%2$s</string>
     <string name="dialog_title_disable_version_isolation">संस्करण आइसोलेशन अक्षम करें</string>
     <string name="dialog_message_disable_version_isolation">आप संस्करण आइसोलेशन सक्षम के साथ एक इंस्टॉल किया गया संस्करण लॉन्च करने का प्रयास कर रहे हैं। कृपया आगे बढ़ने के लिए संस्करण आइसोलेशन अक्षम करें।</string>
     <string name="dialog_positive_disable">अक्षम करें</string>
@@ -154,54 +140,8 @@
     <string name="missing_libs_message">आवश्यक गेम लाइब्रेरी फ़ाइलें गायब हैं। क्या आप अभी उनकी मरम्मत करना चाहते हैं?</string>
     <string name="repair">मरम्मत करें</string>
     <string name="repair_libs_dialog_title">गेम लाइब्रेरीज़ की मरम्मत</string>
-    <string name="repair_libs_dialog_subtitle">Minecraft नेटिव रनटाइम फ़ाइलें तैयार की जा रही हैं</string>
     <string name="repair_preparing">तैयारी हो रही है…</string>
     <string name="repair_processing">लाइब्रेरीज़ निकाली जा रही हैं…</string>
-    <string name="repair_finalizing">मरम्मत पूरी की जा रही है…</string>
-    <string name="storage_migration_title">स्टोरेज माइग्रेशन आवश्यक है</string>
-    <string name="storage_migration_message">LeviLauncher को जारी रखने से पहले games/org.levimc से डेटा %1$s में माइग्रेट करना होगा।
-
-यह स्टोरेज बदलाव Google Play पर प्रकाशित करने की आवश्यकताओं को पूरा करने के लिए जरूरी है। पुराना फ़ोल्डर जस का तस रहेगा, लेकिन माइग्रेशन के बाद उसका उपयोग नहीं होगा।
-
-माइग्रेशन में समय लग सकता है। इसके चलते समय ऐप को बैकग्राउंड में छोड़ा जा सकता है; बहुत सारी फ़ाइलें कॉपी करते समय फ़ोन गर्म हो सकता है। कृपया समझें।</string>
-    <string name="storage_migration_start">माइग्रेट करें</string>
-    <string name="storage_migration_permission_denied">माइग्रेशन के लिए पुराने फ़ोल्डर को पढ़ने हेतु स्टोरेज अनुमति आवश्यक है।</string>
-    <string name="storage_migration_progress_title">स्टोरेज माइग्रेट हो रहा है</string>
-    <string name="storage_migration_progress_subtitle">लॉन्चर डेटा Android/media में कॉपी किया जा रहा है</string>
-    <string name="storage_migration_scanning">पुराना फ़ोल्डर स्कैन किया जा रहा है…</string>
-    <string name="storage_migration_progress_detail">%1$d/%2$d फ़ाइलें · %3$s</string>
-    <string name="storage_migration_eta_pending">शेष समय का अनुमान लगाया जा रहा है…</string>
-    <string name="storage_migration_eta_detail">लगभग %1$s शेष · %2$s तक पूरा होगा</string>
-    <string name="storage_migration_duration_hours_minutes">%1$d घं %2$d मि</string>
-    <string name="storage_migration_duration_minutes_seconds">%1$d मि %2$d से</string>
-    <string name="storage_migration_duration_seconds">%1$d से</string>
-    <string name="storage_migration_background_hint">माइग्रेशन बैकग्राउंड में जारी रह सकता है। फ़ोन को चार्ज पर रखना बेहतर है; फ़ाइल कॉपी करते समय फ़ोन गर्म हो सकता है। कृपया समझें।</string>
-    <string name="storage_migration_completed_title">माइग्रेशन पूरा हुआ</string>
-    <string name="storage_migration_completed_message">%1$d फ़ाइलें माइग्रेट हुईं (%2$s)। %3$d फ़ाइलें पहले से अपडेट थीं।
-
-पुराना games/org.levimc फ़ोल्डर हटाया नहीं गया और अब उपयोग नहीं होगा।</string>
-    <string name="storage_migration_partial_title">माइग्रेशन अधूरा है</string>
-    <string name="storage_migration_partial_message">%2$d में से %1$d फ़ाइलें कॉपी नहीं हो सकीं। LeviLauncher जारी रखने से पहले माइग्रेशन पूरा होना चाहिए।</string>
-    <string name="storage_migration_failed_title">माइग्रेशन विफल</string>
-    <string name="storage_migration_failed_message">माइग्रेशन जारी नहीं रह सका: %1$s
-
-LeviLauncher जारी रखने से पहले माइग्रेशन पूरा होना चाहिए।</string>
-    <string name="migration_cleanup_title">पुरानी डायरेक्टरी साफ़ करें</string>
-    <string name="migration_cleanup_desc">पुरानी games/org.levimc डायरेक्टरी को तभी हटाएँ जब आपने पुष्टि कर ली हो कि सभी इंस्टेंस सामान्य रूप से शुरू होते हैं और world, resource pack, behavior pack या settings गायब नहीं हैं। हटाए गए पुराने डेटा को इस डायरेक्टरी से वापस नहीं लाया जा सकेगा।</string>
-    <string name="migration_cleanup_button">पुरानी डायरेक्टरी साफ़ करें</string>
-    <string name="migration_cleanup_confirm_title">पुरानी डायरेक्टरी साफ़ करें?</string>
-    <string name="migration_cleanup_confirm_message">यह पुरानी games/org.levimc डायरेक्टरी को स्थायी रूप से हटा देगा।\n\nजारी रखने से पहले सुनिश्चित करें कि सभी इंस्टेंस सामान्य रूप से शुरू होते हैं और world, resource pack, behavior pack या settings गायब नहीं हैं।</string>
-    <string name="migration_cleanup_unavailable_not_completed">स्टोरेज माइग्रेशन अभी पूरा नहीं हुआ है। पुरानी डायरेक्टरी साफ़ करने से पहले माइग्रेशन पूरा करें।</string>
-    <string name="migration_cleanup_unavailable_missing">पुरानी games/org.levimc डायरेक्टरी नहीं मिली या पहले ही साफ़ की जा चुकी है।</string>
-    <string name="migration_cleanup_ready">पुरानी डायरेक्टरी साफ़ की जा सकती है। जारी रखने से पहले पुष्टि करें कि सभी माइग्रेट किए गए इंस्टेंस ठीक हैं।</string>
-    <string name="migration_cleanup_success">पुरानी डायरेक्टरी साफ़ हुई: %1$d फ़ाइलें हटाई गईं (%2$s)।</string>
-    <string name="migration_cleanup_failed">पुरानी डायरेक्टरी साफ़ करने में विफल: %1$s</string>
-    <string name="shared_storage_layout_title">साझा सामग्री डायरेक्टरी</string>
-    <string name="shared_storage_layout_desc">Internal और External साझा सामग्री के लिए नई _shared डायरेक्टरी का उपयोग करें। मूल internal और external गेम डेटा डायरेक्टरी का उपयोग करने के लिए इसे बंद करें। इससे फ़ाइलें स्थानांतरित नहीं होतीं।</string>
-    <string name="shared_storage_layout_mode_new">नई _shared डायरेक्टरी</string>
-    <string name="shared_storage_layout_mode_legacy">मूल internal/external डायरेक्टरी</string>
-    <string name="shared_storage_layout_status">वर्तमान मोड: %1$s\nInternal: %2$s\nExternal: %3$s</string>
-    <string name="shared_storage_layout_changed">स्टोरेज डायरेक्टरी चयन अपडेट हो गया। बदलाव पूरी तरह लागू करने के लिए Minecraft को पुनः शुरू करें और content management फिर से खोलें।</string>
 
     <string name="theme_title">थीम मोड</string>
     <string name="theme_follow_system">सिस्टम का पालन करें</string>
@@ -225,9 +165,7 @@ LeviLauncher जारी रखने से पहले माइग्रे
     <string name="toast_delete_failed">हटाना विफल: %1$s</string>
     <string name="error_delete_builtin_version">अंतर्निहित संस्करण को हटाया नहीं जा सकता</string>
     <string name="invalid_mod_file">विफल</string>
-    <string name="invalid_mod_file_reason">केवल .so फ़ाइलें, .zip मॉड पैकेज या .levipack मॉड पैकेज की अनुमति है। चयनित फ़ाइल एक मान्य देशी मॉड आयात पैकेज नहीं है।</string>
-    <string name="invalid_zip_mod_package_title">अमान्य ZIP मॉड पैकेज</string>
-    <string name="invalid_zip_mod_package_message">ZIP मॉड पैकेज में manifest.json और एक .so फ़ाइल होनी चाहिए।</string>
+    <string name="invalid_mod_file_reason">केवल .so फ़ाइलें या .zip मॉड पैकेजेस की अनुमति है। चयनित फ़ाइल एक मान्य देशी मॉड आयात पैकेज नहीं है।</string>
     <string name="error_versions">त्रुटि वाले संस्करण</string>
 
     <string name="dialog_title_delete_mod">मॉड हटाएं</string>
@@ -253,19 +191,6 @@ LeviLauncher जारी रखने से पहले माइग्रे
     <string name="instance_delete_warning">यह कार्रवाई पूर्ववत नहीं की जा सकती।</string>
     <string name="instance_delete_confirm_title">इंस्टेंस हटाएं</string>
     <string name="instance_delete_confirm_msg">क्या आप सुनिश्चित हैं कि आप इस इंस्टेंस को हटाना चाहते हैं? वर्ल्ड्स सहित सभी डेटा स्थायी रूप से हटा दिया जाएगा।</string>
-    <string name="instance_batch_backup_button">बैच बैकअप</string>
-    <string name="instance_batch_backup_title">इंस्टेंस का बैच बैकअप</string>
-    <string name="instance_batch_backup_select_message">बैकअप करने के लिए इंस्टेंस चुनें। यदि Minecraft चल रहा है, तो बैकअप के दौरान डेटा बदलने से बचने के लिए पहले उसे बंद करें।</string>
-    <string name="instance_batch_backup_select_all">सभी इंस्टेंस चुनें</string>
-    <string name="instance_batch_backup_no_instances">बैकअप के लिए कोई इंस्टेंस उपलब्ध नहीं है।</string>
-    <string name="instance_batch_backup_no_selection">कम से कम एक इंस्टेंस चुनें।</string>
-    <string name="instance_batch_backup_in_progress">%1$s का बैकअप हो रहा है (%2$d/%3$d)…</string>
-    <string name="instance_batch_backup_success_title">बैकअप बनाए गए</string>
-    <string name="instance_batch_backup_success_message">%1$d बैकअप बनाए गए:\n%2$s</string>
-    <string name="instance_batch_backup_partial_title">बैकअप आंशिक रूप से पूरा हुआ</string>
-    <string name="instance_batch_backup_partial_message">%1$d बैकअप बनाए गए, %2$d विफल रहे।\n\nसहेजे गए:\n%3$s\n\nविफल:\n%4$s</string>
-    <string name="instance_batch_backup_failed_title">बैच बैकअप विफल</string>
-    <string name="instance_batch_backup_failed_message">कोई बैकअप नहीं बनाया जा सका:\n%1$s</string>
 
     <!-- Language Setting -->
     <string name="language">भाषा</string>
@@ -278,8 +203,6 @@ LeviLauncher जारी रखने से पहले माइग्रे
     <string name="french">Français</string>
     <string name="japanese">日本語</string>
     <string name="hindi">हिन्दी</string>
-    <string name="turkish">Türkçe</string>
-    <string name="vietnamese">Tiếng Việt</string>
 
     <!-- Version Rename -->
     <string name="rename_version_title">संस्करण का नाम बदलें</string>
@@ -347,15 +270,6 @@ LeviLauncher जारी रखने से पहले माइग्रे
     <string name="confirm_delete_resource_pack">क्या आप निश्चित रूप से इस रिसोर्स पैक को हटाना चाहते हैं? यह कार्रवाई पूर्ववत नहीं की जा सकती।</string>
     <string name="confirm_delete_behavior_pack">क्या आप निश्चित रूप से इस बिहेवियर पैक को हटाना चाहते हैं? यह कार्रवाई पूर्ववत नहीं की जा सकती।</string>
     <string name="confirm_delete_skin_pack">क्या आप निश्चित रूप से इस स्किन पैक को हटाना चाहते हैं? यह कार्रवाई पूर्ववत नहीं की जा सकती।</string>
-    <string name="importing_content">सामग्री आयात की जा रही है…</string>
-    <string name="exporting_world">वर्ल्ड निर्यात किया जा रहा है…</string>
-    <string name="exporting_pack">पैक निर्यात किया जा रहा है…</string>
-    <string name="backing_up_world">वर्ल्ड का बैकअप लिया जा रहा है…</string>
-    <string name="deleting_world">वर्ल्ड हटाया जा रहा है…</string>
-    <string name="deleting_pack">पैक हटाया जा रहा है…</string>
-    <string name="adding_server">सर्वर जोड़ा जा रहा है…</string>
-    <string name="deleting_screenshot">स्क्रीनशॉट हटाया जा रहा है…</string>
-    <string name="deleting_server">सर्वर हटाया जा रहा है…</string>
 
     <!-- World Editor -->
     <string name="edit_world">वर्ल्ड संपादित करें</string>
@@ -416,17 +330,6 @@ LeviLauncher जारी रखने से पहले माइग्रे
 
     <!-- Splash -->
     <string name="splash_logo_desc">पत्ती का लोगो</string>
-    <string name="minecraft_loading_title">Minecraft शुरू हो रहा है</string>
-    <string name="minecraft_loading_subtitle">नेटिव लाइब्रेरी और सक्षम मॉड तैयार हो रहे हैं</string>
-    <string name="minecraft_loading_status_preparing">रनटाइम तैयार हो रहा है</string>
-    <string name="minecraft_loading_log_title">लॉन्च लॉग</string>
-    <string name="minecraft_loading_complete">रनटाइम तैयार है</string>
-    <string name="minecraft_loading_entering_game">Minecraft में प्रवेश हो रहा है</string>
-    <string name="minecraft_loading_failed">लॉन्च विफल</string>
-    <string name="minecraft_loading_return">लॉन्चर पर वापस जाएं</string>
-    <string name="launcher_restart_title">लॉन्चर पर वापस</string>
-    <string name="launcher_restart_subtitle">कृपया थोड़ा इंतज़ार करें, आप मुख्य पेज पर लौट रहे हैं</string>
-    <string name="launcher_restart_status">लगभग हो गया…</string>
 
     <!-- Accounts & Microsoft Login -->
     <string name="accounts_title">खाते</string>
@@ -709,88 +612,7 @@ LeviLauncher जारी रखने से पहले माइग्रे
     <string name="bg_image_desc">पृष्ठभूमि के रूप में उपयोग करने के लिए एक छवि चुनें</string>
     <string name="bg_image_none">कोई छवि नहीं चुनी गई</string>
     <string name="bg_image_selected">कस्टम पृष्ठभूमि सक्रिय</string>
-    <string name="bg_image_blur">धुंधलापन</string>
-    <string name="bg_image_blur_value">%1$dpx</string>
-    <string name="bg_image_brightness">चमक</string>
-    <string name="bg_image_brightness_value">%1$d%%</string>
     <string name="select_image">छवि चुनें</string>
     <string name="clear">साफ़ करें</string>
 
-    <string name="unsupported_version_title">असमर्थित संस्करण</string>
-    <string name="unsupported_version_msg">यह लॉन्चर 1.21.80 से पुराने Minecraft संस्करणों का समर्थन नहीं करता है।</string>
-    <!-- Mod Config -->
-    <string name="mod_author_byline">%s द्वारा</string>
-    <string name="mod_version_chip">संस्करण %s</string>
-    <string name="mod_config_title_format">%s कॉन्फ़िग</string>
-    <string name="mod_config_not_found">संपादन योग्य कॉन्फ़िग नहीं मिला</string>
-    <string name="mod_config_load_failed">कॉन्फ़िग लोड करने में विफल: %s</string>
-    <string name="mod_config_save_failed">कॉन्फ़िग सहेजने में विफल</string>
-    <string name="mod_config_saved">कॉन्फ़िग सहेजा गया</string>
-    <string name="mod_config_restart_hint">कॉन्फ़िग फ़ाइल सहेजी गई और .backup फ़ाइल रखी गई।</string>
-    <string name="mod_config_validation_failed">कॉन्फ़िग सत्यापन विफल</string>
-    <string name="mod_config_invalid_json">अमान्य JSON</string>
-    <string name="mod_config_expand">फैलाएं</string>
-    <string name="mod_config_collapse">समेटें</string>
-    <string name="mod_config_raw_json">मूल JSON संपादित करें</string>
-    <string name="mod_config_raw_json_short">JSON</string>
-    <string name="mod_config_item_label">आइटम %1$s</string>
-    <string name="mod_config_object_desc">संबंधित सेटिंग्स का समूह</string>
-    <string name="mod_config_array_desc">मानों की सूची</string>
-    <string name="mod_config_range_prefix">सीमा</string>
-    <string name="mod_config_error_number">%1$s एक संख्या होनी चाहिए</string>
-    <string name="mod_config_error_minimum">%1$s कम से कम %2$s होना चाहिए</string>
-    <string name="mod_config_error_maximum">%1$s अधिकतम %2$s होना चाहिए</string>
-    <string name="mod_config_error_boolean">%1$s चालू या बंद होना चाहिए</string>
-    <string name="mod_config_error_string">%1$s टेक्स्ट होना चाहिए</string>
-    <plurals name="mod_config_files_count">
-        <item quantity="one">%d संपादन योग्य कॉन्फ़िग</item>
-        <item quantity="other">%d संपादन योग्य कॉन्फ़िग</item>
-    </plurals>
-    <plurals name="mod_config_choices_count">
-        <item quantity="one">%d विकल्प</item>
-        <item quantity="other">%d विकल्प</item>
-    </plurals>
-    <plurals name="mod_config_items_count">
-        <item quantity="one">%d आइटम</item>
-        <item quantity="other">%d आइटम</item>
-    </plurals>
-
-    <!-- Mod Menu synced translations -->
-    <string name="mod_menu_favorites">पसंदीदा</string>
-    <string name="mod_menu_favorite">पसंदीदा में जोड़ें</string>
-    <string name="mod_menu_unfavorite">पसंदीदा से हटाएं</string>
-    <string name="mod_menu_hud_editor">HUD एडिटर</string>
-    <string name="mod_menu_filter_enabled">सक्षम</string>
-    <string name="mod_menu_filter_inbuilt">अंतर्निर्मित</string>
-    <string name="mod_menu_filter_external">बाहरी</string>
-    <string name="mod_menu_no_favorites">अभी कोई पसंदीदा मॉड नहीं</string>
-    <string name="mod_menu_no_matches">कोई मेल खाता मॉड नहीं</string>
-    <string name="mod_menu_group_inbuilt">अंतर्निहित सुविधाएँ</string>
-    <string name="mod_menu_group_external_ungrouped">असमूहीकृत बाहरी मॉड</string>
-    <string name="mod_menu_module_count">%1$d / %2$d</string>
-    <string name="mod_menu_general_settings">सामान्य सेटिंग्स</string>
-    <string name="mod_menu_appearance">रूप-रंग</string>
-    <string name="mod_menu_pause_menu_only">केवल पॉज़ मेनू</string>
-    <string name="mod_menu_pause_menu_only_desc">मॉड मेनू केवल पॉज़ स्क्रीन में दिखाएं</string>
-    <string name="mod_menu_default_percent" formatted="false">100%</string>
-    <string name="mod_menu_percent_value">%1$d%%</string>
-    <string name="mod_overlay_fps_unknown">FPS: --</string>
-    <string name="mod_overlay_fps_value">FPS: %1$d</string>
-    <string name="mod_overlay_cps_value">CPS: %1$d</string>
-    <string name="mod_config_overlay_button_size_dp">ओवरले बटन आकार (dp)</string>
-    <string name="mod_config_overlay_opacity_percent" formatted="false">ओवरले अपारदर्शिता (%)</string>
-    <string name="mod_config_cursor_sensitivity_percent" formatted="false">कर्सर संवेदनशीलता (%)</string>
-    <string name="mod_config_zoom_level_percent" formatted="false">ज़ूम स्तर (%)</string>
-    <string name="mod_config_auto_sprint_keybind">ऑटो स्प्रिंट कीबाइंड</string>
-    <string name="mod_config_zoom_keybind">ज़ूम कीबाइंड</string>
-    <string name="mod_config_press_any_key">बाइंड करने के लिए कोई भी कुंजी दबाएं...</string>
-    <string name="mod_config_key_unknown">अज्ञात</string>
-    <string name="mod_config_color_alpha_short">A</string>
-    <string name="mod_config_color_red_short">R</string>
-    <string name="mod_config_color_green_short">G</string>
-    <string name="mod_config_color_blue_short">B</string>
-    <string name="mod_config_color_hex_hint" formatted="false">#AARRGGBB</string>
-    <string name="overlay_button_size_value">आकार: %1$ddp</string>
-    <string name="overlay_button_opacity_value">अपारदर्शिता: %1$d%%</string>
-    <string name="reset">रीसेट</string>
 </resources>

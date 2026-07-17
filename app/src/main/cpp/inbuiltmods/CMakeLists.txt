@@ -18,6 +18,7 @@ target_include_directories(inbuiltmods PRIVATE
 
 find_library(log-lib log)
 find_library(egl-lib EGL)
+find_library(android-lib android)
 
 target_link_libraries(inbuiltmods
     PRIVATE

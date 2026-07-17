@@ -7,7 +7,6 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.levimc.launcher.core.versions.GameVersion;
-import org.levimc.launcher.util.LauncherStorage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,7 +47,7 @@ public class ResourcePackManager {
 
     public void setCurrentVersion(GameVersion version) {
         if (version != null && version.versionDir != null) {
-            File gameDataDir = LauncherStorage.getProfileGameDataDir(context, version.getStorageProfileId());
+            File gameDataDir = new File(version.versionDir, "games/com.mojang");
             this.resourcePacksDirectory = new File(gameDataDir, "resource_packs");
             this.behaviorPacksDirectory = new File(gameDataDir, "behavior_packs");
             this.skinPacksDirectory = new File(gameDataDir, "skin_packs");
@@ -562,12 +561,12 @@ public class ResourcePackManager {
     }
 
     private void extractZipFile(File zipFile, File targetDir) throws IOException {
-        try (java.util.zip.ZipFile zip = new java.util.zip.ZipFile(zipFile)) {
-            java.util.Enumeration<? extends java.util.zip.ZipEntry> entries = zip.entries();
+        try (FileInputStream fis = new FileInputStream(zipFile);
+             java.util.zip.ZipInputStream zis = new java.util.zip.ZipInputStream(fis)) {
+            java.util.zip.ZipEntry entry;
             byte[] buffer = new byte[BUFFER_SIZE];
 
-            while (entries.hasMoreElements()) {
-                java.util.zip.ZipEntry entry = entries.nextElement();
+            while ((entry = zis.getNextEntry()) != null) {
                 String entryName = normalizeZipEntryName(entry.getName());
                 File entryFile = new File(targetDir, entryName);
 
@@ -579,10 +578,9 @@ public class ResourcePackManager {
                     entryFile.mkdirs();
                 } else {
                     entryFile.getParentFile().mkdirs();
-                    try (InputStream is = zip.getInputStream(entry);
-                         FileOutputStream fos = new FileOutputStream(entryFile)) {
+                    try (FileOutputStream fos = new FileOutputStream(entryFile)) {
                         int len;
-                        while ((len = is.read(buffer)) > 0) {
+                        while ((len = zis.read(buffer)) > 0) {
                             fos.write(buffer, 0, len);
                         }
                     }

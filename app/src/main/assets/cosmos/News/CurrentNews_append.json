@@ -1,0 +1,47 @@
+{
+  "id": "ee75d2fc-d187-4282-8569-feb5fbb9eddd",
+  "instanceId": "ee75d2fc-d187-4282-8569-feb5fbb9eddd",
+  "surface": "InboxMessage",
+  "template": "HeroImageCTA",
+  "header": "Welcome to the Cosmos!",
+  "body": "Welcome to Bedrock Cosmos! This greeting shows that the program is running correctly. You are free to explore and check out our variety of Custom Skins and Capes. Enjoy!",
+  "images": {
+    "Primary": {
+      "id": "21cabe25-4dc6-48cd-a415-18b798e26cb4",
+      "url": "https://i.imgur.com/NJg41gO.png"
+    }
+  },
+  "buttons": {
+    "Dismiss": {
+      "text": "Dismiss",
+      "action": "Dismiss",
+      "link": "",
+      "description": ""
+    },
+    "CallToAction": {
+      "text": "Cosmos Marketplace",
+      "action": "External",
+      "link": "https://www.youtube.com/watch?v=oHg5SJYRHA0",
+      "description": ""
+    }
+  },
+  "reportId": "Njk0NDkxYTY4ZTRlYzAwMDYzNGYxMGIyXyRfY2M9YzFjOWE1Y2YtNTBjOS0zOTVmLTAwNzgtZTE5ZWE2NmE1ZTdhJm12PTY5NDQ5MWE2OGU0ZWMwMDA2MzRmMTBhYyZwaT1jbXA=",
+  "isControl": false,
+  "sender": "Bedrock Cosmos",
+  "status": "Unread",
+  "persistToInboxOnImpression": false,
+  "inboxCategory": "BedrockCosmosNews",
+  "dateReceived": "2026-01-01T12:00:00.0000000Z",
+  "itemList": [],
+  "style": "Default",
+  "associatedProducts": [],
+  "messageItemList": [],
+  "messageText": {
+    "header": "Welcome to the Cosmos!",
+    "body": "Welcome to Bedrock Cosmos! This greeting shows that the program is running correctly. You are free to explore and check out our variety of Custom Skins and Capes. Enjoy!",
+    "messageSender": ""
+  },
+  "versionConstraint": "",
+  "colors": {},
+  "isSentimentSubmitButtonVisible": false
+}

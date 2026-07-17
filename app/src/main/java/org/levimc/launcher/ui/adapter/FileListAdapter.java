@@ -19,15 +19,13 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
     private List<ContentFile> files = new ArrayList<>();
     private final OnFileClickListener listener;
-    private final int accentColor;
 
     public interface OnFileClickListener {
         void onDownloadClick(ContentFile file);
     }
 
-    public FileListAdapter(OnFileClickListener listener, int accentColor) {
+    public FileListAdapter(OnFileClickListener listener) {
         this.listener = listener;
-        this.accentColor = accentColor;
     }
 
     public void setFiles(List<ContentFile> files) {
@@ -45,7 +43,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ContentFile file = files.get(position);
-        holder.bind(file, listener, accentColor);
+        holder.bind(file, listener);
     }
 
     @Override
@@ -57,7 +55,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         TextView name;
         TextView date;
         TextView version;
-        View btnDownload;
+        ImageButton btnDownload;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -67,7 +65,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
             btnDownload = itemView.findViewById(R.id.btn_download);
         }
 
-        void bind(final ContentFile file, final OnFileClickListener listener, int accentColor) {
+        void bind(final ContentFile file, final OnFileClickListener listener) {
             name.setText(file.displayName != null ? file.displayName : file.fileName);
             date.setText(file.fileDate != null && file.fileDate.length() >= 10 ? file.fileDate.substring(0, 10) : "");
             
@@ -82,12 +80,6 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
                 version.setText(v);
             } else {
                 version.setText("");
-            }
-            
-            if (btnDownload instanceof com.google.android.material.button.MaterialButton) {
-                com.google.android.material.button.MaterialButton btn = (com.google.android.material.button.MaterialButton) btnDownload;
-                btn.setTextColor(accentColor);
-                btn.setIconTint(android.content.res.ColorStateList.valueOf(accentColor));
             }
 
             btnDownload.setOnClickListener(v -> listener.onDownloadClick(file));

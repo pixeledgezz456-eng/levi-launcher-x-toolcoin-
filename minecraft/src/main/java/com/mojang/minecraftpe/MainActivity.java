@@ -428,8 +428,7 @@ public class MainActivity extends GameActivity implements View.OnKeyListener, Fi
         SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
         if (getResources() == null) {
-            finish();
-            return;
+            Process.killProcess(Process.myPid());
         }
         nativeWaitCrashManagementSetupComplete();
         initializeAppExitInfoHelper();
@@ -509,7 +508,7 @@ public class MainActivity extends GameActivity implements View.OnKeyListener, Fi
                     } else {
                         nativeOnPickImageCanceled(mCallback);
                     }
-        });
+                });
         this.textInputWidget = createTextWidget();
     }
 

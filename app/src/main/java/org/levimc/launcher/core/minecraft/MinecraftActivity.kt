@@ -1,150 +1,81 @@
 package org.levimc.launcher.core.minecraft
 
-import android.content.Context
 import android.content.Intent
 import android.content.res.AssetManager
-import android.graphics.Color
 import android.os.Bundle
-import android.text.InputType
 import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputConnection
-import android.view.inputmethod.InputConnectionWrapper
-import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.widget.AppCompatEditText
+import android.widget.Toast
 import com.mojang.minecraftpe.MainActivity
 import org.levimc.launcher.core.crash.CrashReporter
-import org.levimc.launcher.core.mods.ModManager
 import org.levimc.launcher.core.mods.inbuilt.overlay.InbuiltOverlayManager
-import org.levimc.launcher.preloader.PreloaderInput
+import org.levimc.launcher.core.versions.GameVersion
+import org.levimc.launcher.settings.FeatureSettings
 import java.io.File
 
 class MinecraftActivity : MainActivity() {
 
     private lateinit var gameManager: GamePackageManager
-    private lateinit var trace: LaunchTrace
     private var overlayManager: InbuiltOverlayManager? = null
-    private var normalExitPrepared = false
-    private var normalExitRestartScheduled = false
-    private var gameRuntimeStarted = false
-    private var preloaderTextInput: PreloaderTextInput? = null
-    private var previousInputFocus: View? = null
-
-    private class PreloaderTextInput(context: Context) : AppCompatEditText(context) {
-        override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
-            val target = super.onCreateInputConnection(outAttrs) ?: return null
-            return object : InputConnectionWrapper(target, true) {
-                override fun commitText(text: CharSequence?, newCursorPosition: Int): Boolean {
-                    if (!text.isNullOrEmpty() && PreloaderInput.onTextInput(text)) {
-                        super.commitText(text, newCursorPosition)
-                        return true
-                    }
-                    return super.commitText(text, newCursorPosition)
-                }
-
-                override fun deleteSurroundingText(beforeLength: Int, afterLength: Int): Boolean {
-                    if (beforeLength > 0 && dispatchBackspace()) {
-                        return true
-                    }
-                    return super.deleteSurroundingText(beforeLength, afterLength)
-                }
-
-                override fun deleteSurroundingTextInCodePoints(
-                    beforeLength: Int,
-                    afterLength: Int
-                ): Boolean {
-                    if (beforeLength > 0 && dispatchBackspace()) {
-                        return true
-                    }
-                    return super.deleteSurroundingTextInCodePoints(beforeLength, afterLength)
-                }
-
-                private fun dispatchBackspace(): Boolean {
-                    val downConsumed = PreloaderInput.onKeyEvent(
-                        KeyEvent.KEYCODE_DEL,
-                        0,
-                        true
-                    )
-                    val upConsumed = PreloaderInput.onKeyEvent(
-                        KeyEvent.KEYCODE_DEL,
-                        0,
-                        false
-                    )
-                    return downConsumed || upConsumed
-                }
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        trace = LaunchTrace.ensure(intent)
-        trace.mark("MinecraftActivity onCreate entered")
-        window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(resolveLaunchBackgroundColor()))
+        try {
+            val versionDir = intent.getStringExtra("MC_PATH")
+            val versionCode = intent.getStringExtra("MINECRAFT_VERSION") ?: ""
+            val versionDirName = intent.getStringExtra("MINECRAFT_VERSION_DIR") ?: ""
+            val isInstalled = intent.getBooleanExtra("IS_INSTALLED", false)
 
-        if (savedInstanceState != null) {
-            trace.mark("MinecraftActivity finishing restored instance")
-            gameRuntimeStarted = true
-            super.onCreate(null)
+            val version = if (!versionDir.isNullOrEmpty()) {
+                GameVersion(
+                    versionDirName,
+                    versionCode,
+                    versionCode,
+                    File(versionDir),
+                    isInstalled,
+                    MinecraftLauncher.MC_PACKAGE_NAME,
+                    ""
+                )
+            } else if (!versionCode.isNullOrEmpty()) {
+                GameVersion(
+                    versionDirName,
+                    versionCode,
+                    versionCode,
+                    null,
+                    isInstalled,
+                    MinecraftLauncher.MC_PACKAGE_NAME,
+                    ""
+                )
+            } else {
+                null
+            }
+
+            gameManager = GamePackageManager.getInstance(applicationContext, version)
+
+            try {
+                System.loadLibrary("preloader")
+            } catch (e: Exception) {}
+
+            if (!gameManager.loadLibrary("minecraftpe")) {
+                throw RuntimeException("Failed to load libminecraftpe.so")
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Failed to load game: ${e.message}", Toast.LENGTH_LONG).show()
             finish()
             return
         }
-
-        try {
-            val preparedRuntime = MinecraftLaunchSession.getPreparedRuntime()
-                ?: MinecraftRuntimePreparer.prepare(applicationContext, intent)
-            gameManager = preparedRuntime.gameManager
-            trace.mark("Prepared runtime consumed")
-        } catch (throwable: Throwable) {
-            trace.error("MinecraftActivity prepare failed", formatLaunchFailure(throwable))
-            returnToLauncherAfterLaunchFailure()
-            return
-        }
-        trace.mark("Native mod enable started")
-        ModManager.enableLoadedMods()
-        trace.mark("Native mod enable finished")
-        trace.mark("Mojang MainActivity super.onCreate starting")
-        try {
-            gameRuntimeStarted = true
-            super.onCreate(savedInstanceState)
-        } catch (throwable: Throwable) {
-            trace.error("Mojang MainActivity super.onCreate failed", formatLaunchFailure(throwable))
-            returnToLauncherAfterLaunchFailure()
-            return
-        }
-        trace.mark("Mojang MainActivity super.onCreate finished")
+        super.onCreate(savedInstanceState)
         
         val launchVertically = intent.getBooleanExtra("LAUNCH_VERTICALLY", false)
         if (launchVertically) {
             requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
         
-        initializePreloaderTextInput()
-        PreloaderInput.setActivity(this)
+        org.levimc.launcher.preloader.PreloaderInput.setActivity(this)
         MinecraftActivityState.onCreated(this)
-        trace.mark("MinecraftActivity onCreate finished")
-    }
-
-    private fun returnToLauncherAfterLaunchFailure() {
-        gameRuntimeStarted = false
-        MinecraftLaunchSession.clear()
-        MinecraftProcessRestarter.restartLauncherAfterMinecraftExit(this)
-        finish()
-    }
-
-    private fun formatLaunchFailure(throwable: Throwable): String {
-        return throwable.message ?: throwable.javaClass.simpleName
-    }
-
-    private fun resolveLaunchBackgroundColor(): Int {
-        val typedValue = android.util.TypedValue()
-        return if (theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)) {
-            typedValue.data
-        } else {
-            Color.BLACK
-        }
+        getSharedPreferences("LauncherPrefs", MODE_PRIVATE)
+            .edit()
+            .putBoolean("game_verified", true)
+            .apply()
     }
 
     private fun startInbuiltModServices() {
@@ -158,17 +89,12 @@ class MinecraftActivity : MainActivity() {
     }
 
     override fun onNewIntent(intent: Intent) {
-        setIntent(intent)
         super.onNewIntent(intent)
     }
 
     override fun onResume() {
         super.onResume()
-        if (!isFinishing) {
-            normalExitPrepared = false
-            normalExitRestartScheduled = false
-        }
-        MinecraftActivityState.onResumed(this)
+        MinecraftActivityState.onResumed()
 
         if (overlayManager == null) {
             startInbuiltModServices()
@@ -176,15 +102,14 @@ class MinecraftActivity : MainActivity() {
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        val unicodeChar = event.unicodeChar
-        if (event.action == KeyEvent.ACTION_UP) {
-            if (org.levimc.launcher.preloader.PreloaderInput.onKeyEvent(event.keyCode, unicodeChar, false)) {
-                return true
-            }
-        }
-
         if (event.action == KeyEvent.ACTION_DOWN) {
-            if (org.levimc.launcher.preloader.PreloaderInput.onKeyEvent(event.keyCode, unicodeChar, true)) {
+            val unicodeChar = event.unicodeChar
+            if (unicodeChar != 0) {
+                if (org.levimc.launcher.preloader.PreloaderInput.onKeyChar(unicodeChar)) {
+                    return true
+                }
+            }
+            if (org.levimc.launcher.preloader.PreloaderInput.onKeyDown(event.keyCode)) {
                 return true
             }
         }
@@ -227,14 +152,8 @@ class MinecraftActivity : MainActivity() {
     }
 
     override fun dispatchGenericMotionEvent(event: MotionEvent): Boolean {
-        if (event.actionMasked == MotionEvent.ACTION_BUTTON_PRESS ||
-            event.actionMasked == MotionEvent.ACTION_BUTTON_RELEASE) {
-            
-            val isDown = event.actionMasked == MotionEvent.ACTION_BUTTON_PRESS
-            if (org.levimc.launcher.preloader.PreloaderInput.onMouse(event.actionButton, isDown)) {
-                return true
-            }
-            
+        if (event.action == MotionEvent.ACTION_BUTTON_PRESS ||
+            event.action == MotionEvent.ACTION_BUTTON_RELEASE) {
             overlayManager?.handleMouseEvent(event)
         }
 
@@ -252,54 +171,25 @@ class MinecraftActivity : MainActivity() {
     }
 
     override fun onPause() {
-        val shouldRestartAfterNormalExit = shouldRestartAfterNormalExit()
-        if (shouldRestartAfterNormalExit) {
-            ModManager.disableAndUnloadLoadedMods()
-            prepareNormalExitCleanup()
-            scheduleNormalExitProcessRestart()
-        }
-        MinecraftActivityState.onPaused(this)
+        MinecraftActivityState.onPaused()
         super.onPause()
     }
 
     override fun onDestroy() {
-        ModManager.disableAndUnloadLoadedMods()
-
-        val shouldPrepareNormalExit = shouldRestartAfterNormalExit()
-        if (shouldPrepareNormalExit) {
-            prepareNormalExitCleanup()
-        }
-
-        preloaderTextInput = null
-        previousInputFocus = null
-        PreloaderInput.clearActivity()
-        MinecraftActivityState.onDestroyed(this)
-        MinecraftLaunchSession.clear()
+        org.levimc.launcher.preloader.PreloaderInput.clearActivity()
+        MinecraftActivityState.onDestroyed()
         stopInbuiltModServices()
+        super.onDestroy()
 
-        try {
-            super.onDestroy()
-        } finally {
-            if (shouldPrepareNormalExit) {
-                scheduleNormalExitProcessRestart()
-            }
+        if (isFinishing && !CrashReporter.isHandlingCrash() && !CrashReporter.hasPendingCrash(this)) {
+            CrashReporter.disarmRecovery(this)
+            val intent = Intent(applicationContext, org.levimc.launcher.ui.activities.MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+
+            finishAndRemoveTask()
+            android.os.Process.killProcess(android.os.Process.myPid())
         }
-    }
-
-    private fun shouldRestartAfterNormalExit(): Boolean {
-        return gameRuntimeStarted && isFinishing && !CrashReporter.isHandlingCrash()
-    }
-
-    private fun prepareNormalExitCleanup() {
-        if (normalExitPrepared) return
-        normalExitPrepared = true
-    }
-
-    private fun scheduleNormalExitProcessRestart() {
-        if (normalExitRestartScheduled) return
-        normalExitRestartScheduled = true
-
-        MinecraftProcessRestarter.restartLauncherAfterMinecraftExit(this)
     }
 
     override fun getAssets(): AssetManager {
@@ -311,7 +201,18 @@ class MinecraftActivity : MainActivity() {
     }
 
     override fun getFilesDir(): File {
-        return resolveStorageDir(MinecraftLauncher.EXTRA_STORAGE_FILES_DIR, super.getFilesDir())
+        val mcPath = intent?.getStringExtra("MC_PATH")
+        val isIsolated = intent?.getBooleanExtra("VERSION_ISOLATION", false) ?: false
+
+        return if (isIsolated && !mcPath.isNullOrEmpty()) {
+            val filesDir = File(mcPath, "games/com.mojang")
+            if (!filesDir.exists()) {
+                filesDir.mkdirs()
+            }
+            filesDir
+        } else {
+            super.getFilesDir()
+        }
     }
 
     override fun tick() {
@@ -320,111 +221,84 @@ class MinecraftActivity : MainActivity() {
     }
 
     override fun getDataDir(): File {
-        return resolveStorageDir(MinecraftLauncher.EXTRA_STORAGE_DATA_DIR, super.getDataDir())
+        val mcPath = intent?.getStringExtra("MC_PATH")
+        val isIsolated = intent?.getBooleanExtra("VERSION_ISOLATION", false) ?: false
+
+        return if (isIsolated && !mcPath.isNullOrEmpty()) {
+            val dataDir = File(mcPath)
+            if (!dataDir.exists()) {
+                dataDir.mkdirs()
+            }
+            dataDir
+        } else {
+            super.getDataDir()
+        }
     }
 
     override fun getExternalFilesDir(type: String?): File? {
-        val baseDir = resolveStorageDir(
-            MinecraftLauncher.EXTRA_STORAGE_EXTERNAL_FILES_DIR,
-            super.getExternalFilesDir(null)
-        )
-        return if (type.isNullOrEmpty()) {
-            baseDir
+        val mcPath = intent?.getStringExtra("MC_PATH")
+        val isIsolated = intent?.getBooleanExtra("VERSION_ISOLATION", false) ?: false
+
+        return if (isIsolated && !mcPath.isNullOrEmpty()) {
+            val externalDir = if (type != null) {
+                File(mcPath, "games/com.mojang/$type")
+            } else {
+                File(mcPath, "games/com.mojang")
+            }
+            if (!externalDir.exists()) {
+                externalDir.mkdirs()
+            }
+            externalDir
         } else {
-            File(baseDir, type).also { it.mkdirs() }
+            super.getExternalFilesDir(type)
         }
-    }
-
-    override fun getInternalStoragePath(): String {
-        return getFilesDir().absolutePath
-    }
-
-    override fun getExternalStoragePath(): String {
-        return (getExternalFilesDir(null) ?: getFilesDir()).absolutePath
-    }
-
-    private fun resolveStorageDir(extraName: String, fallback: File?): File {
-        val path = intent?.getStringExtra(extraName)
-        val dir = if (!path.isNullOrEmpty()) File(path) else fallback ?: super.getFilesDir()
-        if (!dir.exists()) {
-            dir.mkdirs()
-        }
-        return dir
     }
 
     override fun getDatabasePath(name: String): File {
-        val dbDir = File(getDataDir(), "databases")
-        if (!dbDir.exists()) {
-            dbDir.mkdirs()
+        val mcPath = intent?.getStringExtra("MC_PATH")
+        val isIsolated = intent?.getBooleanExtra("VERSION_ISOLATION", false) ?: false
+
+        return if (isIsolated && !mcPath.isNullOrEmpty()) {
+            val dbDir = File(mcPath, "databases")
+            if (!dbDir.exists()) {
+                dbDir.mkdirs()
+            }
+            File(dbDir, name)
+        } else {
+            super.getDatabasePath(name)
         }
-        return File(dbDir, name)
     }
 
     override fun getCacheDir(): File {
-        return resolveStorageDir(MinecraftLauncher.EXTRA_STORAGE_CACHE_DIR, super.getCacheDir())
-    }
+        val mcPath = intent?.getStringExtra("MC_PATH")
+        val isIsolated = intent?.getBooleanExtra("VERSION_ISOLATION", false) ?: false
 
-    private fun initializePreloaderTextInput() {
-        val input = PreloaderTextInput(this).apply {
-            isFocusable = true
-            isFocusableInTouchMode = true
-            isEmojiCompatEnabled = false
-            isSingleLine = true
-            inputType = InputType.TYPE_CLASS_TEXT or
-                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD or
-                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-            imeOptions = EditorInfo.IME_ACTION_DONE or
-                EditorInfo.IME_FLAG_NO_EXTRACT_UI or
-                EditorInfo.IME_FLAG_NO_FULLSCREEN or
-                EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
-            setBackgroundColor(Color.TRANSPARENT)
-            setTextColor(Color.TRANSPARENT)
-            isCursorVisible = false
-            alpha = 0f
-            visibility = View.GONE
+        return if (isIsolated && !mcPath.isNullOrEmpty()) {
+            val cacheDir = File(mcPath, "cache")
+            if (!cacheDir.exists()) {
+                cacheDir.mkdirs()
+            }
+            cacheDir
+        } else {
+            super.getCacheDir()
         }
-        findViewById<ViewGroup>(android.R.id.content).addView(
-            input,
-            ViewGroup.LayoutParams(1, 1)
-        )
-        preloaderTextInput = input
     }
 
     fun showSoftKeyboard() {
         runOnUiThread {
-            val input = preloaderTextInput ?: return@runOnUiThread
-            previousInputFocus = currentFocus?.takeUnless { it === input }
-            input.visibility = View.VISIBLE
-            input.setText("")
-            input.requestFocus()
-            input.setSelection(0)
-
-            val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.restartInput(input)
-            if (!inputMethodManager.showSoftInput(
-                    input,
-                    InputMethodManager.SHOW_IMPLICIT
-                )
-            ) {
-                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
-            }
+            val inputMethodManager = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            val view = window.decorView.findFocus() ?: window.decorView
+            view.requestFocus()
+            inputMethodManager.showSoftInput(view, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+            inputMethodManager.toggleSoftInput(android.view.inputmethod.InputMethodManager.SHOW_FORCED, 0)
         }
     }
 
     fun hideSoftKeyboard() {
         runOnUiThread {
-            val input = preloaderTextInput ?: return@runOnUiThread
-            val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(input.windowToken, 0)
-            input.clearFocus()
-            input.visibility = View.GONE
-
-            previousInputFocus
-                ?.takeIf { it.isAttachedToWindow && it.visibility == View.VISIBLE }
-                ?.requestFocus()
-            previousInputFocus = null
+            val inputMethodManager = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            val view = window.decorView.findFocus() ?: window.decorView
+            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 }

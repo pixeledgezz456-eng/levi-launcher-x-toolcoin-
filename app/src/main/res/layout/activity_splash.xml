@@ -21,8 +21,8 @@
 
     <View
         android:id="@+id/orbitRing"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
         android:background="@drawable/bg_orbit_ring"
         app:layout_constraintBottom_toBottomOf="@id/logoGlow"
         app:layout_constraintEnd_toEndOf="@id/logoGlow"
@@ -41,10 +41,10 @@
 
     <ImageView
         android:id="@+id/imgLeaf"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="360dp"
+        android:layout_height="140dp"
         android:contentDescription="@string/splash_logo_desc"
-        android:src="@drawable/ic_leaf_logo"
+        android:src="@drawable/levi_toolcoin"
         app:layout_constraintBottom_toBottomOf="@id/logoGlow"
         app:layout_constraintEnd_toEndOf="@id/logoGlow"
         app:layout_constraintStart_toStartOf="@id/logoGlow"
@@ -57,7 +57,7 @@
         android:layout_marginTop="24dp"
         android:includeFontPadding="false"
         android:letterSpacing="0.05"
-        android:text="@string/app_name"
+        android:text="@string/app_name_toolcoin"
         android:textColor="@color/on_background"
         android:textSize="34sp"
         android:textStyle="bold"

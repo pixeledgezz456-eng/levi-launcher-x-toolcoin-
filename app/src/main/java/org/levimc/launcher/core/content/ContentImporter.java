@@ -440,12 +440,12 @@ public class ContentImporter {
     }
 
     private void extractZip(File zipFile, File targetDir) throws IOException {
-        try (java.util.zip.ZipFile zip = new java.util.zip.ZipFile(zipFile)) {
-            java.util.Enumeration<? extends ZipEntry> entries = zip.entries();
+        try (FileInputStream fis = new FileInputStream(zipFile);
+             ZipInputStream zis = new ZipInputStream(fis)) {
+            ZipEntry entry;
             byte[] buffer = new byte[BUFFER_SIZE];
 
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
+            while ((entry = zis.getNextEntry()) != null) {
                 String entryName = normalizeZipEntryName(entry.getName());
                 File entryFile = new File(targetDir, entryName);
 
@@ -457,10 +457,9 @@ public class ContentImporter {
                     entryFile.mkdirs();
                 } else {
                     entryFile.getParentFile().mkdirs();
-                    try (InputStream is = zip.getInputStream(entry);
-                         FileOutputStream fos = new FileOutputStream(entryFile)) {
+                    try (FileOutputStream fos = new FileOutputStream(entryFile)) {
                         int len;
-                        while ((len = is.read(buffer)) > 0) {
+                        while ((len = zis.read(buffer)) > 0) {
                             fos.write(buffer, 0, len);
                         }
                     }

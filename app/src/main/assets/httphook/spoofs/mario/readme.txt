@@ -1,0 +1,5 @@
+- targetArray   — dot-path to the array containing the objects (e.g. "result.layout")
+- arrayFilter   — finds the matching object inside targetArray by field/value (e.g. sectionName=rows)
+- targetField   — the array inside the matched object to inject into (e.g. "rows")
+- insertAfter   — find the row where field == value, on which occurrence (1 = first)
+- row           — the actual payload to inject

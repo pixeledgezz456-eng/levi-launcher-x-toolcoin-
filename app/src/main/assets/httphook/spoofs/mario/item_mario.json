@@ -1,0 +1,37 @@
+{
+  "code": 200,
+  "status": "OK",
+  "data": {
+    "Item": {
+      "Id": "1fc32dd0-b399-4255-a4c7-e6e262a40ab6",
+      "Contents": [
+        {
+          "Id": "47ca6989-81db-404b-a9f1-f3391258b8a2",
+          "Url": "LOCAL_MARIO_ZIP_URL",
+          "MaxClientVersion": "65535.65535.65535",
+          "MinClientVersion": "1.2.0",
+          "Tags": [],
+          "Type": "skinbinary"
+        }
+      ],
+      "DisplayProperties": {
+        "creatorName": "Minecraft",
+        "originalCreatorId": "2535448579972708",
+        "purchasable": false,
+        "price": -1,
+        "packIdentity": [
+          {
+            "type": "skinpack",
+            "uuid": "47ca6989-81db-404b-a9f1-f3391258b8a2",
+            "version": "1.1.6"
+          }
+        ],
+        "skinPack": {
+          "count": 40
+        },
+        "videoUrl": "https://www.youtube.com/watch?v=sNcVYOPw6r0",
+        "hardwareMemoryTier": 0
+      }
+    }
+  }
+}

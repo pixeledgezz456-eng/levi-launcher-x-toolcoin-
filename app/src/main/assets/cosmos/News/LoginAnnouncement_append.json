@@ -1,0 +1,33 @@
+{
+  "id": "ANNOUNCEMENT_UUID",
+  "instanceId": "ANNOUNCEMENT_UUID",
+  "surface": "LoginAnnouncement",
+  "template": "ShowcaseAnnouncementNoCTA",
+  "header": "HEADER_TEXT",
+  "body": "BODY_TEXT",
+  "images": {
+    "Primary": {
+      "id": "RANDOM_UUID",
+      "url": "IMAGE_URL.jpg"
+    }
+  },
+  "buttons": {},
+  "reportId": "Njk0NWIwMGM1Y2MzOTUwMDY1NTViNTRjXyRfY2M9NzJhMTJlYzgtMzU5Mi00ZmU0LTRhOWItMDNiYThiNjk2ZWNiJm12PTY5NDViMDBjNWNjMzk1MDA2NTU1YjU0NiZwaT1jbXA=",
+  "isControl": false,
+  "sender": "Bedrock Cosmos",
+  "status": "Unread",
+  "persistToInboxOnImpression": false,
+  "inboxCategory": "BedrockCosmosNews",
+  "dateReceived": "YYYY-MM-DDT12:00:00.0000000Z",
+  "itemList": [],
+  "style": "Default",
+  "associatedProducts": [],
+  "messageItemList": [],
+  "messageText": {
+    "header": "HEADER_TEXT",
+    "body": "BODY_TEXT"
+  },
+  "versionConstraint": "≥ 1.21.100",
+  "colors": {},
+  "isSentimentSubmitButtonVisible": false
+}

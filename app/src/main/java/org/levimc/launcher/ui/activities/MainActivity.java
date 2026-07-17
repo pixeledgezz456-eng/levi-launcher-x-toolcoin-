@@ -1,28 +1,17 @@
 package org.levimc.launcher.ui.activities;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
-import android.os.Build;
-import android.os.IBinder;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.widget.LinearLayout;
@@ -32,8 +21,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.levimc.launcher.R;
-import org.levimc.launcher.core.minecraft.MinecraftImportIntents;
-import org.levimc.launcher.core.minecraft.LaunchTrace;
 import org.levimc.launcher.core.minecraft.MinecraftLauncher;
 import org.levimc.launcher.core.mods.FileHandler;
 import org.levimc.launcher.core.mods.Mod;
@@ -45,25 +32,18 @@ import org.levimc.launcher.settings.FeatureSettings;
 
 import org.levimc.launcher.ui.animation.DynamicAnim;
 import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
-import org.levimc.launcher.ui.dialogs.LibsRepairDialog;
 import org.levimc.launcher.ui.dialogs.PlayStoreValidationDialog;
 import org.levimc.launcher.ui.views.MainViewModel;
 import org.levimc.launcher.ui.views.MainViewModelFactory;
 import org.levimc.launcher.util.ApkImportManager;
 import org.levimc.launcher.util.GithubReleaseUpdater;
 import org.levimc.launcher.util.LanguageManager;
-import org.levimc.launcher.util.LauncherStorage;
 import org.levimc.launcher.util.PermissionsHandler;
-import org.levimc.launcher.util.PersonalizationManager;
 import org.levimc.launcher.util.PlayStoreValidator;
 import org.levimc.launcher.util.ResourcepackHandler;
-import org.levimc.launcher.util.StorageMigrationManager;
-import org.levimc.launcher.util.StorageMigrationService;
 import org.levimc.launcher.util.UIHelper;
 import org.levimc.launcher.core.content.ContentManager;
 import java.util.ArrayList;
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -78,10 +58,14 @@ import java.util.concurrent.Executors;
  import android.graphics.drawable.ColorDrawable;
  import android.util.TypedValue;
  import android.view.ViewGroup;
- import android.view.ViewTreeObserver;
  import androidx.core.content.ContextCompat;
 
 import coelho.msftauth.api.oauth20.OAuth20Token;
+import kotlin.coroutines.EmptyCoroutineContext;
+import kotlinx.coroutines.BuildersKt;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.CoroutineScopeKt;
+import kotlinx.coroutines.Dispatchers;
 import okhttp3.OkHttpClient;
  import okhttp3.Request;
  import okhttp3.Response;
@@ -91,9 +75,9 @@ import okhttp3.OkHttpClient;
  import org.levimc.launcher.ui.dialogs.LoadingDialog;
  import org.levimc.launcher.util.AccountTextUtils;
  import org.levimc.launcher.util.DialogUtils;
-
- import static org.levimc.launcher.core.minecraft.MinecraftProcessRestarterKt.ACTION_MAIN_ACTIVITY_FIRST_DRAWN;
- import static org.levimc.launcher.core.minecraft.MinecraftProcessRestarterKt.EXTRA_CLOSE_RESTART_ACTIVITY_ON_FIRST_DRAW;
+  import org.levimc.launcher.core.playfab.AuthService;
+import org.levimc.launcher.core.playfab.PlayFabClient;
+import org.levimc.launcher.core.keys.KeysService;
 
  public class MainActivity extends BaseActivity {
     private ActivityMainBinding binding;
@@ -104,10 +88,8 @@ import okhttp3.OkHttpClient;
     private ApkImportManager apkImportManager;
     private MainViewModel viewModel;
     private VersionManager versionManager;
-    private StorageMigrationManager storageMigrationManager;
     private ActivityResultLauncher<Intent> permissionResultLauncher;
     private ActivityResultLauncher<Intent> apkImportResultLauncher;
-    private ActivityResultLauncher<String> notificationPermissionLauncher;
 
     private LinearLayout modsListContainer;
     private ContentManager contentManager;
@@ -125,36 +107,8 @@ import okhttp3.OkHttpClient;
     private LoadingDialog accountLoadingDialog;
     private ActivityResultLauncher<Intent> accountLoginLauncher;
     private OnBackPressedCallback onBackPressedCallback;
-    private boolean migrationPromptShown;
-    private boolean migrationPromptCheckInFlight;
-    private boolean postMigrationInitialized;
-    private StorageMigrationService storageMigrationService;
-    private boolean storageMigrationBound;
-    private LibsRepairDialog storageMigrationDialog;
-    private StorageMigrationService.MigrationState lastMigrationState;
-    private final ExecutorService storageMigrationExecutor = Executors.newSingleThreadExecutor();
-
-    private final StorageMigrationService.MigrationListener storageMigrationListener =
-            state -> runOnUiThread(() -> handleStorageMigrationState(state));
-
-    private final ServiceConnection storageMigrationConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            storageMigrationService = ((StorageMigrationService.LocalBinder) service).getService();
-            storageMigrationBound = true;
-            storageMigrationService.addListener(storageMigrationListener);
-            handleStorageMigrationState(storageMigrationService.getCurrentState());
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            if (storageMigrationService != null) {
-                storageMigrationService.removeListener(storageMigrationListener);
-            }
-            storageMigrationService = null;
-            storageMigrationBound = false;
-        }
-    };
+    private AuthService authService;
+    private CoroutineScope authScope;
 
 
     @Override
@@ -162,12 +116,23 @@ import okhttp3.OkHttpClient;
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        closeLauncherRestartAfterFirstDraw();
         setupNavBar();
         setupManagersAndHandlers();
-        new GithubReleaseUpdater(this, "LiteLDev", "LeviLaunchroid", permissionResultLauncher).checkUpdateOnLaunch();
+        setTextMinecraftVersion();
+        updateViewModelVersion();
+        checkResourcepack();
+        handleIncomingFiles();
+        //new GithubReleaseUpdater(this, "LiteLDev", "LeviLaunchroid", permissionResultLauncher).checkUpdateOnLaunch();
+        PlayFabClient playFabClient = PlayFabClient.getInstance(this);
+        authService = new AuthService(playFabClient);
+        authScope = CoroutineScopeKt.CoroutineScope(Dispatchers.getMain());
+        triggerPlayFabAuthAndKeys();
+        repairNeededVersions();
+        requestBasicPermissions();
         showEulaIfNeeded();
+        initModsSection();
         setupOnBackPressedCallback();
+        handleMinecraftUriLaunch();
 
         accountLoginLauncher = registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK && result.getData() != null) {
@@ -211,39 +176,48 @@ import okhttp3.OkHttpClient;
         });
 
         initAccountHeader();
-        binding.getRoot().post(this::showStorageMigrationPromptAfterEula);
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
-        handleVersionDependentIntent();
-    }
+         private void triggerPlayFabAuthAndKeys() {
+         accountExecutor.execute(() -> {
+             try {
+                 BuildersKt.runBlocking(
+                         EmptyCoroutineContext.INSTANCE,
+                         (scope, continuation) -> authService.authenticate(continuation)
+                 );
+                 runOnUiThread(() -> {
+                     // auth succeeded
+                     Log.d("PlayFab", "Auth token: " + authService.getAuthToken());
+                 });
+             } catch (Exception e) {
+                 runOnUiThread(() ->
+                         Toast.makeText(this, "PlayFab auth failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                 );
+             }
+         });
+         accountExecutor.execute(() -> {
+             SharedPreferences prefs = getSharedPreferences("launcher_prefs", MODE_PRIVATE);
+             long lastFetch = prefs.getLong("last_keys_update", 0);
+             long currentTime = System.currentTimeMillis();
+             boolean needsNetworkUpdate = (currentTime - lastFetch > 10 * 60 * 1000); // 10m
 
-    private void closeLauncherRestartAfterFirstDraw() {
-        Intent intent = getIntent();
-        if (intent == null || !intent.getBooleanExtra(EXTRA_CLOSE_RESTART_ACTIVITY_ON_FIRST_DRAW, false)) {
-            return;
-        }
-        intent.removeExtra(EXTRA_CLOSE_RESTART_ACTIVITY_ON_FIRST_DRAW);
-        setIntent(intent);
+             try {
+                 int newKeys = BuildersKt.runBlocking(
+                         EmptyCoroutineContext.INSTANCE,
+                         (scope, continuation) -> KeysService.getInstance(this).initialize(needsNetworkUpdate, continuation)
+                 );
 
-        final View root = binding.getRoot();
-        root.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                if (root.getViewTreeObserver().isAlive()) {
-                    root.getViewTreeObserver().removeOnPreDrawListener(this);
-                }
-                root.post(() -> {
-                    hideSystemUI();
-                    sendBroadcast(new Intent(ACTION_MAIN_ACTIVITY_FIRST_DRAWN).setPackage(getPackageName()));
-                });
-                return true;
-            }
-        });
-    }
+                 if (needsNetworkUpdate) {
+                     prefs.edit().putLong("last_keys_update", System.currentTimeMillis()).apply();
+                     Log.d("KeysService", "New keys: " + newKeys);
+                 } else {
+                     Log.d("KeysService", "Local-only initialization (cooldown).");
+                 }
+             } catch (Exception e) {
+                 Log.e("KeysService", "Initialization failed: " + e.getMessage());
+             }
+         });
+     }
 
 
     private void initAccountHeader() {
@@ -316,22 +290,6 @@ import okhttp3.OkHttpClient;
             lastAvatarXuid = null;
             return;
         }
-
-        Object currentUrl = accountAvatar.getTag(R.id.nav_account_avatar);
-        if (url.equals(currentUrl) && accountAvatar.getDrawable() != null) {
-            if (avatarProgress != null) avatarProgress.setVisibility(View.GONE);
-            return;
-        }
-
-        Bitmap cached = AccountTextUtils.getCachedAvatar(url);
-        if (cached != null) {
-            accountAvatar.setTag(R.id.nav_account_avatar, url);
-            accountAvatar.setImageBitmap(cached);
-            if (avatarProgress != null) avatarProgress.setVisibility(View.GONE);
-            return;
-        }
-
-        accountAvatar.setTag(R.id.nav_account_avatar, url);
         accountAvatar.setImageDrawable(null);
         if (avatarProgress != null) avatarProgress.setVisibility(View.VISIBLE);
         accountExecutor.execute(() -> {
@@ -339,9 +297,7 @@ import okhttp3.OkHttpClient;
                 try (Response imgResp = avatarClient.newCall(new Request.Builder().url(url).build()).execute()) {
                     Bitmap bmp = (imgResp.isSuccessful() && imgResp.body() != null) ? android.graphics.BitmapFactory.decodeStream(imgResp.body().byteStream()) : null;
                     runOnUiThread(() -> {
-                        if (!url.equals(accountAvatar.getTag(R.id.nav_account_avatar))) return;
                         if (bmp != null) {
-                            AccountTextUtils.cacheAvatar(url, bmp);
                             accountAvatar.setImageBitmap(bmp);
                         }
                         if (avatarProgress != null) avatarProgress.setVisibility(View.GONE);
@@ -553,17 +509,18 @@ import okhttp3.OkHttpClient;
     private void setupManagersAndHandlers() {
         languageManager = new LanguageManager(this);
         languageManager.applySavedLanguage();
-        storageMigrationManager = new StorageMigrationManager(this);
+        viewModel = new ViewModelProvider(this, new MainViewModelFactory(getApplication())).get(MainViewModel.class);
+        viewModel.getModsLiveData().observe(this, this::updateModsUI);
+        versionManager = VersionManager.get(this);
+        versionManager.loadAllVersions();
+        apkImportManager = new ApkImportManager(this, viewModel);
+        minecraftLauncher = new MinecraftLauncher(this);
+        fileHandler = new FileHandler(this, viewModel, versionManager);
         permissionResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (permissionsHandler != null)
                         permissionsHandler.onActivityResult(result.getResultCode(), result.getData());
-                }
-        );
-        notificationPermissionLauncher = registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(),
-                granted -> {
                 }
         );
         apkImportResultLauncher = registerForActivityResult(
@@ -578,56 +535,7 @@ import okhttp3.OkHttpClient;
         initListeners();
     }
 
-    private void initializeAfterMigrationGate() {
-        if (postMigrationInitialized || isFinishing() || isDestroyed()) return;
-        postMigrationInitialized = true;
-
-        minecraftLauncher = new MinecraftLauncher(this);
-        viewModel = new ViewModelProvider(this, new MainViewModelFactory(getApplication())).get(MainViewModel.class);
-        apkImportManager = new ApkImportManager(this, viewModel);
-
-        initModsSection();
-        initContentManagementSection();
-        initMiscellaneousSection();
-        initializeVersionManager();
-    }
-
-    private void initializeVersionManager() {
-        binding.launchButton.setEnabled(false);
-        versionManager = VersionManager.getIfInitialized();
-        if (versionManager != null) {
-            onVersionManagerReady();
-            return;
-        }
-        VersionManager.initializeAsync(this, manager -> runOnUiThread(() -> {
-            if (isFinishing() || isDestroyed()) return;
-            versionManager = manager;
-            onVersionManagerReady();
-        }));
-    }
-
-    private void onVersionManagerReady() {
-        if (versionManager == null || binding == null) return;
-        fileHandler = new FileHandler(this, viewModel, versionManager);
-        setTextMinecraftVersion();
-        updateViewModelVersion();
-        repairNeededVersions();
-        binding.launchButton.setEnabled(true);
-        handleVersionDependentIntent();
-        refreshContentCounts();
-    }
-
-    private void handleVersionDependentIntent() {
-        if (versionManager == null || fileHandler == null) return;
-        if (!forwardIncomingMinecraftResourceToRunningGame()) {
-            checkResourcepack();
-            handleIncomingFiles();
-        }
-        handleMinecraftUriLaunch();
-    }
-
     private void initModsSection() {
-        if (viewModel == null) return;
         modsListContainer = binding.modsListContainer;
 
         binding.manageModsButton.setOnClickListener(v -> openModsFullscreen());
@@ -646,7 +554,7 @@ import okhttp3.OkHttpClient;
             binding.manageModsButton.setBackground(gd);
 
             if (binding.minecraftTitleText != null) {
-                pm.applySolidAccentText(binding.minecraftTitleText, accent);
+                pm.applySubtleWhiteGradient(binding.minecraftTitleText, accent, 0.35f, true);
             }
         }
 
@@ -654,7 +562,6 @@ import okhttp3.OkHttpClient;
     }
 
     private void updateViewModelVersion() {
-        if (viewModel == null) return;
         GameVersion selectedVersion = versionManager.getSelectedVersion();
         if (selectedVersion != null) {
             viewModel.setCurrentVersion(selectedVersion);
@@ -669,300 +576,30 @@ import okhttp3.OkHttpClient;
     }
 
     private void repairNeededVersions() {
-        GameVersion selectedVersion = versionManager != null ? versionManager.getSelectedVersion() : null;
-        if (selectedVersion != null && selectedVersion.needsRepair) {
-            VersionManager.attemptRepairLibs(this, selectedVersion);
+        for (GameVersion version : versionManager.getCustomVersions()) {
+            if (version.needsRepair) {
+                VersionManager.attemptRepairLibs(this, version);
+            }
         }
     }
 
     private void requestBasicPermissions() {
-        requestStoragePermissionForMigration(() -> {
-            if (storageMigrationManager != null) {
-                startStorageMigrationService();
-            }
-        });
-    }
-
-    private void requestStoragePermissionForMigration(Runnable onGranted) {
         permissionsHandler.requestPermission(PermissionsHandler.PermissionType.STORAGE, new PermissionsHandler.PermissionResultCallback() {
             @Override
             public void onPermissionGranted(PermissionsHandler.PermissionType type) {
                 if (type == PermissionsHandler.PermissionType.STORAGE) {
-                    if (onGranted != null) onGranted.run();
+                    viewModel.refreshMods();
                 }
             }
 
             @Override
             public void onPermissionDenied(PermissionsHandler.PermissionType type, boolean permanentlyDenied) {
                 if (type == PermissionsHandler.PermissionType.STORAGE) {
-                    Toast.makeText(MainActivity.this, R.string.storage_migration_permission_denied, Toast.LENGTH_LONG).show();
-                    showBlockingMigrationRetryDialog(
-                            getString(R.string.storage_migration_failed_title),
-                            getString(R.string.storage_migration_permission_denied)
-                    );
+                    Toast.makeText(MainActivity.this, R.string.storage_permission_not_granted, Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
         });
-    }
-
-    private void showStorageMigrationPromptIfNeeded() {
-        if (postMigrationInitialized || migrationPromptShown || migrationPromptCheckInFlight || storageMigrationManager == null || isFinishing() || isDestroyed()) return;
-        if (StorageMigrationService.isMigrationRunning(this)) {
-            resumeStorageMigrationService();
-            return;
-        }
-        migrationPromptCheckInFlight = true;
-        storageMigrationExecutor.execute(() -> {
-            boolean shouldOfferMigration = false;
-            try {
-                shouldOfferMigration = storageMigrationManager.shouldOfferMigration();
-            } catch (Exception ignored) {
-            }
-            boolean finalShouldOfferMigration = shouldOfferMigration;
-            runOnUiThread(() -> {
-                migrationPromptCheckInFlight = false;
-                if (isFinishing() || isDestroyed()) return;
-                if (!finalShouldOfferMigration) {
-                    initializeAfterMigrationGate();
-                    return;
-                }
-                if (migrationPromptShown || storageMigrationManager == null) return;
-                showStorageMigrationPromptDialog();
-            });
-        });
-    }
-
-    private void showStorageMigrationPromptDialog() {
-        migrationPromptShown = true;
-
-        CustomAlertDialog dialog = new CustomAlertDialog(this)
-                .setTitleText(getString(R.string.storage_migration_title))
-                .setMessage(getString(
-                        R.string.storage_migration_message,
-                        LauncherStorage.getTargetAppRootDisplayPath(this)
-                ))
-                .setPositiveButton(getString(R.string.storage_migration_start), v -> {
-                    if (storageMigrationManager.canReadLegacyRoot()) {
-                        startStorageMigrationService();
-                    } else {
-                        requestBasicPermissions();
-                    }
-                })
-                .setNegativeButton(getString(R.string.exit), v -> finishAffinity());
-        dialog.setCancelable(false);
-        dialog.show();
-    }
-
-    private void showStorageMigrationPromptAfterEula() {
-        SharedPreferences prefs = getSharedPreferences("LauncherPrefs", MODE_PRIVATE);
-        if (!prefs.getBoolean("eula_accepted", false)) return;
-        showStorageMigrationPromptIfNeeded();
-    }
-
-    private void startStorageMigrationService() {
-        if (isFinishing()) return;
-        requestNotificationPermissionForMigration();
-        showStorageMigrationDialog();
-        StorageMigrationService.startMigration(this);
-        bindStorageMigrationService();
-    }
-
-    private void resumeStorageMigrationService() {
-        if (isFinishing()) return;
-        requestNotificationPermissionForMigration();
-        showStorageMigrationDialog();
-        StorageMigrationService.startMigration(this);
-        bindStorageMigrationService();
-    }
-
-    private void requestNotificationPermissionForMigration() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || notificationPermissionLauncher == null) return;
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                == PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
-    }
-
-    private void bindStorageMigrationService() {
-        if (storageMigrationBound) return;
-        if (!StorageMigrationService.isMigrationRunning(this)) return;
-        Intent intent = new Intent(this, StorageMigrationService.class);
-        bindService(intent, storageMigrationConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    private void unbindStorageMigrationService() {
-        if (!storageMigrationBound) return;
-        if (storageMigrationService != null) {
-            storageMigrationService.removeListener(storageMigrationListener);
-        }
-        unbindService(storageMigrationConnection);
-        storageMigrationBound = false;
-        storageMigrationService = null;
-    }
-
-    private void showStorageMigrationDialog() {
-        if (isFinishing() || isDestroyed()) return;
-        if (storageMigrationDialog != null && storageMigrationDialog.isShowing()) return;
-        LibsRepairDialog dialog = new LibsRepairDialog(this);
-        storageMigrationDialog = dialog;
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setOnShowListener(shownDialog -> {
-            if (storageMigrationDialog != dialog || isFinishing() || isDestroyed()) return;
-            dialog.setTitleText(getString(R.string.storage_migration_progress_title));
-            dialog.setSubtitleText(getString(R.string.storage_migration_progress_subtitle));
-            dialog.setStatusText(getString(R.string.storage_migration_scanning));
-            dialog.setEtaText(getString(R.string.storage_migration_eta_pending));
-            dialog.setBackgroundHintText(getString(R.string.storage_migration_background_hint));
-            dialog.setPauseButton("", null);
-            dialog.setIndeterminate(true);
-            dialog.updateProgress(0);
-            if (lastMigrationState != null) {
-                updateStorageMigrationDialog(lastMigrationState);
-            }
-        });
-        dialog.show();
-    }
-
-    private void handleStorageMigrationState(StorageMigrationService.MigrationState state) {
-        if (state == null || isFinishing()) return;
-        lastMigrationState = state;
-        if (state.isActive()) {
-            showStorageMigrationDialog();
-            updateStorageMigrationDialog(state);
-            return;
-        }
-        if (state.isFinished()) {
-            dismissStorageMigrationDialog(() -> showStorageMigrationResult(state));
-            return;
-        }
-    }
-
-    private void updateStorageMigrationDialog(StorageMigrationService.MigrationState state) {
-        if (storageMigrationDialog == null || !storageMigrationDialog.isShowing()) return;
-        if (state.status == StorageMigrationService.Status.SCANNING) {
-            storageMigrationDialog.setIndeterminate(true);
-            storageMigrationDialog.setStatusText(getString(R.string.storage_migration_scanning));
-            storageMigrationDialog.setEtaText(getMigrationEtaText(state));
-            storageMigrationDialog.updateProgress(0);
-            return;
-        }
-        if (state.status != StorageMigrationService.Status.RUNNING) return;
-        storageMigrationDialog.setIndeterminate(false);
-        String progressDetail = getString(
-                R.string.storage_migration_progress_detail,
-                state.processedFiles,
-                state.totalFiles,
-                shortenMigrationPath(state.currentFile)
-        );
-        storageMigrationDialog.setStatusText(progressDetail);
-        storageMigrationDialog.setEtaText(getMigrationEtaText(state));
-        storageMigrationDialog.updateProgress(state.percent);
-    }
-
-    private void dismissStorageMigrationDialog(Runnable afterDismiss) {
-        LibsRepairDialog dialog = storageMigrationDialog;
-        storageMigrationDialog = null;
-        if (dialog == null) {
-            if (afterDismiss != null) afterDismiss.run();
-            return;
-        }
-        dialog.setOnDismissAnimationEndListener(afterDismiss);
-        if (dialog.isShowing()) {
-            dialog.dismiss();
-        } else if (afterDismiss != null) {
-            afterDismiss.run();
-        }
-    }
-
-    private void showStorageMigrationResult(StorageMigrationService.MigrationState state) {
-        if (isFinishing()) return;
-        if (state.status == StorageMigrationService.Status.COMPLETED) {
-            boolean wasInitialized = postMigrationInitialized;
-            initializeAfterMigrationGate();
-            if (wasInitialized && versionManager != null) {
-                versionManager.reload();
-                setTextMinecraftVersion();
-                updateViewModelVersion();
-            }
-            if (viewModel != null) viewModel.refreshMods();
-            refreshContentCounts();
-            new CustomAlertDialog(MainActivity.this)
-                    .setTitleText(getString(R.string.storage_migration_completed_title))
-                    .setMessage(getString(
-                            R.string.storage_migration_completed_message,
-                            state.totalFiles,
-                            formatBytes(state.totalBytes),
-                            state.skippedFiles
-                    ))
-                    .setPositiveButton(getString(R.string.confirm), null)
-                    .show();
-        } else if (state.status == StorageMigrationService.Status.PARTIAL) {
-            showBlockingMigrationRetryDialog(
-                    getString(R.string.storage_migration_partial_title),
-                    getString(
-                            R.string.storage_migration_partial_message,
-                            state.failedFiles,
-                            state.totalFiles
-                    )
-            );
-        } else if (state.status == StorageMigrationService.Status.FAILED) {
-            showBlockingMigrationRetryDialog(
-                    getString(R.string.storage_migration_failed_title),
-                    getString(R.string.storage_migration_failed_message, state.errorMessage)
-            );
-        }
-    }
-
-    private void showBlockingMigrationRetryDialog(String title, String message) {
-        if (isFinishing() || isDestroyed()) return;
-        migrationPromptShown = false;
-        CustomAlertDialog dialog = new CustomAlertDialog(MainActivity.this)
-                .setTitleText(title)
-                .setMessage(message)
-                .setPositiveButton(getString(R.string.retry), v -> showStorageMigrationPromptIfNeeded())
-                .setNegativeButton(getString(R.string.exit), v -> finishAffinity());
-        dialog.setCancelable(false);
-        dialog.show();
-    }
-
-    private String shortenMigrationPath(String path) {
-        if (path == null || path.isEmpty()) return "";
-        final int max = 48;
-        return path.length() <= max ? path : "..." + path.substring(path.length() - max);
-    }
-
-    private String formatBytes(long bytes) {
-        if (bytes < 1024) return bytes + " B";
-        double kb = bytes / 1024.0;
-        if (kb < 1024) return String.format(java.util.Locale.getDefault(), "%.1f KB", kb);
-        double mb = kb / 1024.0;
-        if (mb < 1024) return String.format(java.util.Locale.getDefault(), "%.1f MB", mb);
-        return String.format(java.util.Locale.getDefault(), "%.1f GB", mb / 1024.0);
-    }
-
-    private String getMigrationEtaText(StorageMigrationService.MigrationState state) {
-        if (state.estimatedRemainingMillis < 0L || state.estimatedCompletionAtMillis <= 0L) {
-            return getString(R.string.storage_migration_eta_pending);
-        }
-        String remaining = formatMigrationDuration(state.estimatedRemainingMillis);
-        String completionTime = DateFormat.getTimeInstance(DateFormat.SHORT, java.util.Locale.getDefault())
-                .format(new Date(state.estimatedCompletionAtMillis));
-        return getString(R.string.storage_migration_eta_detail, remaining, completionTime);
-    }
-
-    private String formatMigrationDuration(long millis) {
-        long seconds = Math.max(1L, Math.round(millis / 1000.0d));
-        long hours = seconds / 3600L;
-        long minutes = (seconds % 3600L) / 60L;
-        long remainingSeconds = seconds % 60L;
-        if (hours > 0L) {
-            return getString(R.string.storage_migration_duration_hours_minutes, hours, minutes);
-        }
-        if (minutes > 0L) {
-            return getString(R.string.storage_migration_duration_minutes_seconds, minutes, remainingSeconds);
-        }
-        return getString(R.string.storage_migration_duration_seconds, remainingSeconds);
     }
 
     private void showEulaIfNeeded() {
@@ -981,7 +618,6 @@ import okhttp3.OkHttpClient;
                 .setPositiveButton(getString(R.string.eula_agree), v -> {
                     getSharedPreferences("LauncherPrefs", MODE_PRIVATE)
                             .edit().putBoolean("eula_accepted", true).apply();
-                    binding.getRoot().post(this::showStorageMigrationPromptIfNeeded);
                 })
                 .setNegativeButton(getString(R.string.eula_exit), v -> finishAffinity());
         dia.setCancelable(false);
@@ -991,29 +627,10 @@ import okhttp3.OkHttpClient;
     @Override
     protected void onResume() {
         super.onResume();
+        setTextMinecraftVersion();
         refreshAccountHeaderUI();
-        if (StorageMigrationService.isMigrationRunning(this)) {
-            resumeStorageMigrationService();
-            return;
-        }
-        if (!postMigrationInitialized) {
-            showStorageMigrationPromptAfterEula();
-            return;
-        }
-        if (versionManager != null) {
-            setTextMinecraftVersion();
-            viewModel.refreshMods();
-            refreshContentCounts();
-        }
-        if (binding != null && versionManager != null) {
-            binding.launchButton.setEnabled(true);
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        unbindStorageMigrationService();
-        super.onStop();
+        viewModel.refreshMods();
+        refreshContentCounts();
     }
 
 
@@ -1031,13 +648,14 @@ import okhttp3.OkHttpClient;
 
     @SuppressLint({"ClickableViewAccessibility", "UnsafeIntentLaunch"})
     private void initListeners() {
-        binding.launchButton.setEnabled(false);
         binding.launchButton.setOnClickListener(v -> launchGame());
         DynamicAnim.applyPressScale(binding.launchButton);
         binding.selectVersionButton.setOnClickListener(v -> showVersionSelectDialog());
         DynamicAnim.applyPressScale(binding.selectVersionButton);
 
         FeatureSettings.init(getApplicationContext());
+        initContentManagementSection();
+        initMiscellaneousSection();
         showRandomTip();
     }
 
@@ -1103,16 +721,29 @@ import okhttp3.OkHttpClient;
         } catch (IllegalArgumentException e) {
             storageType = org.levimc.launcher.settings.FeatureSettings.StorageType.INTERNAL;
         }
-        storageType = LauncherStorage.normalizeContentStorageType(
-                storageType,
-                currentVersion.versionIsolation
-        );
 
-        java.io.File baseDir = LauncherStorage.getContentGameDataDir(
-                this,
-                currentVersion.getStorageProfileId(),
-                storageType
-        );
+        java.io.File baseDir;
+        switch (storageType) {
+            case VERSION_ISOLATION:
+                if (currentVersion.versionDir != null) {
+                    baseDir = new java.io.File(currentVersion.versionDir, "games/com.mojang");
+                } else {
+                    baseDir = new java.io.File(getDataDir(), "games/com.mojang");
+                }
+                break;
+            case EXTERNAL:
+                java.io.File externalDir = getExternalFilesDir(null);
+                if (externalDir != null) {
+                    baseDir = new java.io.File(externalDir, "games/com.mojang");
+                } else {
+                    baseDir = new java.io.File(getDataDir(), "games/com.mojang");
+                }
+                break;
+            case INTERNAL:
+            default:
+                baseDir = new java.io.File(getDataDir(), "games/com.mojang");
+                break;
+        }
 
         contentManager.setStorageDirectories(
                 new java.io.File(baseDir, "minecraftWorlds"),
@@ -1136,6 +767,7 @@ import okhttp3.OkHttpClient;
 
     private void initMiscellaneousSection() {
         binding.miscCurseforgeRow.setOnClickListener(v -> startActivity(new Intent(this, CurseForgeActivity.class)));
+        binding.miscToolcoinRow.setOnClickListener(v -> startActivity(new Intent(this, ToolCoinActivity.class)));
         binding.miscAccountsRow.setOnClickListener(v -> startActivity(new Intent(this, AccountsActivity.class)));
         binding.miscQuickLaunchRow.setOnClickListener(v -> startActivity(new Intent(this, QuickLaunchActivity.class)));
     }
@@ -1147,18 +779,14 @@ import okhttp3.OkHttpClient;
 
 
     private void launchGame() {
-        if (!isVersionManagerReady()) return;
         performActualLaunch();
     }
     private void performActualLaunch() {
         binding.launchButton.setEnabled(false);
-        LaunchTrace trace = LaunchTrace.create(null);
-        trace.milestone("Launch requested");
 
         GameVersion version = versionManager != null ? versionManager.getSelectedVersion() : null;
 
         if (version == null) {
-            trace.warning("Launch cancelled", "No version selected");
             binding.launchButton.setEnabled(true);
             new CustomAlertDialog(this)
                     .setTitleText(getString(R.string.dialog_title_no_version))
@@ -1169,11 +797,9 @@ import okhttp3.OkHttpClient;
         }
 
         if (FeatureSettings.getInstance().isLauncherManagedMcLoginEnabled()) {
-            trace.mark("Checking launcher-managed login");
             MsftAccountStore.MsftAccount active = getActiveAccount();
             boolean loggedIn = active != null && active.minecraftUsername != null && !active.minecraftUsername.isEmpty();
             if (!loggedIn) {
-                trace.warning("Launch cancelled", "Minecraft account is missing");
                 binding.launchButton.setEnabled(true);
                 new CustomAlertDialog(this)
                         .setTitleText(getString(R.string.dialog_title_login_required))
@@ -1187,60 +813,48 @@ import okhttp3.OkHttpClient;
             }
         }
 
+        if (!version.isInstalled && !version.versionIsolation) {
+            binding.launchButton.setEnabled(true);
+            new CustomAlertDialog(this)
+                    .setTitleText(getString(R.string.dialog_title_version_isolation))
+                    .setMessage(getString(R.string.dialog_message_version_isolation))
+                    .setPositiveButton(getString(R.string.dialog_positive_enable), v -> {
+                        VersionManager.get(this).setInstanceVersionIsolation(version, true);
+                        performActualLaunch();
+                    })
+                    .setNegativeButton(getString(R.string.dialog_negative_cancel), null)
+                    .show();
+            return;
+        }
+
         if (!PlayStoreValidator.isMinecraftFromPlayStore(this)) {
-            trace.warning("Launch cancelled", "Minecraft is not verified as Play Store install");
             binding.launchButton.setEnabled(true);
             PlayStoreValidationDialog.showNotFromPlayStoreDialog(this);
             return;
         }
 
-        trace.mark("Launch validation completed", version.directoryName + " " + version.versionCode);
-        try {
-            Intent launchIntent = createMinecraftLaunchIntent();
-            launchIntent.putExtra(LaunchTrace.EXTRA_SESSION_ID, trace.getSessionId());
-            launchIntent.putExtra(LaunchTrace.EXTRA_STARTED_ELAPSED_MS,
-                    android.os.SystemClock.elapsedRealtime() - trace.elapsedMs());
-            minecraftLauncher.launch(launchIntent, version, new MinecraftLauncher.LaunchCallback() {
-                @Override
-                public void onLaunchStarted() {
-                    trace.milestone("Loading screen requested");
-                }
-
-                @Override
-                public void onLaunchFailed(Exception e) {
-                    trace.error("Launch failed before loading screen", e.getMessage());
-                    runOnUiThread(() -> {
-                        if (binding != null) binding.launchButton.setEnabled(true);
-                    });
-                }
-            });
-        } catch (Exception e) {
-            trace.error("Launch failed before activity start", e.getMessage());
-            binding.launchButton.setEnabled(true);
-            new CustomAlertDialog(this)
-                    .setTitleText(getString(R.string.dialog_title_launch_failed))
-                    .setMessage(getString(R.string.dialog_message_launch_failed, e.getMessage()))
-                    .setPositiveButton(getString(R.string.dialog_positive_ok), null)
-                    .show();
-        }
-    }
-
-    private Intent createMinecraftLaunchIntent() {
-        Intent launchIntent = new Intent();
-        Intent sourceIntent = getIntent();
-        if (sourceIntent == null) return launchIntent;
-
-        if (sourceIntent.hasExtra("MINECRAFT_URI")) {
-            launchIntent.putExtra("MINECRAFT_URI", sourceIntent.getStringExtra("MINECRAFT_URI"));
-        }
-        if (sourceIntent.hasExtra("MINECRAFT_URI_ACTION")) {
-            launchIntent.putExtra("MINECRAFT_URI_ACTION", sourceIntent.getStringExtra("MINECRAFT_URI_ACTION"));
-        }
-        return launchIntent;
+        new Thread(() -> {
+            try {
+                minecraftLauncher.launch(getIntent(), version);
+                runOnUiThread(() -> {
+                    binding.launchButton.setEnabled(true);
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    binding.launchButton.setEnabled(true);
+                    new CustomAlertDialog(this)
+                            .setTitleText(getString(R.string.dialog_title_launch_failed))
+                            .setMessage(getString(R.string.dialog_message_launch_failed, e.getMessage()))
+                            .setPositiveButton(getString(R.string.dialog_positive_ok), null)
+                            .show();
+                });
+            }
+        }).start();
     }
 
      private void showVersionSelectDialog() {
-        if (!isVersionManagerReady()) return;
+        if (versionManager == null) return;
+        versionManager.loadAllVersions();
 
         List<GameVersion> allVersions = new ArrayList<>();
         List<GameVersion> installed = versionManager.getInstalledVersions();
@@ -1249,7 +863,6 @@ import okhttp3.OkHttpClient;
         if (custom != null) allVersions.addAll(custom);
 
         View popupView = LayoutInflater.from(this).inflate(R.layout.popup_instance_selector, null);
-        new PersonalizationManager(this).applyAccentToView(popupView, this);
         PopupWindow popup = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -1345,41 +958,17 @@ import okhttp3.OkHttpClient;
             holder.itemView.setActivated(isSelected);
             holder.check.setVisibility(isSelected ? View.VISIBLE : View.GONE);
             holder.tag.setVisibility(View.GONE);
-            applyInstanceSelectionStyle(holder, isSelected);
 
             holder.itemView.setOnClickListener(_v -> {
                 if (listener != null) listener.onClick(v);
             });
         }
 
-        private static void applyInstanceSelectionStyle(@NonNull VH holder, boolean isSelected) {
-            android.content.Context context = holder.itemView.getContext();
-            PersonalizationManager pm = new PersonalizationManager(context);
-            int accent = pm.getAccentColor();
-            if (accent == 0) {
-                accent = ContextCompat.getColor(context, R.color.primary);
-            }
-
-            float density = context.getResources().getDisplayMetrics().density;
-            GradientDrawable background = new GradientDrawable();
-            background.setShape(GradientDrawable.RECTANGLE);
-            background.setCornerRadius(10 * density);
-            if (isSelected) {
-                background.setColor(Color.argb(26, Color.red(accent), Color.green(accent), Color.blue(accent)));
-                background.setStroke(Math.max(1, (int) (1 * density)), accent);
-            } else {
-                background.setColor(Color.TRANSPARENT);
-                background.setStroke(0, Color.TRANSPARENT);
-            }
-            holder.itemView.setBackground(background);
-            holder.check.setImageTintList(ColorStateList.valueOf(accent));
-        }
-
         @Override public int getItemCount() { return filteredVersions.size(); }
 
         static class VH extends RecyclerView.ViewHolder {
             TextView name, version, tag;
-            ImageView check;
+            View check;
             VH(View v) {
                 super(v);
                 name = v.findViewById(R.id.instance_name);
@@ -1419,19 +1008,9 @@ import okhttp3.OkHttpClient;
 
      public void setTextMinecraftVersion() {
         if (binding == null) return;
-        if (versionManager == null) {
-            binding.textMinecraftVersion.setText(getString(R.string.not_found_version));
-            return;
-        }
         GameVersion selectedVersion = versionManager.getSelectedVersion();
         String instanceName = selectedVersion != null ? getInstanceDisplayName(selectedVersion) : null;
         binding.textMinecraftVersion.setText(TextUtils.isEmpty(instanceName) ? getString(R.string.not_found_version) : instanceName);
-    }
-
-    private boolean isVersionManagerReady() {
-        if (versionManager != null) return true;
-        Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
-        return false;
     }
 
     private static String getInstanceDisplayName(GameVersion version) {
@@ -1465,9 +1044,6 @@ import okhttp3.OkHttpClient;
     private void handleIncomingFiles() {
         if (fileHandler == null) return;
         Intent intent = getIntent();
-        if (MinecraftImportIntents.isMinecraftResourceIntent(this, intent)) {
-            return;
-        }
         if (intent != null && intent.getData() != null) {
             Uri data = intent.getData();
             if ("minecraft".equals(data.getScheme())) {
@@ -1495,30 +1071,10 @@ import okhttp3.OkHttpClient;
         }, false);
     }
 
-    private boolean forwardIncomingMinecraftResourceToRunningGame() {
-        Intent intent = getIntent();
-        if (!MinecraftImportIntents.isMinecraftResourceIntent(this, intent)) {
-            return false;
-        }
-        if (!MinecraftImportIntents.forwardToRunningMinecraft(this, intent)) {
-            return false;
-        }
-
-        clearIncomingIntent();
-        return true;
-    }
-
-    private void clearIncomingIntent() {
-        Intent cleanIntent = new Intent(this, MainActivity.class);
-        setIntent(cleanIntent);
-    }
-
     private void handleMinecraftUriLaunch() {
         Intent intent = getIntent();
         if (intent == null) return;
         if (intent.getBooleanExtra("LAUNCH_WITH_URI", false)) {
-            intent.removeExtra("LAUNCH_WITH_URI");
-            setIntent(intent);
             binding.getRoot().post(this::launchGame);
         }
     }
@@ -1536,7 +1092,13 @@ import okhttp3.OkHttpClient;
             }
         }
 
-
+        // Add enabled inbuilt mods
+        InbuiltModManager manager = InbuiltModManager.getInstance(this);
+        if (!manager.isModMenuEnabled()) {
+            for (org.levimc.launcher.core.mods.inbuilt.model.InbuiltMod inbuilt : manager.getAddedMods(this)) {
+                addModNameEntry(inbuilt.getName());
+            }
+        }
     }
 
     private void addModNameEntry(String name) {
@@ -1559,9 +1121,6 @@ import okhttp3.OkHttpClient;
 
     @Override
     protected void onDestroy() {
-        unbindStorageMigrationService();
-        dismissStorageMigrationDialog(null);
-        storageMigrationExecutor.shutdownNow();
         super.onDestroy();
     }
 

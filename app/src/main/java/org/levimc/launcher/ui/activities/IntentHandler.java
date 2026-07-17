@@ -1,5 +1,8 @@
 package org.levimc.launcher.ui.activities;
 
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,9 +10,9 @@ import android.util.Log;
 
 import org.levimc.launcher.core.minecraft.MinecraftActivity;
 import org.levimc.launcher.core.minecraft.MinecraftActivityState;
-import org.levimc.launcher.core.minecraft.MinecraftImportIntents;
-import org.levimc.launcher.util.InstanceBackupManager;
 import org.levimc.launcher.util.MinecraftUriHandler;
+
+import java.util.List;
 
 public class IntentHandler extends BaseActivity {
     private static final String TAG = "IntentHandler";
@@ -26,34 +29,12 @@ public class IntentHandler extends BaseActivity {
         handleDeepLink(intent);
     }
 
+    @SuppressLint("IntentReset")
     private void handleDeepLink(Intent originalIntent) {
         Uri data = originalIntent.getData();
 
         if (data != null && MinecraftUriHandler.isMinecraftUri(data)) {
             handleMinecraftUri(originalIntent, data);
-            return;
-        }
-
-        if (MinecraftImportIntents.isMinecraftResourceIntent(this, originalIntent)) {
-            if (MinecraftImportIntents.forwardToRunningMinecraft(this, originalIntent)) {
-                finish();
-                return;
-            }
-
-            Intent launcherIntent = new Intent(originalIntent);
-            launcherIntent.setClass(this, MainActivity.class);
-            startActivity(launcherIntent);
-            finish();
-            return;
-        }
-
-        if (InstanceBackupManager.isBackupIntent(this, originalIntent)) {
-            Intent launcherIntent = new Intent(originalIntent);
-            launcherIntent.setClass(this, InstancesActivity.class);
-            launcherIntent.putExtra(InstancesActivity.EXTRA_RESTORE_BACKUP_ON_OPEN, true);
-            launcherIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivity(launcherIntent);
-            finish();
             return;
         }
         
@@ -63,10 +44,14 @@ public class IntentHandler extends BaseActivity {
             newIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         } else {
 
-            if (isMcRunning()) {
-                newIntent.setClassName(this, "com.mojang.minecraftpe.Launcher");
-            } else {
+            if (isMinecraftResourceFile(originalIntent)) {
                 newIntent.setClassName(this, "org.levimc.launcher.ui.activities.MainActivity");
+            } else {
+                if (isMcRunning()) {
+                    newIntent.setClassName(this, "com.mojang.minecraftpe.Launcher");
+                } else {
+                    newIntent.setClassName(this, "org.levimc.launcher.ui.activities.MainActivity");
+                }
             }
         }
 
@@ -99,8 +84,43 @@ public class IntentHandler extends BaseActivity {
         finish();
     }
 
+    private boolean isMinecraftResourceFile(Intent intent) {
+        Uri data = intent.getData();
+        if (data != null) {
+            String path = data.getPath();
+            if (path != null) {
+                String lowerPath = path.toLowerCase();
+                return lowerPath.endsWith(".mcworld") ||
+                        lowerPath.endsWith(".mcpack") ||
+                        lowerPath.endsWith(".mcaddon") ||
+                        lowerPath.endsWith(".mctemplate");
+            }
+        }
+        return false;
+    }
+
     private boolean isMinecraftActivityRunning() {
-        return MinecraftActivityState.isRunning(this);
+        if (MinecraftActivityState.isRunning()) return true;
+        try {
+            ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            if (activityManager != null) {
+                List<ActivityManager.AppTask> tasks = activityManager.getAppTasks();
+                for (ActivityManager.AppTask task : tasks) {
+                    ActivityManager.RecentTaskInfo taskInfo = task.getTaskInfo();
+                    if (taskInfo.baseActivity != null && 
+                        taskInfo.baseActivity.getClassName().equals(MinecraftActivity.class.getName())) {
+                        return true;
+                    }
+                    if (taskInfo.topActivity != null && 
+                        taskInfo.topActivity.getClassName().equals(MinecraftActivity.class.getName())) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking if MinecraftActivity is running", e);
+        }
+        return false;
     }
 
     private boolean isMcRunning() {

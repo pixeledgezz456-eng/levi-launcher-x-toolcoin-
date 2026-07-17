@@ -1,0 +1,286 @@
+{
+    "result": {
+        "pageId": "MultiItemPage_Inventory",
+        "addToRecentlyViewed": false,
+        "pageRefresh": false,
+        "layout": [
+            {
+                "sectionName": "rows",
+                "rows": [
+                    {
+                        "controlId": "Layout",
+                        "components": [
+                            {
+                                "linksToInfo": {
+                                    "linksTo": "MultiItemPage_CoinScreen",
+                                    "linkType": "pageId",
+                                    "displayType": "store_layout.store_data_driven_screen",
+                                    "screenTitle": {
+                                        "value": "Minecoins",
+                                        "style": {
+                                            "highlightColor": [],
+                                            "alignment": "Left",
+                                            "textColor": [],
+                                            "font": "MinecraftTen",
+                                            "showBackground": false,
+                                            "showOutline": false,
+                                            "indent": 0.0,
+                                            "buttonWidth": 0.0,
+                                            "color": [],
+                                            "offerControlIdType": "None",
+                                            "outlineColor": []
+                                        },
+                                        "replacements": []
+                                    },
+                                    "navigateInPlace": false
+                                },
+                                "isVisible": true,
+                                "type": "topBarMinecoinComp",
+                                "$type": "TopBarMinecoinComponent"
+                            },
+                            {
+                                "linksToInfo": {
+                                    "linksTo": "Search_SearchHome",
+                                    "linkType": "pageId",
+                                    "displayType": "store_layout.store_data_driven_screen",
+                                    "screenTitle": {
+                                        "value": "store.search.title",
+                                        "style": {
+                                            "highlightColor": [],
+                                            "alignment": "Left",
+                                            "textColor": [],
+                                            "font": "MinecraftTen",
+                                            "showBackground": false,
+                                            "showOutline": false,
+                                            "indent": 0.0,
+                                            "buttonWidth": 0.0,
+                                            "color": [],
+                                            "offerControlIdType": "None",
+                                            "outlineColor": []
+                                        },
+                                        "replacements": []
+                                    },
+                                    "navigateInPlace": false
+                                },
+                                "isVisible": true,
+                                "type": "topBarSearchComp",
+                                "$type": "TopBarSearchComponent"
+                            },
+                            {
+                                "linksToInfo": {
+                                    "linksTo": "MultiItemPage_Inventory",
+                                    "linkType": "pageId",
+                                    "displayType": "store_layout.store_data_driven_screen",
+                                    "screenTitle": {
+                                        "value": "My Content",
+                                        "style": {
+                                            "highlightColor": [],
+                                            "alignment": "Left",
+                                            "textColor": [],
+                                            "font": "MinecraftTen",
+                                            "showBackground": false,
+                                            "showOutline": false,
+                                            "indent": 0.0,
+                                            "buttonWidth": 0.0,
+                                            "color": [],
+                                            "offerControlIdType": "None",
+                                            "outlineColor": []
+                                        },
+                                        "replacements": []
+                                    },
+                                    "navigateInPlace": false
+                                },
+                                "isVisible": true,
+                                "topBarIcon": {
+                                    "type": "SidebarNavIcon",
+                                    "localPath": "textures/ui/sidebar_icons/my_content_large"
+                                },
+                                "inventoryTitle": {
+                                    "value": "store.myLibrary",
+                                    "style": {
+                                        "highlightColor": [],
+                                        "alignment": "Left",
+                                        "textColor": [],
+                                        "font": "SmoothWithEmoticons",
+                                        "showBackground": false,
+                                        "showOutline": false,
+                                        "indent": 0.0,
+                                        "buttonWidth": 0.0,
+                                        "color": [],
+                                        "offerControlIdType": "None",
+                                        "outlineColor": []
+                                    },
+                                    "replacements": []
+                                },
+                                "type": "topBarInventoryComp",
+                                "$type": "TopBarInventoryComponent"
+                            }
+                        ]
+                    },
+                    {
+                        "controlId": "GridList",
+                        "components": [
+                            {
+                                "items": [
+                                ],
+                                "totalItems": 0,
+                                "type": "pagedItemListComp",
+                                "$type": "PagedItemListComponent"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "sectionName": "navigation",
+                "rows": [
+                    {
+                        "controlId": "SDLButtonNoClick",
+                        "components": [
+                            {
+                                "text": {
+                                    "value": "store.inventory.dropdown.owned",
+                                    "style": {
+                                        "highlightColor": [],
+                                        "alignment": "Left",
+                                        "textColor": [],
+                                        "font": "MinecraftTen",
+                                        "showBackground": false,
+                                        "showOutline": false,
+                                        "indent": 0.0,
+                                        "buttonWidth": 0.0,
+                                        "color": [],
+                                        "offerControlIdType": "None",
+                                        "outlineColor": []
+                                    },
+                                    "replacements": []
+                                },
+                                "type": "headerComp",
+                                "$type": "HeaderComponent"
+                            },
+                            {
+                                "messageImage": {
+                                    "type": "Texture",
+                                    "localPath": "textures/ui/arrowDown"
+                                },
+                                "type": "imageMessageComp",
+                                "$type": "ImageMessageComponent"
+                            }
+                        ]
+                    },
+                    {
+                        "controlId": "InventoryNavItem",
+                        "components": [
+                            {
+                                "text": {
+                                    "value": "All",
+                                    "style": {
+                                        "highlightColor": [],
+                                        "alignment": "Left",
+                                        "textColor": [
+                                            1.0,
+                                            1.0,
+                                            1.0
+                                        ],
+                                        "font": "default",
+                                        "showBackground": false,
+                                        "showOutline": false,
+                                        "indent": 0.0,
+                                        "buttonWidth": 0.0,
+                                        "color": [],
+                                        "offerControlIdType": "None",
+                                        "outlineColor": []
+                                    },
+                                    "replacements": []
+                                },
+                                "type": "headerComp",
+                                "$type": "HeaderComponent"
+                            },
+                            {
+                                "messageImage": {
+                                    "type": "Texture",
+                                    "localPath": "textures/ui/glyph_all_pack_small"
+                                },
+                                "text": {
+                                    "value": "0",
+                                    "style": {
+                                        "highlightColor": [],
+                                        "alignment": "Left",
+                                        "textColor": [
+                                            1.0,
+                                            1.0,
+                                            1.0
+                                        ],
+                                        "font": "default",
+                                        "showBackground": false,
+                                        "showOutline": false,
+                                        "indent": 0.0,
+                                        "buttonWidth": 0.0,
+                                        "color": [],
+                                        "offerControlIdType": "None",
+                                        "outlineColor": []
+                                    },
+                                    "replacements": []
+                                },
+                                "type": "imageMessageComp",
+                                "$type": "ImageMessageComponent"
+                            },
+                            {
+                                "type": "redirectButtonComp",
+                                "$type": "RedirectComponent"
+                            }
+                        ]
+                    },
+                    {
+                        "controlId": "InventoryNavItem",
+                        "components": [
+                            {
+                                "text": {
+                                    "value": "???",
+                                    "style": {
+                                        "highlightColor": [],
+                                        "alignment": "Left",
+                                        "textColor": [
+                                            1.0,
+                                            1.0,
+                                            1.0
+                                        ],
+                                        "font": "default",
+                                        "showBackground": false,
+                                        "showOutline": false,
+                                        "indent": 0.0,
+                                        "buttonWidth": 0.0,
+                                        "color": [],
+                                        "offerControlIdType": "None",
+                                        "outlineColor": []
+                                    },
+                                    "replacements": []
+                                },
+                                "type": "headerComp",
+                                "$type": "HeaderComponent"
+                            },
+                            {
+                                "messageImage": {
+                                    "type": "Texture",
+                                    "localPath": "textures/ui/icon_cookie"
+                                },
+                                "type": "imageMessageComp",
+                                "$type": "ImageMessageComponent"
+                            },
+                            {
+                                "linksTo": {
+                                    "linksTo": "MultiItemPage_steve",
+                                    "linkType": "pageId",
+                                    "displayType": "store_layout.store_data_driven_screen",
+                                    "navigateInPlace": true
+                                },
+                                "type": "redirectButtonComp",
+                                "$type": "RedirectComponent"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
