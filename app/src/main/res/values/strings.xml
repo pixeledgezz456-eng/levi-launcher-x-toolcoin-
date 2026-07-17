@@ -267,6 +267,28 @@
     <string name="import_resource_pack">Import Resource Pack</string>
     <string name="import_behavior_pack">Import Behavior Pack</string>
     <string name="import_skin_pack">Import Skin Pack</string>
+
+    <!-- Storage Migration -->
+    <string name="storage_migration_title">Storage Access Required</string>
+    <string name="storage_migration_message">LeviLauncher must move data from games/org.levimc to %1$s before continuing.</string>
+    <string name="storage_migration_start">Migrate</string>
+    <string name="storage_migration_permission_denied">Storage permission is required to read the old directory for migration.</string>
+    <string name="storage_migration_progress_title">Data Migration</string>
+    <string name="storage_migration_progress_subtitle">Copying Launcher data to Android/media directory</string>
+    <string name="storage_migration_scanning">Scanning old directory…</string>
+    <string name="storage_migration_progress_detail">%1$d/%2$d files · %3$s</string>
+    <string name="storage_migration_eta_pending">Estimating time remaining…</string>
+    <string name="storage_migration_eta_detail">About %1$s remaining · complete around %2$s</string>
+    <string name="storage_migration_duration_hours_minutes">%1$d hours %2$d minutes</string>
+    <string name="storage_migration_duration_minutes_seconds">%1$d minutes %2$d seconds</string>
+    <string name="storage_migration_duration_seconds">%1$d seconds</string>
+    <string name="storage_migration_background_hint">Migration can continue in the background. It is recommended to keep your phone charged; the device may warm up during file copying. Thank you for your patience.</string>
+    <string name="storage_migration_completed_title">Migration Completed</string>
+    <string name="storage_migration_completed_message">Moved %1$d files (%2$s). %3$d files were already up to date.</string>
+    <string name="storage_migration_partial_title">Migration Incomplete</string>
+    <string name="storage_migration_partial_message">Failed to copy %1$d out of %2$d files. Migration must complete before LeviLauncher can continue.</string>
+    <string name="storage_migration_failed_title">Migration Failed</string>
+    <string name="storage_migration_failed_message">Migration could not continue: %1$s</string>
     <string name="delete_resource_pack">Delete Resource Pack</string>
     <string name="delete_skin_pack">Delete Skin Pack</string>
     <string name="delete_behavior_pack">Delete Behavior Pack</string>
