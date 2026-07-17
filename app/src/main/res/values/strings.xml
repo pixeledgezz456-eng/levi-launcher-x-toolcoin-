@@ -300,6 +300,17 @@
     <string name="shared_storage_layout_mode_legacy">Original internal/external directories</string>
     <string name="shared_storage_layout_status">Current mode: %1$s\nInternal: %2$s\nExternal: %3$s</string>
     <string name="shared_storage_layout_changed">Storage directory selection updated. Restart Minecraft and reopen content management for the change to fully apply.</string>
+    <string name="vietnamese">Tiếng Việt</string>
+    <string name="minecraft_loading_title">Opening Minecraft</string>
+    <string name="minecraft_loading_subtitle">Preparing game files and enabling mods</string>
+    <string name="minecraft_loading_status_preparing">Preparing game</string>
+    <string name="minecraft_loading_log_title">Launch Log</string>
+    <string name="minecraft_loading_complete">Game ready</string>
+    <string name="minecraft_loading_entering_game">Entering Minecraft</string>
+    <string name="minecraft_loading_failed">Launch failed</string>
+    <string name="minecraft_loading_return">Return to Launcher</string>
+    <string name="unsupported_version_title">Unsupported Version</string>
+    <string name="unsupported_version_msg">This launcher does not support Minecraft versions older than 1.21.80</string>
     <string name="delete_resource_pack">Delete Resource Pack</string>
     <string name="delete_skin_pack">Delete Skin Pack</string>
     <string name="delete_behavior_pack">Delete Behavior Pack</string>
