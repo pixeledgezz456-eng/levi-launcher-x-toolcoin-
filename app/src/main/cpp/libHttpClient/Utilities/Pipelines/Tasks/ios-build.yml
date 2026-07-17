@@ -1,0 +1,51 @@
+parameters:
+  - name: configuration
+    type: string
+
+steps:
+  - template: checkout.yml
+
+  - task: Xcode@5
+    displayName: 'Clean build iOS static lib'
+    inputs:
+      actions: 'clean build'
+      configuration: ${{ parameters.configuration }}
+      sdk: 'iphoneos'
+      xcWorkspacePath: Build/libHttpClient.Apple.C/libHttpClient.xcworkspace
+      scheme: 'libHttpClient_iOS'
+      packageApp: false
+      useXcpretty: false
+
+  - task: Xcode@5
+    displayName: 'Clean build iOS framework'
+    inputs:
+      actions: 'clean build'
+      configuration: ${{ parameters.configuration }}
+      sdk: 'iphoneos'
+      xcWorkspacePath: Build/libHttpClient.Apple.C/libHttpClient.xcworkspace
+      scheme: 'libHttpClientFramework_iOS'
+      packageApp: false
+      useXcpretty: false
+
+  - task: Xcode@5
+    displayName: 'Clean build iOS_NOWEBSOCKETS static lib'
+    inputs:
+      actions: 'clean build'
+      configuration: ${{ parameters.configuration }}
+      sdk: 'iphoneos'
+      xcWorkspacePath: Build/libHttpClient.Apple.C/libHttpClient.xcworkspace
+      scheme: 'libHttpClient_NOWEBSOCKETS_iOS'
+      packageApp: false
+      useXcpretty: false
+
+  - task: Xcode@5
+    displayName: 'Clean build iOS_NOWEBSOCKETS framework'
+    inputs:
+      actions: 'clean build'
+      configuration: ${{ parameters.configuration }}
+      sdk: 'iphoneos'
+      xcWorkspacePath: Build/libHttpClient.Apple.C/libHttpClient.xcworkspace
+      scheme: 'libHttpClientFramework_NOWEBSOCKETS_iOS'
+      packageApp: false
+      useXcpretty: false
+
