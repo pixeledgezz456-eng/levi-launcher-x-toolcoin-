@@ -23,6 +23,20 @@ public class MinecraftLauncher {
     private final Context context;
     private GamePackageManager gameManager;
     public static final String MC_PACKAGE_NAME = "com.mojang.minecraftpe";
+    public static final String EXTRA_GAME_VERSION = "MINECRAFT_VERSION";
+    public static final String EXTRA_STORAGE_PROFILE_ID = "EXTRA_STORAGE_PROFILE_ID";
+    public static final String EXTRA_STORAGE_FILES_DIR = "EXTRA_STORAGE_FILES_DIR";
+    public static final String EXTRA_STORAGE_EXTERNAL_FILES_DIR = "EXTRA_STORAGE_EXTERNAL_FILES_DIR";
+    public static final String EXTRA_STORAGE_DATA_DIR = "EXTRA_STORAGE_DATA_DIR";
+    public static final String EXTRA_STORAGE_CACHE_DIR = "EXTRA_STORAGE_CACHE_DIR";
+
+    public static String getStorageProfileId(GameVersion version) {
+        return version.directoryName;
+    }
+
+    public static File getRuntimeLibDir(Context context, String profileId) {
+        return LauncherStorage.getRuntimeLibDir(context, profileId);
+    }
     private LoadingDialog loadingDialog;
 
     public MinecraftLauncher(Context context) {

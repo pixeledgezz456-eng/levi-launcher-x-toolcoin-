@@ -44,4 +44,8 @@ public class PreloaderInput {
         } catch (UnsatisfiedLinkError e) {
         }
     }
+
+    public static void configureSignatureRules(java.io.File signatureRulesFile, String versionCode) {
+        // Implementation placeholder
+    }
 }

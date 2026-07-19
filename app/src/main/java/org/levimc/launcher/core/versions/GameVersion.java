@@ -80,6 +80,10 @@ public class GameVersion implements Parcelable {
         return 0;
     }
 
+    public String getStorageProfileId() {
+        return directoryName;
+    }
+
     public static final Creator<GameVersion> CREATOR = new Creator<>() {
         @Override
         public GameVersion createFromParcel(Parcel in) {
