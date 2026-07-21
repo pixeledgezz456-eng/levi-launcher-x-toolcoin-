@@ -250,7 +250,7 @@ public class BaseActivity extends AppCompatActivity {
         hideSystemUI();
     }
 
-    private void hideSystemUI() {
+    protected void hideSystemUI() {
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                         | View.SYSTEM_UI_FLAG_FULLSCREEN

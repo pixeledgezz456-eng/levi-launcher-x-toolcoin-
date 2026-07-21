@@ -143,7 +143,14 @@ class MinecraftLoadingActivity : BaseActivity(), MinecraftRuntimePreparer.Progre
                 val gameIntent = Intent(intent).apply {
                     setClass(this@MinecraftLoadingActivity, MinecraftActivity::class.java)
                 }
-                val preparedRuntime = MinecraftRuntimePreparer.prepare(this, gameIntent, this)
+                
+                val preparer = MinecraftRuntimePreparer()
+                val preparedRuntime = preparer.prepare(this, gameIntent, this, object : MinecraftRuntimePreparer.LaunchTrace {
+                    override fun mark(event: String, detail: String) { trace.mark(event, detail) }
+                    override fun warning(event: String, detail: String) { trace.warning(event, detail) }
+                    override fun error(event: String, detail: String) { trace.error(event, detail) }
+                })
+                
                 MinecraftLaunchSession.setPreparedRuntime(preparedRuntime)
 
                 mainHandler.post {
@@ -163,7 +170,7 @@ class MinecraftLoadingActivity : BaseActivity(), MinecraftRuntimePreparer.Progre
 
     override fun onProgress(progress: Int, status: String, detail: String?) {
         mainHandler.post {
-            updateProgress(progress, status, detail)
+            updateProgress(progress, status, detail ?: "")
         }
     }
 
