@@ -144,8 +144,7 @@ class MinecraftLoadingActivity : BaseActivity(), MinecraftRuntimePreparer.Progre
                     setClass(this@MinecraftLoadingActivity, MinecraftActivity::class.java)
                 }
                 
-                val preparer = MinecraftRuntimePreparer()
-                val preparedRuntime = preparer.prepare(this, gameIntent, this, object : MinecraftRuntimePreparer.LaunchTrace {
+                val preparedRuntime = MinecraftRuntimePreparer.prepare(this, gameIntent, this, object : MinecraftRuntimePreparer.LaunchTrace {
                     override fun mark(event: String, detail: String) { trace.mark(event, detail) }
                     override fun warning(event: String, detail: String) { trace.warning(event, detail) }
                     override fun error(event: String, detail: String) { trace.error(event, detail) }

@@ -12,10 +12,16 @@ import org.levimc.launcher.preloader.PreloaderInput
 import org.levimc.launcher.util.LauncherStorage
 import java.io.File
 
-class MinecraftRuntimePreparer {
+object MinecraftRuntimePreparer {
+
+    data class PreparedRuntime(
+        val version: GameVersion?,
+        val gameManager: GamePackageManager,
+        val skippedIncompatibleMods: List<String> = emptyList()
+    )
 
     interface ProgressListener {
-        fun onProgress(progress: Int, message: String, detail: String = "")
+        fun onProgress(progress: Int, message: String, detail: String? = "")
         fun onLog(message: String)
     }
 
@@ -25,16 +31,17 @@ class MinecraftRuntimePreparer {
         fun error(event: String, detail: String = "")
     }
 
+    @JvmStatic
     fun prepare(
         context: Context,
         intent: Intent,
         listener: ProgressListener,
         trace: LaunchTrace
-    ) {
+    ): PreparedRuntime {
         listener.onProgress(0, "Preparing Minecraft runtime")
         trace.mark("Minecraft runtime preparation started")
 
-        val version = resolveVersion(intent)
+        val version = resolveGameVersion(intent)
         if (version == null) {
             trace.error("No version selected")
             throw IllegalArgumentException("No version selected")
@@ -50,13 +57,16 @@ class MinecraftRuntimePreparer {
         loadMinecraftLibraries(gameManager, version, listener, trace)
         
         val modManager = ModManager.getInstance()
-        loadNativeMods(context, intent, modManager, listener, trace)
+        val skippedIncompatibleMods = loadNativeMods(context, intent, modManager, listener, trace)
 
         listener.onProgress(100, "Minecraft ready")
         trace.mark("Minecraft runtime preparation finished")
+        
+        return PreparedRuntime(version, gameManager, skippedIncompatibleMods)
     }
 
-    private fun resolveVersion(intent: Intent): GameVersion? {
+    @JvmStatic
+    fun resolveGameVersion(intent: Intent): GameVersion? {
         val parcelableVersion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(MinecraftLauncher.EXTRA_GAME_VERSION, GameVersion::class.java)
         } else {
